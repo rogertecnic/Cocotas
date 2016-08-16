@@ -4,14 +4,18 @@ package sek2016;
 import lejos.hardware.Button;
 import lejos.utility.Delay;
 
-public class AlienRescue {
-	private static boolean initMotors = true,
-			initUS = true,
-			initGyro = true,
-			initDollColor  = false,
-			initFloorColor = false;
-	public static void main(String[] args) {
-		boolean Flag = false;
+public class AlienRescue implements Runnable{
+	private static boolean initMotors = !EV3MainMenuClass.jaInstanciado,
+			initUS = !EV3MainMenuClass.jaInstanciado,
+			initGyro = !EV3MainMenuClass.jaInstanciado,
+			initDollColor  = !EV3MainMenuClass.jaInstanciado,
+			initFloorColor = !EV3MainMenuClass.jaInstanciado;
+	
+	/**
+	 * Metodo que rege todo o codigo do robo
+	 */
+	@Override
+	public void run() {
 		init();
 		PID pidAngle = new PID();
 		Thread pid = new Thread(pidAngle);
@@ -19,13 +23,10 @@ public class AlienRescue {
 	//	Thread navigation = new Thread(nav);
 		pid.start();
 		while (Button.ESCAPE.isUp()){
-			if(Sensors.verificaObstaculo()==true && Flag == false){
+			if(Sensors.verificaObstaculo()==true){
 				System.out.println("Angulo: "+Sensors.getAngle());
 				Navigation.stop();
 				Navigation.closeGarra();
-				Flag = true;
-				Navigation.turnLeft();
-				Navigation.turnLeft();
 				
 			}
 			
@@ -41,6 +42,9 @@ public class AlienRescue {
 
 	public static void init() {
 		Navigation.init(initMotors);
-		Sensors.init(initDollColor,initUS,initFloorColor,initGyro );
+		Sensors.init(initDollColor,initUS,initFloorColor,initGyro);
+		EV3MainMenuClass.jaInstanciado = true;
 	}
+
+	
 }
