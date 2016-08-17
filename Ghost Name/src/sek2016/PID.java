@@ -8,7 +8,7 @@ import lejos.utility.Delay;
 public class PID implements Runnable {
 	public static boolean pidON;
 	
-	// ------------Variáveis do PID----------------------------------
+	// ------------Variáveis do PID-----------------------------
 	private static float PID = 0,
 			e = 0,
 			eAnt = 0,
