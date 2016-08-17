@@ -28,6 +28,10 @@ public class Navigation {
 
 	// ---------------------------Métodos----------------------------------
 
+	public static void turn(int graus){
+
+	}
+
 	/**
 	 * Virar robo a esquerda 90 graus
 	 */
@@ -116,7 +120,7 @@ public class Navigation {
 
 
 	}
-	
+
 	private static boolean garraFechada=false;
 	/**
 	 * fechar garra
@@ -176,7 +180,7 @@ public class Navigation {
 
 		}
 	}
-	
+
 	public static void close(){
 		rodaD.close();
 		rodaE.close();

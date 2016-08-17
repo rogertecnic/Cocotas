@@ -37,7 +37,7 @@ public class EV3MainMenuClass {
 				Button.waitForAnyPress();
 				Navigation.stop();
 				AlienRescueON = false;
-				threadPrograma.stop(); // menu aparece mas lança exceção não se sabe onde exatamente (exception ThreadDeath)
+				threadPrograma.stop();
 			}
 		}
 	}

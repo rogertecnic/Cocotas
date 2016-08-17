@@ -13,9 +13,9 @@ public class PID implements Runnable {
 			P = 0,
 			I = 0,
 			D = 0,
-			Kp = 2f,
-			Ki = 0.0001f,
-			Kd = 0.0001f,
+			Kp = 1f,
+			Ki = 0.003f,
+			Kd = 0.05f,
 			angEsperado = 0f, angReal = 0f;
 
 	public static void zeraPID(){
