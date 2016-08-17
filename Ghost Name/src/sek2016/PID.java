@@ -1,5 +1,7 @@
 package sek2016;
 
+import java.lang.Thread.State;
+
 import lejos.hardware.Sound;
 
 public class PID implements Runnable {
@@ -29,9 +31,9 @@ public class PID implements Runnable {
 	@Override
 	public void run() {
 		
-		while(true){
-			System.out.println("Angulo: "+Sensors.getAngle());
+		while(EV3MainMenuClass.AlienRescueON){
 			PIDAngle();
+			Navigation.setVelocidade();
 		}
 	}
 	

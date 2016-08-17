@@ -32,8 +32,8 @@ public class Sensors {
 		
 
 	}
-	private static final float DIST_MIN = 0.01f;
-	private static final float DIST_MAX = 0.04f;
+	private static final float DIST_MIN = 0.07320f;
+	private static final float DIST_MAX = 0.0953f;
 	
 	
 	
@@ -42,6 +42,7 @@ public class Sensors {
 		SampleProvider sampleSensor = ultrasonic.getDistanceMode();
 		float[] valor = new float[ sampleSensor.sampleSize()];
 		sampleSensor.fetchSample(valor, 0);
+		//System.out.println(valor[0]);
 		if((valor[0] >= DIST_MIN) && (valor[0] <= DIST_MAX))
 			return true;
 		else 
@@ -58,5 +59,12 @@ public class Sensors {
 	
 	public static void resetAngle(){
 		gyro.reset();
+	}
+	
+	public static void close(){
+		gyro.close();
+		ultrasonic.close();
+		dollColor.close();
+		floorColor.close();
 	}
 }

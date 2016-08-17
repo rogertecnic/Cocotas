@@ -9,7 +9,9 @@ public class EV3MainMenuClass {
 	/**
 	 * Thread principal do codigo
 	 */
-	private static Thread threadPrograma = new Thread(new AlienRescue());
+	public static Thread threadPrograma = new Thread(new AlienRescue());
+	public static boolean AlienRescueON = false;
+	public static boolean AlienRescueShutdown = false;
 
 	/**
 	 * @exit encerrar o programa todo
@@ -26,12 +28,18 @@ public class EV3MainMenuClass {
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
 		threadPrograma.setDaemon(true);
+		threadPrograma.setName("AlienRescue");
 		while (!exit) {
 			controleMenu();
 			if (!exit) {
 				Button.waitForAnyPress();
-				threadPrograma.suspend();
 				Navigation.stop();
+				Navigation.close();
+				Sensors.close();
+				//AlienRescueON = false;
+				//threadPrograma.interrupt(); // menu aparece mas a thread não para (seta status de interrupção para possivel parada prevista dentro da thread)
+				threadPrograma.stop(); // menu aparece mas lança exceção não se sabe onde exatamente (exception ThreadDeath)
+				//threadPrograma.suspend(); // menu aparece mas a thread não para (continua running) não se sabe o que ocorre
 			}
 		}
 	}
@@ -61,6 +69,10 @@ public class EV3MainMenuClass {
 		State s = threadPrograma.getState();
 		switch (opcao) {
 		case 1: {
+			Navigation.init(!jaInstanciado);
+			Sensors.init(!jaInstanciado,!jaInstanciado,!jaInstanciado,!jaInstanciado);
+			jaInstanciado = true;
+			Sensors.resetAngle();
 			if (s == State.NEW)
 				threadPrograma.start();
 			else if (s == State.TIMED_WAITING) {
@@ -68,10 +80,12 @@ public class EV3MainMenuClass {
 				threadPrograma.interrupt();
 				threadPrograma = new Thread(new AlienRescue());
 				threadPrograma.setDaemon(true);
+				threadPrograma.setName("AlienRescue");
 				threadPrograma.start();
 			} else if(s == State.TERMINATED){
 				threadPrograma = new Thread(new AlienRescue());
 				threadPrograma.setDaemon(true);
+				threadPrograma.setName("AlienRescue");
 				threadPrograma.start();
 			}
 			break;
