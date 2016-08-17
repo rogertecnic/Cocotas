@@ -3,9 +3,11 @@ package sek2016;
 import java.lang.Thread.State;
 
 import lejos.hardware.Sound;
+import lejos.utility.Delay;
 
 public class PID implements Runnable {
-
+	public static boolean pidON;
+	
 	// ------------Variáveis do PID----------------------------------
 	private static float PID = 0,
 			e = 0,
@@ -30,13 +32,12 @@ public class PID implements Runnable {
 	}
 	@Override
 	public void run() {
-		try{
-			while(EV3MainMenuClass.AlienRescueON){
-				PIDAngle();
-				Navigation.setVelocidade();
+		while(EV3MainMenuClass.AlienRescueON){
+			while(!pidON){
+				Delay.msDelay(10);
 			}
-		}catch(ThreadDeath e){
-			e.getStackTrace();
+			PIDAngle();
+			Navigation.setVelocidade();
 		}
 	}
 

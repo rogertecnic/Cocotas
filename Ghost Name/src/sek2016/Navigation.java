@@ -27,9 +27,17 @@ public class Navigation {
 
 
 	// ---------------------------Métodos----------------------------------
-
-	public static void turn(int graus){
-
+	
+	/**
+	 * Gira o robo no proprio eixo.
+	 * @param graus inteiro positivo (horário)<br>
+	 * inteiro negativo (antihorário)
+	 */
+	public static void turn(float graus){
+		float theta = ((3.14159265f*graus/180)*DISTANCIA_ENTRE_RODAS*180f)/(2f*RAIO*3.14159265f);
+		rodaE.rotate((int)theta, true);
+		rodaD.rotate(-(int)theta);
+		
 	}
 
 	/**
@@ -117,6 +125,18 @@ public class Navigation {
 		WdWe = convertePara_WdWe();
 		Navigation.rodaD.setSpeed(WdWe[0]);
 		Navigation.rodaE.setSpeed(WdWe[1]);
+
+
+	}
+	
+	/**
+	 * seta velocidade em graus por segund
+	 * @param velo
+	 */
+	public static void setVelocidade (int velo){
+		setAcceleration(700, 700);
+		Navigation.rodaD.setSpeed(velo);
+		Navigation.rodaE.setSpeed(velo);
 
 
 	}

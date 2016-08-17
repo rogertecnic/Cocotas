@@ -19,11 +19,16 @@ public class AlienRescue implements Runnable{
 			threadPID = new Thread(new PID());
 			threadPID.setDaemon(true);
 			threadPID.setName("threadPID");
+			PID.pidON = true;
 			threadPID.start();
 
 			boolean flag = true;
 			Navigation.openGarra();
-			Navigation.forward();
+			PID.pidON = false;
+			Navigation.setVelocidade(90);
+			Navigation.turn(360*2);
+			PID.pidON = true;
+			//Navigation.forward();
 			while (flag){
 				if(Sensors.verificaObstaculo()==true){
 					Navigation.stop();
