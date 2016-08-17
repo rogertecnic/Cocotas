@@ -6,7 +6,7 @@ import lejos.hardware.Sound;
 
 public class PID implements Runnable {
 
-	// ------------Variáveis do PID----------------------------------
+	// ------------Variáveis do PID-----------------------------
 	private static float PID = 0,
 			e = 0,
 			eAnt = 0,
