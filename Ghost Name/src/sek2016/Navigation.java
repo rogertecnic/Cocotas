@@ -123,8 +123,8 @@ public class Navigation {
 	 */
 	public static void closeGarra(){
 		if(garraFechada == false){
-			motorG.rotate(55);
 			garraFechada = true;
+			motorG.rotate(60);
 		}
 		else{
 			LCD.clear();
@@ -137,8 +137,8 @@ public class Navigation {
 	 */
 	public static void openGarra(){
 		if(garraFechada == true){
-			motorG.rotate(-55);
 			garraFechada = false;
+			motorG.rotate(-60);
 		}
 		else{
 			LCD.clear();

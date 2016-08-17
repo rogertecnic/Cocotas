@@ -30,16 +30,19 @@ public class PID implements Runnable {
 	}
 	@Override
 	public void run() {
-		
-		while(EV3MainMenuClass.AlienRescueON){
-			PIDAngle();
-			Navigation.setVelocidade();
+		try{
+			while(EV3MainMenuClass.AlienRescueON){
+				PIDAngle();
+				Navigation.setVelocidade();
+			}
+		}catch(ThreadDeath e){
+			e.getStackTrace();
 		}
 	}
-	
+
 	private static void PIDAngle() {
 		angReal = Sensors.getAngle();
-		
+
 
 		if (angReal != 0) {
 			e = angReal - angEsperado;
@@ -52,12 +55,12 @@ public class PID implements Runnable {
 	}
 	public static float getPID(){
 		return PID;
-	
+
 	}
-	
+
 	public static void setAngEsperado(float angEsper){
 		angEsperado = angEsper;
-		
+
 	}
 	public static float getAngEsperado(){
 		return angEsperado;

@@ -7,11 +7,15 @@ import lejos.hardware.lcd.LCD;
 
 public class EV3MainMenuClass {
 	/**
-	 * Thread principal do codigo
+	 * Thread principal do codigo, é instanciada dentro do selecionaOpcao
 	 */
-	public static Thread threadPrograma = new Thread(new AlienRescue());
-	public static boolean AlienRescueON = false;
-	public static boolean AlienRescueShutdown = false;
+	public static Thread threadPrograma = null;
+	
+	/**
+	 * Variavel global que indica se a Thread do programa
+	 * está executando (ON) ou fechada (OFF)
+	 */
+	public static boolean AlienRescueON;
 
 	/**
 	 * @exit encerrar o programa todo
@@ -27,19 +31,13 @@ public class EV3MainMenuClass {
 	//=====================MAIN===================================
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
-		threadPrograma.setDaemon(true);
-		threadPrograma.setName("AlienRescue");
 		while (!exit) {
 			controleMenu();
 			if (!exit) {
 				Button.waitForAnyPress();
 				Navigation.stop();
-				Navigation.close();
-				Sensors.close();
-				//AlienRescueON = false;
-				//threadPrograma.interrupt(); // menu aparece mas a thread não para (seta status de interrupção para possivel parada prevista dentro da thread)
+				AlienRescueON = false;
 				threadPrograma.stop(); // menu aparece mas lança exceção não se sabe onde exatamente (exception ThreadDeath)
-				//threadPrograma.suspend(); // menu aparece mas a thread não para (continua running) não se sabe o que ocorre
 			}
 		}
 	}
@@ -64,44 +62,21 @@ public class EV3MainMenuClass {
 	 * <b>1:</b> (Re)iniciar o codigo<br>
 	 * <b>2:</b> sai do programa<br>
 	 */
-	@SuppressWarnings("deprecation")
 	public static void selecionaOpcao(int opcao) {
-		State s = threadPrograma.getState();
 		switch (opcao) {
 		case 1: {
+			AlienRescueON = true;
 			Navigation.init(!jaInstanciado);
 			Sensors.init(!jaInstanciado,!jaInstanciado,!jaInstanciado,!jaInstanciado);
 			jaInstanciado = true;
 			Sensors.resetAngle();
-			if (s == State.NEW)
-				threadPrograma.start();
-			else if (s == State.TIMED_WAITING) {
-				threadPrograma.resume();
-				threadPrograma.interrupt();
-				threadPrograma = new Thread(new AlienRescue());
-				threadPrograma.setDaemon(true);
-				threadPrograma.setName("AlienRescue");
-				threadPrograma.start();
-			} else if(s == State.TERMINATED){
-				threadPrograma = new Thread(new AlienRescue());
-				threadPrograma.setDaemon(true);
-				threadPrograma.setName("AlienRescue");
-				threadPrograma.start();
-			}
+			threadPrograma = new Thread(new AlienRescue());
+			threadPrograma.setDaemon(true);
+			threadPrograma.setName("AlienRescue");
+			threadPrograma.start();
 			break;
 		}
 		case 2: {
-			if (s == State.NEW) {
-				threadPrograma.start();
-				threadPrograma.interrupt();
-			} else if (s == State.TIMED_WAITING) {
-				threadPrograma.resume();
-				threadPrograma.interrupt();
-			} else if (s == State.RUNNABLE)
-				threadPrograma.interrupt();
-			else if (s == State.WAITING)
-				threadPrograma.interrupt();
-
 			exit = true;
 			break;
 		}
