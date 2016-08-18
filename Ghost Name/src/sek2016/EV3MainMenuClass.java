@@ -1,42 +1,44 @@
 package sek2016;
 
-import java.lang.Thread.State;
-
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 
+/**
+ * 
+ * @author Rogerio
+ *Classe que controla a Thread main (metodo main) e 
+ *chama a Thread do codigo da sek da classe AlienRescue
+ */
 public class EV3MainMenuClass {
 	/**
-	 * Thread principal do codigo, é instanciada dentro do selecionaOpcao
-	 */
-	public static Thread threadPrograma = null;
-	
-	/**
-	 * Variavel global que indica se a Thread do programa
-	 * está executando (ON) ou fechada (OFF)
-	 */
-	public static boolean AlienRescueON;
-
-	/**
-	 * @exit encerrar o programa todo
+	 * @exit
+	 *  variavel que confirma se é pra sair do programa todo
 	 */
 	private static boolean exit = false;
-
+	
 	/**
+	 * @MotorInstanciado
 	 * Variavel que controla a instancia dos sensores e motores.<br>
 	 * <b>true:</b> ja foi instanciado, (resetar gyroscopio);<br>
 	 * <b>false:</b> ainda não foi instanciado, (primeira execução do codigo);
 	 */
-	public static boolean jaInstanciado = false;
+	private static boolean MotorInstanciado = false;
+	
+	/**
+	 * @threadPrograma
+	 *  principal do codigo, é instanciada dentro do selecionaOpcao
+	 */
+	public static Thread threadPrograma = null;
+	
+	
 	//=====================MAIN===================================
-	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
 		while (!exit) {
 			controleMenu();
 			if (!exit) {
 				Button.waitForAnyPress();
 				Navigation.stop();
-				AlienRescueON = false;
+				AlienRescue.alienRescueON = false;
 				threadPrograma.stop();
 			}
 		}
@@ -65,10 +67,10 @@ public class EV3MainMenuClass {
 	public static void selecionaOpcao(int opcao) {
 		switch (opcao) {
 		case 1: {
-			AlienRescueON = true;
-			Navigation.init(!jaInstanciado);
-			Sensors.init(!jaInstanciado,!jaInstanciado,!jaInstanciado,!jaInstanciado);
-			jaInstanciado = true;
+			AlienRescue.alienRescueON = true;
+			Navigation.init(!MotorInstanciado);
+			Sensors.init(!MotorInstanciado,!MotorInstanciado,!MotorInstanciado,!MotorInstanciado);
+			MotorInstanciado = true;
 			Sensors.resetAngle();
 			threadPrograma = new Thread(new AlienRescue());
 			threadPrograma.setDaemon(true);

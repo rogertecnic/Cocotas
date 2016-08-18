@@ -1,12 +1,26 @@
 package sek2016;
 
-
 import lejos.hardware.Button;
-import lejos.utility.Delay;
+import lejos.hardware.lcd.LCD;
 
+/**
+ * 
+ * @author Equipe Sek 2016:<br>
+ * Diego Costa<br>
+ * Karinny Golçalves<br>
+ * Lucas *não sei o sobrenome*<br>
+ * Mariana *nao sei o sobrenome*<br>
+ * Rogério Pereira Batista - Eng. Elétrica<br>
+ */
 public class AlienRescue implements Runnable{
 	/**
-	 * Thread que comanda o PID
+	 * Variavel global que indica se a Thread do programa
+	 * está executando (ON) ou fechada (OFF)
+	 */
+	public static boolean alienRescueON;
+	
+	/**
+	 * Thread que comanda a execução do PID
 	 */
 	public static Thread threadPID;
 
@@ -15,21 +29,25 @@ public class AlienRescue implements Runnable{
 	 */
 	@Override
 	public void run() {
-		try{
+		try{ // o codigo deve ficar dentro desse try gigante
+//======INICIO DO CODIGO=============================================================
 			threadPID = new Thread(new PID());
 			threadPID.setDaemon(true);
 			threadPID.setName("threadPID");
-			PID.pidON = true;
+			PID.pidRunning = true;
 			threadPID.start();
-
-			boolean flag = true;
+			
+			
+			boolean flag = true; // utilidade de testes
 			Navigation.openGarra();
-			PID.pidON = false;
-			Navigation.setVelocidade(90);
-			Navigation.turn(360*2);
-			PID.pidON = true;
+			//Navigation.forward(1.5f);
+			PID.pidRunning = false;
+			Navigation.setVelocidade(360);
+			Navigation.turn(360*5);
+			PID.pidRunning = true;
 			//Navigation.forward();
-			while (flag){
+			
+			/*while (flag){
 				if(Sensors.verificaObstaculo()==true){
 					Navigation.stop();
 					Navigation.closeGarra();
@@ -37,12 +55,13 @@ public class AlienRescue implements Runnable{
 				}
 				else{
 				}
-			}	
-			EV3MainMenuClass.AlienRescueON = false;
+			}*/
+			
+//======FINAL DO CODIGO=============================================================
+			alienRescueON = false;
 		}
-		catch(ThreadDeath e){
+		catch(ThreadDeath e){// quando o menu é chamado, essa thread é desligada e lança essa exception
 			e.getStackTrace();
 		}
 	}
-
 }
