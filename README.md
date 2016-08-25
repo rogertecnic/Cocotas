@@ -6,7 +6,7 @@ Temos também a wiki do repositório que pode ser usada para anotações e expli
 --
 ####Como importar do gitHub diretamente para o eclipse:
 1. Primeiro entre no site do Github, vá no repositorio <https://github.com/rogertecnic/Sek-2016>, clique no botão verde (clone or download) e copie o link, ou copie esse link: https://github.com/rogertecnic/Sek-2016.git  
-2. No Protheus, va em File>import>Git>Clone URI: cole o link no campo URI, (pode preencher o Authentication com a sua conta do gitHub), NEXT;  
+2. No Eclipse, va em File>import>Git>Clone URI: cole o link no campo URI, (pode preencher o Authentication com a sua conta do gitHub), NEXT;  
 3. Selecione os branchs que deseja copiar, (branchs são copias inteiras paralelas do repositorio podendo ser alteradas separadamente e depois "juntadas"), NEXT;  
 4. ***ATENÇÃO*** Selecione o local onde salvará o repositorio git local O PROJETO FICA DENTRO DO REPOSITORIO GIT, NÃO FICA DENTRO DO WORKSPACE, NEXT;  
 5. Import Existing Eclipse Project, NEXT;  
@@ -20,4 +20,14 @@ Temos também a wiki do repositório que pode ser usada para anotações e expli
 
 ***Favor não dar commit and push no protheus se não tiver certeza do que está upando para o github, sempre dar um pull antes de começar a editar o codigo para ver se tem nova alteração no codigo, caso contrario podera haver conflitos de alterações, dar o commit and push sempre ao final do trabalho, comentando direitinho o que foi feito no codigo***
 --
+
+####Termos comuns:
+* ***Reset***: Reiniciar a JVM (Java Virtual Machine) saindo da Thread Main e encerrando TODA a execução do código, voltando ao menu do EV3;
+
+* ***Reinicio***: Reiniciar somente a Thread do programa, sem encerrar a execução da Thread Main, volta para o menu do codigo;
+
+
+*vale a pena ler*: Como o código java é compilado e executado: http://www.devmedia.com.br/entenda-como-funciona-a-java-virtual-machine-jvm/27624
+
+---
 Este arquivo utiliza formato de texto MarkDown (padrão do github para Readme files).
