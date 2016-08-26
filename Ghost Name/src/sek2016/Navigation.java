@@ -29,7 +29,7 @@ public class Navigation {
 	// --------------------METODOS------------------------------------------
 	
 	/**
-	 * Gira o robo no proprio eixo, (não usa o giroscopio)
+	 * Gira o robo no proprio eixo, (não usa o giroscopio, o método segura o programa dentro dele
 	 * @param graus inteiro positivo (horário)<br>
 	 * inteiro negativo (antihorário)
 	 */
@@ -133,7 +133,6 @@ public class Navigation {
 	 * seta velocidade de cada roda de acordo com o PID em graus/s DA RODA
 	 */
 	public static void setVelocidade (){
-		setAcceleration(700, 700);
 		WdWe = convertePara_WdWe();
 		Navigation.rodaD.setSpeed(WdWe[0]);
 		Navigation.rodaE.setSpeed(WdWe[1]);

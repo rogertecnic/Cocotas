@@ -47,13 +47,13 @@ public class PID implements Runnable {
 	 */
 	@Override
 	public void run() {
+		Sensors.resetAngle(); // zera o gyro ao iniciar a Thread
 		while(AlienRescue.alienRescueON){
-			while(!pidRunning && AlienRescue.alienRescueON){
+			while(!pidRunning && AlienRescue.alienRescueON){ // pausa o pid
 				Delay.msDelay(10);
 			}
 			calculaPID();
 			Navigation.setVelocidade();
-			// apagar daqui pra frente
 		}
 	}
 	

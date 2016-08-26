@@ -12,25 +12,41 @@ import lejos.hardware.lcd.LCD;
 public class EV3MainMenuClass {
 	/**
 	 * @exit
-	 *  variavel que confirma se é pra sair do programa todo
+	 *  variavel que confirma se é pra dar reset no brick
 	 */
 	private static boolean exit = false;
-	
+
 	/**
 	 * @MotorInstanciado
 	 * Variavel que controla a instancia dos sensores e motores.<br>
 	 * <b>true:</b> ja foi instanciado, (resetar gyroscopio);<br>
 	 * <b>false:</b> ainda não foi instanciado, (primeira execução do codigo);
 	 */
-	private static boolean MotorInstanciado = false;
-	
+	private static boolean jaIniciado = false;
+
 	/**
 	 * @threadPrograma
 	 *  principal do codigo, é instanciada dentro do selecionaOpcao
 	 */
 	public static Thread threadPrograma = null;
+
+	//========================CONSTANTES int==========================
 	
+	public static final int
+	ARENA_A = 1,
+	ARENA_B = 2,
+	ARENA_C = 3,
+	CAV_DIR = 1,
+	CAV_ESQ = 2,
+	CAV_CIMA = 3;
 	
+	//======================VARIAVEIS DE CONDICAO INICIAL DA ARENA=================
+	public static int
+	configArena = 0, // config A = 1, config B = 2, config C = 3
+	configCave = 0; // da uma lida no metodo mostraMenu2
+	public static boolean
+	bonecoNoCentro = true; // autoexplicativo (alterado a cada reinicio)
+
 	//=====================MAIN===================================
 	public static void main(String[] args) {
 		while (!exit) {
@@ -46,75 +62,261 @@ public class EV3MainMenuClass {
 	//=============================================================
 
 	/**
-	 * Métpdo que imprime o menu <br>
-	 * @param opcao inteiro que indica qual opção está realçada:<br>
-	 * <b>1:</b> (Re)iniciar o codigo<br>
-	 * <b>2:</b> sai do programa<br>
+	 * Métpdo que imprime o primeiro menu para selecionar o tipo de arena <br>
+	 * @param configArena inteiro que indica qual opção está realçada:<br>
+	 * <b>1:</b> Arena A, modulos periféricos nas laterais<br>
+	 * <b>2:</b> Arena B, módulos periféricos a frente edireita<br>
+	 * <b>3:</b> Arena C, módulos periféricos a frente esquerda<br>
 	 */
-	public static void mostraMenu(int opcao) {
+	private static void mostraMenu1(int configArena) {
 		LCD.clear();
-		LCD.drawString("MENU DE CODIGO", 0, 0);
-		LCD.drawString((opcao == 1 ? ">" : " ") + " (Re)iniciar codigo", 0, 1);
-		LCD.drawString((opcao == 2 ? ">" : " ") + " Sair", 0, 2);
-	}
-
-	/**
-	 * Metodo que seleciona a opção realçada no menu
-	 * @param opcao  inteiro que indica qual opção está realçada:<br>
-	 * <b>1:</b> (Re)iniciar o codigo<br>
-	 * <b>2:</b> sai do programa<br>
-	 */
-	public static void selecionaOpcao(int opcao) {
-		switch (opcao) {
-		case 1: {
-			AlienRescue.alienRescueON = true;
-			Navigation.init(!MotorInstanciado);
-			Sensors.init(!MotorInstanciado,!MotorInstanciado,!MotorInstanciado,!MotorInstanciado);
-			MotorInstanciado = true;
-			Sensors.resetAngle();
-			threadPrograma = new Thread(new AlienRescue());
-			threadPrograma.setDaemon(true);
-			threadPrograma.setName("AlienRescue");
-			threadPrograma.start();
+		switch(configArena){
+		case 1:{
+			LCD.drawString("CONFIG DA ARENA", 0, 0);
+			LCD.drawString(">" + "A    P", 0, 1);
+			LCD.drawString("         r C r", 0, 2);
+			LCD.drawString("           P", 0, 3);
 			break;
 		}
-		case 2: {
-			exit = true;
+		case 2:{
+			LCD.drawString("CONFIG DA ARENA", 0, 0);
+			LCD.drawString(">" + "B    r", 0, 1);
+			LCD.drawString("         r C P", 0, 2);
+			LCD.drawString("           P", 0, 3);
+			break;
+		}case 3:{
+			LCD.drawString("CONFIG DA ARENA", 0, 0);
+			LCD.drawString(">" + "C    r", 0, 1);
+			LCD.drawString("         P C r", 0, 2);
+			LCD.drawString("           P", 0, 3);
 			break;
 		}
 		}
 	}
 
 	/**
-	 * Metodo que faz o controle do menu, a interação da tecla com o menu
+	 * Métpdo que imprime o segundo menu para selecionar o local da caverna <br>
+	 * @param configCave inteiro que indica qual opção está realçada:<br>
 	 */
-	public static void controleMenu() {
-		int opcao = 1;// indica qual opcao foi selecionada
-		boolean noMenu = true;
-		while (noMenu) {
-			mostraMenu(opcao);
+	private static void mostraMenu2(int configCave) {
+		LCD.clear();
+		switch(configArena){
+		case ARENA_A:{
+			if(configCave == CAV_DIR){
+				LCD.drawString("CAVERNA ESTA?", 0, 0);
+				LCD.drawString("<  direita  >", 0, 1);
+			}else{
+				LCD.drawString("CAVERNA ESTA?", 0, 0);
+				LCD.drawString("<  esquerda  >", 0, 1);
+			}
+		}
+		case ARENA_B:{
+			if(configCave == CAV_CIMA){
+				LCD.drawString("CAVERNA ESTA?", 0, 0);
+				LCD.drawString("<  cima  >", 0, 1);
+			}else{
+				LCD.drawString("CAVERNA ESTA?", 0, 0);
+				LCD.drawString("<  direita  >", 0, 1);
+			}
+		}case ARENA_C:{
+			if(configCave == CAV_CIMA){
+				LCD.drawString("CAVERNA ESTA?", 0, 0);
+				LCD.drawString("<  cima  >", 0, 1);
+			}else{
+				LCD.drawString("CAVERNA ESTA?", 0, 0);
+				LCD.drawString("<  esquerda  >", 0, 1);
+			}
+		}
+		}
+	}
+
+	/**
+	 * Mostra o menu de decidir se tem ou nao boneco no modulo central
+	 * @param bonecoNoCentro inteiro que indica qual opção está realçada<br>
+	 */
+	private static void mostraMenu3(boolean bonecoNoCentro, boolean exit ){
+		LCD.clear();
+		if(bonecoNoCentro && !exit){
+			LCD.drawString("BONECO NO CETNRO?", 0, 0);
+			LCD.drawString("<  sim  >", 0, 1);
+		}else if(!bonecoNoCentro && !exit){
+			LCD.drawString("BONECO NO CENTRO?", 0, 0);
+			LCD.drawString("<  nao  >", 0, 1);
+		}else{
+			LCD.drawString("RESET BRICK?", 0, 0);
+			LCD.drawString("<  OW YES  >", 0, 1);
+		}
+
+	}
+
+
+	private static void start(){
+		System.out.println(configArena + "  " + configCave + "  " + bonecoNoCentro);
+		//------------tirar apos todos os codigos ja estarem feitos
+		AlienRescue.alienRescueON = true;
+		Navigation.init(!jaIniciado);
+		Sensors.init(!jaIniciado,!jaIniciado,!jaIniciado,!jaIniciado);
+		jaIniciado = true;
+		threadPrograma = new Thread(new AlienRescue());
+		threadPrograma.setDaemon(true);
+		threadPrograma.setName("AlienRescue");
+		threadPrograma.start();
+		//-------------------------------------------------------------
+		if(configArena == ARENA_A){
+			if(configCave == CAV_DIR){
+				
+			}else if(configCave == CAV_ESQ){
+				System.out.println("A ESQ");
+			}
+		}
+		if(configArena == ARENA_B){
+			if(configCave == CAV_CIMA){
+				System.out.println("B CIMA");
+			}else if(configCave == CAV_DIR){
+				System.out.println("B DIR");
+			}
+		}
+		if(configArena == ARENA_C){
+			if(configCave == CAV_CIMA){
+				System.out.println("C ");
+			}else if(configCave == CAV_ESQ){
+
+			}
+		}
+	}
+
+	/**
+	 * Metodo que faz o controle do menu e a interação da tecla com o menu<br>
+	 * cuidado, metodo insanamente grande com alta probabilidade de dar problemas<br>
+	 * não modificar, está funcionando perfeitamente
+	 */
+	private static void controleMenu() {
+		int arena = ARENA_A; // indica qual opcao foi selecionada no menu da arena
+		boolean 
+		noMenu1 = !jaIniciado,
+		noMenu2 = !jaIniciado,
+		noMenu3 = true;
+		//================MENU DA ARENA==================================
+		while (noMenu1) {
+			mostraMenu1(arena);
 			switch (Button.waitForAnyPress()) {
 			case Button.ID_DOWN: {
-				if (opcao == 2)
-					opcao = 1;
-				else
-					opcao++;
+				switch(arena){
+				case ARENA_A:{
+					arena = ARENA_B;
+					break;
+				}case ARENA_B:{
+					arena = ARENA_C;
+					break;
+				}case ARENA_C:{
+					arena = ARENA_A;
+					break;
+				}
+				}
 				break;
 			}
 			case Button.ID_UP: {
-				if (opcao == 1)
-					opcao = 2;
-				else
-					opcao--;
+				switch(arena){
+				case ARENA_A:{
+					arena = ARENA_C;
+					break;
+				}case ARENA_B:{
+					arena = ARENA_A;
+					break;
+				}case ARENA_C:{
+					arena = ARENA_B;
+					break;
+				}
+				}
 				break;
 			}
 			case Button.ID_ENTER: {
+				configArena = arena;
 				LCD.clear();
-				noMenu = false;
+				noMenu1 = false;
 				break;
 			}
 			}
 		}
-		selecionaOpcao(opcao);
+
+		int caverna; //indica qual opcao foi selecionada no menu da caverna
+		switch(arena){
+		case ARENA_A:{
+			caverna = CAV_DIR;
+			break;
+		}default:{
+			caverna = CAV_CIMA;
+			break;
+		}
+		}
+
+		//==============MENU DA CAVERNA=============================
+		while(noMenu2){
+			mostraMenu2(caverna);
+			switch (Button.waitForAnyPress()) {
+			case Button.ID_ENTER: {
+				configCave = caverna;
+				LCD.clear();
+				noMenu2 = false;
+				break;
+			}default:{
+				switch(arena){
+				case ARENA_A:{
+					if(caverna == CAV_DIR)
+						caverna = CAV_ESQ;
+					else caverna = CAV_DIR;
+					break;
+				}case ARENA_B:{
+					if(caverna == CAV_CIMA)
+						caverna = CAV_DIR;
+					else caverna = CAV_CIMA;
+					break;
+				}case ARENA_C:{
+					if(caverna == CAV_CIMA)
+						caverna = CAV_ESQ;
+					else caverna = CAV_CIMA;
+					break;
+				}
+				}
+			}
+			}
+		}
+
+		//==============MENU DOS BONECOS "FINAL"=============================
+		boolean boneco = true, //indica se tem ou não boneco ou se é pra sair do codigo
+				exit = false;
+		while(noMenu3){
+			mostraMenu3(boneco, exit);
+			switch (Button.waitForAnyPress()) {
+			case Button.ID_DOWN: {
+				if(boneco)
+					boneco = false;
+				else if(!exit)
+					exit = true;
+				else{
+					boneco = true;
+					exit = false;
+				}
+				break;
+			}
+			case Button.ID_UP: {
+				if(boneco){
+					boneco = false;
+					exit = true;
+				}else if(exit)
+					exit = false;
+				else boneco = true;
+				break;
+			}
+			case Button.ID_ENTER: {
+				bonecoNoCentro = boneco;
+				EV3MainMenuClass.exit = exit;
+				LCD.clear();
+				noMenu3 = false;
+				break;
+			}
+			}
+		}
+		if(!exit) start();
 	}
 }

@@ -36,7 +36,7 @@ public class AlienRescue implements Runnable{
 			threadPID.setName("threadPID");
 			PID.pidRunning = true;
 			threadPID.start();
-			
+			Navigation.setAcceleration(700, 700);
 			
 			boolean flag = true; // utilidade de testes
 			Navigation.openGarra();
