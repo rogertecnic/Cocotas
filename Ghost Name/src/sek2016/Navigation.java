@@ -188,8 +188,8 @@ public class Navigation {
 	public static void stop() {
 		rodaD.setAcceleration(1500);
 		rodaE.setAcceleration(1500);
-		rodaE.stop(true);
 		rodaD.stop(true);
+		rodaE.stop(false);
 	}
 
 	private static float[] convertePara_WdWe() {

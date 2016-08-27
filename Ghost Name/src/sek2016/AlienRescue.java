@@ -1,7 +1,9 @@
 package sek2016;
 
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
+import lejos.utility.Delay;
 
 /**
  * 
@@ -36,18 +38,17 @@ public class AlienRescue implements Runnable{
 			threadPID.setName("threadPID");
 			PID.pidRunning = true;
 			threadPID.start();
-			Navigation.setAcceleration(700, 700);
+			Navigation.setAcceleration(500, 500);
 			
+			victorySong();
 			boolean flag = true; // utilidade de testes
 			Navigation.openGarra();
-			//Navigation.forward(1.5f);
-			PID.pidRunning = false;
+			Navigation.forward(0.3f);
 			Navigation.setVelocidade(360);
-			Navigation.turn(360*5);
-			PID.pidRunning = true;
+			//Navigation.turn(360*5);
 			//Navigation.forward();
 			
-			/*while (flag){
+			while (flag){
 				if(Sensors.verificaObstaculo()==true){
 					Navigation.stop();
 					Navigation.closeGarra();
@@ -55,7 +56,8 @@ public class AlienRescue implements Runnable{
 				}
 				else{
 				}
-			}*/
+			}
+			Navigation.turn(360*5);
 			
 //======FINAL DO CODIGO=============================================================
 			alienRescueON = false;
@@ -63,5 +65,16 @@ public class AlienRescue implements Runnable{
 		catch(ThreadDeath e){// quando o menu é chamado, essa thread é desligada e lança essa exception
 			e.getStackTrace();
 		}
+	}
+	
+	private static void victorySong(){
+		Sound.setVolume(50);
+		Sound.playTone(3000, 100);
+		Sound.playTone(4000, 100);
+		Sound.playTone(4500, 100);
+		Sound.playTone(5000, 100);
+		Delay.msDelay(80);
+		Sound.playTone(3000, 200);
+		Sound.playTone(5000, 500);
 	}
 }

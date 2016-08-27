@@ -12,28 +12,31 @@ public class Sensors {
 	private static EV3UltrasonicSensor ultrasonic;
 	private static EV3ColorSensor dollColor;
 	private static EV3ColorSensor floorColor;
-
+	static float[] angleSample;
+	static float[] veloAngleSample;
+	private static final float DIST_MIN = 0.07320f;
+	private static final float DIST_MAX = 0.0953f;
+	
 	public static void init(boolean DC,boolean US, boolean FC, boolean GR) {
-		if(DC == true){
-			dollColor = new EV3ColorSensor(SensorPort.S1);
+		if(GR == true){
+			gyro = new EV3GyroSensor(SensorPort.S2);
+			angleSample = new float[1];
+			veloAngleSample = new float [2];
 		}
 		
 		if(US == true){
-			ultrasonic = new EV3UltrasonicSensor(SensorPort.S2);
-		}
-		
-		if(GR == true){
-			gyro = new EV3GyroSensor(SensorPort.S3);
+			ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
 		}
 		
 		if(FC == true){
 			floorColor = new EV3ColorSensor(SensorPort.S4);
 		}
 		
-
+		if(DC == true){
+			dollColor = new EV3ColorSensor(SensorPort.S1);
+		}
 	}
-	private static final float DIST_MIN = 0.07320f;
-	private static final float DIST_MAX = 0.0953f;
+	
 	
 	
 	
@@ -49,11 +52,22 @@ public class Sensors {
 			return false;
 		
 	}
-
+	
+	/**
+	 * 
+	 * @return array com a velocidade angular em graus/s e o segundo é o angulo
+	 */
+	public static float[] getAllGyro() {
+		gyro.getAngleAndRateMode().fetchSample(veloAngleSample, 0);
+		return veloAngleSample;
+	}
+	
+	/**
+	 * 
+	 * @return array float com o angulo em graus
+	 */
 	public static float getAngle() {
-		SampleProvider angle = gyro.getAngleMode();
-		float[] angleSample = new float[angle.sampleSize()];
-		angle.fetchSample(angleSample, 0);
+		gyro.getAngleMode().fetchSample(angleSample, 0);
 		return angleSample[0];
 	}
 	

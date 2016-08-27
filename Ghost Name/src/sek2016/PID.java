@@ -1,5 +1,8 @@
 package sek2016;
 
+import java.util.ArrayList;
+
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
@@ -7,6 +10,7 @@ import lejos.utility.Delay;
  *Controla o PID
  */
 public class PID implements Runnable {
+	public static ArrayList<Float> lista = new ArrayList<Float>(); //teste
 	
 	/**
 	 * @pidRunning
@@ -16,7 +20,7 @@ public class PID implements Runnable {
 	public static boolean pidRunning;
 	
 	// ------------Variáveis do PID-----------------------------
-	private static float PID = 0, // valor final do PID para calculo da velocidade das rodas
+	public static float PID = 0, // valor final do PID para calculo da velocidade das rodas
 			e = 0, // erro, diferença de angulo entre o valor de zero do gyro e o valor lido do gyro
 			eAnt = 0, // erro na execucao anterior do pid
 			P = 0, // valor do controle proporcional
@@ -26,7 +30,8 @@ public class PID implements Runnable {
 			Ki = 0.003f, // parametro do controle integral
 			Kd = 0.05f, // parametro do controle derivativo
 			angEsperado = 0f, // 
-			angReal = 0f; // 
+			angReal = 0f; //
+	public static float[] veloAng = new float[2];
 	
 	/**
 	 * metodo que zera o PID
@@ -47,9 +52,11 @@ public class PID implements Runnable {
 	 */
 	@Override
 	public void run() {
-		Sensors.resetAngle(); // zera o gyro ao iniciar a Thread
+		Sensors.resetAngle();
+		zeraPID();
+		lista.clear();
 		while(AlienRescue.alienRescueON){
-			while(!pidRunning && AlienRescue.alienRescueON){ // pausa o pid
+			while(!pidRunning && AlienRescue.alienRescueON){
 				Delay.msDelay(10);
 			}
 			calculaPID();
@@ -60,13 +67,18 @@ public class PID implements Runnable {
 	/**
 	 * metodo que calcula o PID
 	 */
-	private static void calculaPID() {
+	public static void calculaPID() {
 		angReal = Sensors.getAngle();
-
-
-		if (angReal != 0) {
-			e = angReal - angEsperado;
+		veloAng = Sensors.getAllGyro();
+		System.out.println("ang:"+angReal+"   ac:" + veloAng[1]);
+		if(veloAng[0]!=0)
+		lista.add(new Float(veloAng[0]));
+		
+		if(lista.size() >=100){
+			//AlienRescue.alienRescueON = false;
 		}
+		if(angReal!=0)
+		e = angReal - angEsperado;
 		P = Kp * e;
 		I += e * Ki;
 		D = (eAnt - e) * Kd;

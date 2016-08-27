@@ -2,6 +2,7 @@ package sek2016;
 
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
+import lejos.utility.Delay;
 
 /**
  * 
@@ -31,7 +32,7 @@ public class EV3MainMenuClass {
 	public static Thread threadPrograma = null;
 
 	//========================CONSTANTES int==========================
-	
+
 	public static final int
 	ARENA_A = 1,
 	ARENA_B = 2,
@@ -39,7 +40,7 @@ public class EV3MainMenuClass {
 	CAV_DIR = 1,
 	CAV_ESQ = 2,
 	CAV_CIMA = 3;
-	
+
 	//======================VARIAVEIS DE CONDICAO INICIAL DA ARENA=================
 	public static int
 	configArena = 0, // config A = 1, config B = 2, config C = 3
@@ -73,22 +74,22 @@ public class EV3MainMenuClass {
 		switch(configArena){
 		case 1:{
 			LCD.drawString("CONFIG DA ARENA", 0, 0);
-			LCD.drawString(">" + "A    P", 0, 1);
-			LCD.drawString("         r C r", 0, 2);
-			LCD.drawString("           P", 0, 3);
+			LCD.drawString("<A>        r", 0, 1);
+			LCD.drawString("         P C P", 0, 2);
+			LCD.drawString("           r", 0, 3);
 			break;
 		}
 		case 2:{
 			LCD.drawString("CONFIG DA ARENA", 0, 0);
-			LCD.drawString(">" + "B    r", 0, 1);
+			LCD.drawString("<B>        P", 0, 1);
 			LCD.drawString("         r C P", 0, 2);
-			LCD.drawString("           P", 0, 3);
+			LCD.drawString("           r", 0, 3);
 			break;
 		}case 3:{
 			LCD.drawString("CONFIG DA ARENA", 0, 0);
-			LCD.drawString(">" + "C    r", 0, 1);
+			LCD.drawString("<C>        P", 0, 1);
 			LCD.drawString("         P C r", 0, 2);
-			LCD.drawString("           P", 0, 3);
+			LCD.drawString("           r", 0, 3);
 			break;
 		}
 		}
@@ -109,6 +110,7 @@ public class EV3MainMenuClass {
 				LCD.drawString("CAVERNA ESTA?", 0, 0);
 				LCD.drawString("<  esquerda  >", 0, 1);
 			}
+			break;
 		}
 		case ARENA_B:{
 			if(configCave == CAV_CIMA){
@@ -118,7 +120,9 @@ public class EV3MainMenuClass {
 				LCD.drawString("CAVERNA ESTA?", 0, 0);
 				LCD.drawString("<  direita  >", 0, 1);
 			}
-		}case ARENA_C:{
+			break;
+		}
+		case ARENA_C:{
 			if(configCave == CAV_CIMA){
 				LCD.drawString("CAVERNA ESTA?", 0, 0);
 				LCD.drawString("<  cima  >", 0, 1);
@@ -126,6 +130,7 @@ public class EV3MainMenuClass {
 				LCD.drawString("CAVERNA ESTA?", 0, 0);
 				LCD.drawString("<  esquerda  >", 0, 1);
 			}
+			break;
 		}
 		}
 	}
@@ -151,7 +156,7 @@ public class EV3MainMenuClass {
 
 
 	private static void start(){
-		System.out.println(configArena + "  " + configCave + "  " + bonecoNoCentro);
+		//System.out.println(configArena + "  " + configCave + "  " + bonecoNoCentro);
 		//------------tirar apos todos os codigos ja estarem feitos
 		AlienRescue.alienRescueON = true;
 		Navigation.init(!jaIniciado);
@@ -161,28 +166,34 @@ public class EV3MainMenuClass {
 		threadPrograma.setDaemon(true);
 		threadPrograma.setName("AlienRescue");
 		threadPrograma.start();
+		Delay.msDelay(500);
 		//-------------------------------------------------------------
 		if(configArena == ARENA_A){
 			if(configCave == CAV_DIR){
-				
+				LCD.clear();
+				LCD.drawString("A DIR", 0, 3);
 			}else if(configCave == CAV_ESQ){
-				System.out.println("A ESQ");
+				LCD.clear();
+				LCD.drawString("A ESQ", 0, 3);
 			}
 		}
 		if(configArena == ARENA_B){
 			if(configCave == CAV_CIMA){
-				System.out.println("B CIMA");
+				LCD.clear();
+				LCD.drawString("B CIMA", 0, 3);
 			}else if(configCave == CAV_DIR){
-				System.out.println("B DIR");
+				LCD.clear();
+				LCD.drawString("B DIR", 0, 3);
 			}
 		}
 		if(configArena == ARENA_C){
+			LCD.clear();
 			if(configCave == CAV_CIMA){
-				System.out.println("C ");
+				LCD.drawString("C CIMA", 0, 3);
 			}else if(configCave == CAV_ESQ){
-
-			}
+				LCD.drawString("C ESQ", 0, 3);			}
 		}
+		LCD.drawString("boneco:" + (bonecoNoCentro?"sim":"nao"), 0, 2);
 	}
 
 	/**
@@ -200,7 +211,7 @@ public class EV3MainMenuClass {
 		while (noMenu1) {
 			mostraMenu1(arena);
 			switch (Button.waitForAnyPress()) {
-			case Button.ID_DOWN: {
+			case Button.ID_RIGHT: {
 				switch(arena){
 				case ARENA_A:{
 					arena = ARENA_B;
@@ -215,7 +226,7 @@ public class EV3MainMenuClass {
 				}
 				break;
 			}
-			case Button.ID_UP: {
+			case Button.ID_LEFT: {
 				switch(arena){
 				case ARENA_A:{
 					arena = ARENA_C;
@@ -262,6 +273,7 @@ public class EV3MainMenuClass {
 			}default:{
 				switch(arena){
 				case ARENA_A:{
+					//System.out.println("testando1");
 					if(caverna == CAV_DIR)
 						caverna = CAV_ESQ;
 					else caverna = CAV_DIR;
@@ -278,6 +290,7 @@ public class EV3MainMenuClass {
 					break;
 				}
 				}
+				break;
 			}
 			}
 		}
@@ -288,7 +301,7 @@ public class EV3MainMenuClass {
 		while(noMenu3){
 			mostraMenu3(boneco, exit);
 			switch (Button.waitForAnyPress()) {
-			case Button.ID_DOWN: {
+			case Button.ID_RIGHT: {
 				if(boneco)
 					boneco = false;
 				else if(!exit)
@@ -299,7 +312,7 @@ public class EV3MainMenuClass {
 				}
 				break;
 			}
-			case Button.ID_UP: {
+			case Button.ID_LEFT: {
 				if(boneco){
 					boneco = false;
 					exit = true;
