@@ -26,9 +26,9 @@ public class PID implements Runnable {
 			P = 0, // valor do controle proporcional
 			I = 0, // valor do controle integral
 			D = 0, // valor do controle derivativo
-			Kp = 1f, // parametro do controle proporcional
-			Ki = 0.003f, // parametro do controle integral
-			Kd = 0.05f, // parametro do controle derivativo
+			Kp = 2f, // parametro do controle proporcional
+			Ki = 0.03f, // parametro do controle integral
+			Kd = 0.0025f, // parametro do controle derivativo
 			angEsperado = 0f, // 
 			angReal = 0f; //
 	public static float[] veloAng = new float[2];
