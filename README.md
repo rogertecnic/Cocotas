@@ -5,7 +5,7 @@ Temos também a wiki do repositório que pode ser usada para anotações e expli
 
 --
 ####Como importar do gitHub diretamente para o eclipse:
-1. Primeiro entre no site do Github, vá no repositorio <https://github.com/rogertecnic/Sek-2016>, clique no botão verde (clone or download) e copie o link, ou copie esse link: https://github.com/rogertecnic/Sek-2016.git  
+1. Primeiro entre no site do Github, vá no repositorio <https://github.com/rogertecnic/Cocotas>, clique no botão verde (clone or download) e copie o link, ou copie esse link: https://github.com/rogertecnic/Cocotas.git  
 2. No Eclipse, va em File>import>Git>Clone URI: cole o link no campo URI, (pode preencher o Authentication com a sua conta do gitHub), NEXT;  
 3. Selecione os branchs que deseja copiar, (branchs são copias inteiras paralelas do repositorio podendo ser alteradas separadamente e depois "juntadas"), NEXT;  
 4. ***ATENÇÃO*** Selecione o local onde salvará o repositorio git local O PROJETO FICA DENTRO DO REPOSITORIO GIT, NÃO FICA DENTRO DO WORKSPACE, NEXT;  
@@ -18,7 +18,7 @@ Temos também a wiki do repositório que pode ser usada para anotações e expli
 >deixe marcado a pasta "Working tree", selecione Import "existing eclipse project", NEXT;  
 >faça o mesmo procedimento descrito no final do paço 6, ***não importe o Sek-2016***;
 
-***Favor não dar commit and push no protheus se não tiver certeza do que está upando para o github, sempre dar um pull antes de começar a editar o codigo para ver se tem nova alteração no codigo, caso contrario podera haver conflitos de alterações, dar o commit and push sempre ao final do trabalho, comentando direitinho o que foi feito no codigo***
+***Favor não dar commit and push no eclipse se não tiver certeza do que está upando para o github, sempre dar um pull antes de começar a editar o codigo para ver se tem nova alteração no codigo, caso contrario podera haver conflitos de alterações, dar o commit and push sempre ao final do trabalho, comentando direitinho o que foi feito no codigo***
 --
 
 ####Termos comuns:
