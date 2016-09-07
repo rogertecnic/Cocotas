@@ -14,7 +14,7 @@ Temos também a wiki do repositório que pode ser usada para anotações e expli
 
 > Modifique o nome ou delete o projeto ja existente do seu workspace;  
 >va em File>Import>Projects from Git>Existing local repository, NEXT;  
->selecione o repositorio Sek-2016 que ja está no seu pc, NEXT;  
+>selecione o repositorio Cocotas que ja está no seu pc, NEXT;  
 >deixe marcado a pasta "Working tree", selecione Import "existing eclipse project", NEXT;  
 >faça o mesmo procedimento descrito no final do paço 6;
 
