@@ -1,0 +1,22 @@
+Sensors:
+	Sugestoes:
+		sensores podem ser iniciados na seguinte ordem: gyro, ultrassom, floor, doll;
+		colocar o Delay dentro do metodo resetAngle antes do gyro.reset;
+		
+	Testar:
+		testar o metodo verifica obstaculo;
+	
+Navigation:
+	Sugestoes:
+		criar uma constante global para setar a aceleracao, afinal nao tem motivos par altera-la
+		criar um metodo que seta a velocidade e aceleracao do robo, e nao das rodas;
+		mudar o nome do metodo que passa a velocidade do pid para as rodas de setVelocidade para setWeWdPID ou algo similar;
+		levar tudo que eh referentes ao PID da classe Navigation para a classe PID (setVelocidade e converteWdWe);
+		resetar o PID dentro do metodo forward(dist);
+		
+		
+		
+	Testar:
+		metodo turn(ang);
+		forward(dist);
+	

@@ -44,7 +44,7 @@ public class AlienRescue implements Runnable{
 			boolean flag = true; // utilidade de testes
 			Navigation.openGarra();
 			Navigation.forward(0.3f);
-			Navigation.setVelocidade(360);
+			Navigation.setVelocidade(360,360);
 			//Navigation.turn(360*5);
 			//Navigation.forward();
 			

@@ -57,7 +57,7 @@ public class PID implements Runnable {
 		lista.clear();
 		while(AlienRescue.alienRescueON){
 			while(!pidRunning && AlienRescue.alienRescueON){
-				Delay.msDelay(10);
+				Delay.msDelay(20);
 			}
 			calculaPID();
 			Navigation.setVelocidade();
@@ -70,14 +70,14 @@ public class PID implements Runnable {
 	public static void calculaPID() {
 		angReal = Sensors.getAngle();
 		veloAng = Sensors.getAllGyro();
-		System.out.println("ang:"+angReal+"   ac:" + veloAng[1]);
-		if(veloAng[0]!=0)
-		lista.add(new Float(veloAng[0]));
+		//System.out.println("ang:"+angReal+"   ac:" + veloAng[1]);
+		//if(veloAng[0]!=0)
+		//lista.add(new Float(veloAng[0]));
 		
-		if(lista.size() >=100){
+		//if(lista.size() >=100){
 			//AlienRescue.alienRescueON = false;
-		}
-		if(angReal!=0)
+		//}
+		
 		e = angReal - angEsperado;
 		P = Kp * e;
 		I += e * Ki;

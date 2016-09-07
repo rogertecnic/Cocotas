@@ -12,50 +12,56 @@ public class Sensors {
 	private static EV3UltrasonicSensor ultrasonic;
 	private static EV3ColorSensor dollColor;
 	private static EV3ColorSensor floorColor;
-	static float[] angleSample;
-	static float[] veloAngleSample;
-	private static final float DIST_MIN = 0.07320f;
-	private static final float DIST_MAX = 0.0953f;
+	private static float[] angleSample,		// vetor contendo um elemento do gyro, angulo em graus
+				veloAngleSample,			// vetor contendo dois elemento do gyro, velo em graus/seg e angulo em graus
+				distSample;					// vetor contendo um elemento do ultrassom, a dist em metros
+	private static final float DIST_MIN = 0.07320f; // distancia minima do boneco
+	private static final float DIST_MAX = 0.0953f; // distancia maxima do boneco
 	
+	/**
+	 * Metodo que instancia todos os sensores.
+	 * @param DC true ou false
+	 * @param US true ou false
+	 * @param FC true ou false
+	 * @param GR true ou false
+	 */
 	public static void init(boolean DC,boolean US, boolean FC, boolean GR) {
 		if(GR == true){
 			gyro = new EV3GyroSensor(SensorPort.S2);
 			angleSample = new float[1];
 			veloAngleSample = new float [2];
 		}
-		
 		if(US == true){
 			ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
+			distSample = new float[1];
 		}
-		
 		if(FC == true){
 			floorColor = new EV3ColorSensor(SensorPort.S4);
 		}
-		
 		if(DC == true){
 			dollColor = new EV3ColorSensor(SensorPort.S1);
 		}
 	}
 	
-	
-	
-	
-	
+	/**
+	 * Metodo que verifica se tem algo na frente do ultrassom
+	 * entre DIST_MIN e DIST_MAX;
+	 * @return true se tiver;<br>
+	 * 			false se nao tiver;
+	 */
 	public static boolean verificaObstaculo(){
-		SampleProvider sampleSensor = ultrasonic.getDistanceMode();
-		float[] valor = new float[ sampleSensor.sampleSize()];
-		sampleSensor.fetchSample(valor, 0);
-		//System.out.println(valor[0]);
-		if((valor[0] >= DIST_MIN) && (valor[0] <= DIST_MAX))
+		ultrasonic.getDistanceMode().fetchSample(distSample, 0);
+		if((distSample[0] >= DIST_MIN) && (distSample[0] <= DIST_MAX))
 			return true;
 		else 
 			return false;
-		
 	}
 	
 	/**
-	 * 
-	 * @return array com a velocidade angular em graus/s e o segundo é o angulo
+	 * Metodo que verifica a aceleracao angular e a posicao do gyro;
+	 * @return array float[] com:<br>
+	 * [0]: velocidade angular em graus/s<br>
+	 * [1]: posicao angular em graus
 	 */
 	public static float[] getAllGyro() {
 		gyro.getAngleAndRateMode().fetchSample(veloAngleSample, 0);
@@ -63,22 +69,20 @@ public class Sensors {
 	}
 	
 	/**
-	 * 
-	 * @return array float com o angulo em graus
+	 * Metodo que verifica somente a posicao do gyro;
+	 * @return array float[] com:<br>
+	 * [0]: posicao angular em graus
 	 */
 	public static float getAngle() {
 		gyro.getAngleMode().fetchSample(angleSample, 0);
 		return angleSample[0];
 	}
 	
+	/**
+	 * Modifica a posicao angular do gyro para 0 graus para recalibrar;<br>
+	 * <h1>O ROBO DEVE ESTAR PARADO;
+	 */
 	public static void resetAngle(){
 		gyro.reset();
-	}
-	
-	public static void close(){
-		gyro.close();
-		ultrasonic.close();
-		dollColor.close();
-		floorColor.close();
 	}
 }

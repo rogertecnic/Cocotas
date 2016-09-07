@@ -20,27 +20,42 @@ public class Navigation {
 	private final static float DISTANCIA_ENTRE_RODAS = 0.1378f;//metros, ja conferido
 	private final static float RAIO = 0.0280f; //metros, ja conferido (se alterar tem que alterar o de cima)
 
-	//---------------------CONSTANTES DE PROCESSO---------------------------
-	static float[] WdWe = new float[2]; //Velocidade angular da roda Direita e Esquerda
-
 	//---------------------VARIAVEIS DE PROCESSO----------------------------
+	static float[] WdWe = new float[2]; //Velocidade angular da roda Direita e Esquerda
 	private static boolean garraFechada = false;//para não abrir se ja estiver aberta ou vice versa
-	
+
 	// --------------------METODOS------------------------------------------
-	
 	/**
-	 * Gira o robo no proprio eixo, (não usa o giroscopio, o método segura o programa dentro dele
-	 * @param graus inteiro positivo (horário)<br>
+	 * Gira o robo no proprio eixo, (não usa o giroscopio,
+	 * usa o tacometro da rodaE, o método segura o programa dentro dele)
+	 * @param graus inteiro positivo (horário)
 	 * inteiro negativo (antihorário)
 	 */
 	public static void turn(float graus){
 		PID.pidRunning=false; // pausa o pid para não zoar as velocidades
-		float theta = ((3.14159265f*graus/180)*DISTANCIA_ENTRE_RODAS*180f)/(2f*RAIO*3.14159265f);
-		rodaE.rotate((int)theta, true);
-		rodaD.rotate(-(int)theta); // trava o programa aqui e aguarda o giro terminar
+		
+		setVelocidade(300, 300);
+		setAcceleration(400, 400);
+		//float theta = ((3.14159265f*graus/180)*DISTANCIA_ENTRE_RODAS*180f)/(2f*RAIO*3.14159265f);
+		float theta = (graus*DISTANCIA_ENTRE_RODAS)/(2*RAIO);
+		int	thetaAnterior = rodaE.getTachoCount();
+		if(graus<0){ // anti horario
+			rodaD.forward();
+			rodaE.backward();
+			while(rodaE.getTachoCount()> thetaAnterior+theta){ // tacho diminui
+				Delay.msDelay(20);
+			}
+		}else{ // horario
+			rodaE.forward();
+			rodaD.backward();
+			while(rodaE.getTachoCount()< thetaAnterior+theta){ // thaco aumenta
+				Delay.msDelay(20);
+			}
+		}
+		Navigation.stop();
 		PID.zeraPID(); // zera o pid para a nova posição
 		PID.pidRunning=true; // continua o pid
-		
+
 	}
 
 	/**
@@ -86,23 +101,25 @@ public class Navigation {
 	}
 
 	/**
-	 * robo anda pra frente em uma determinada distancia<br>
-	 * velocidade definida pelo PID, metodo segura o programa dentro dele
+	 * robo anda pra frente em uma determinada distancia.<br>
+	 * velocidade definida pelo PID, metodo segura a thread dentro dele
 	 * ate o robo chegar
+	 * <h1>ESSE METODO NAO RESETA O PID, ISSO PODE CAUSAR PROBLEMAS</h1>
 	 * @param dist ditancia em metros
 	 */
 	public static void forward(float dist){ //   s=theta*r
 		float theta;
-		theta=dist/RAIO*180/3.14159265f;
-		float position = rodaD.getPosition(); // posicao em graus
+		theta=(dist*180)/(RAIO*3.14159265f);
+		float position = rodaE.getTachoCount(); // posicao em graus
 		//rodaD.rotate(theta); //se usar o rodaX.rotate() o robo da uma viradinha quando chega
 		//rodaE.rotate(theta);
 		Navigation.forward();
-		while(rodaD.getPosition()<=(position+theta)){
+		while(rodaE.getTachoCount()<(position+theta)){
+			Delay.msDelay(20);
 		}
 		Navigation.stop();
 	}
-	
+
 	/**
 	 * Frente, velocidade definida pelo PID
 	 */
@@ -128,32 +145,27 @@ public class Navigation {
 		Navigation.rodaD.setAcceleration(motorD);
 		Navigation.rodaE.setAcceleration(motorE);
 	}
-	
+
 	/**
-	 * seta velocidade de cada roda de acordo com o PID em graus/s DA RODA
+	 * seta velocidade em graus/s de cada roda
+	 * @param veloD inteiro  em graus/seg da roda DIREITA
+	 * @param veloE inteiro em graus/seg^2 da roda ESQUERDA
 	 */
-	public static void setVelocidade (){
-		WdWe = convertePara_WdWe();
-		Navigation.rodaD.setSpeed(WdWe[0]);
-		Navigation.rodaE.setSpeed(WdWe[1]);
-
-
+	public static void setVelocidade (int veloD, int veloE){
+		Navigation.rodaD.setSpeed(veloD);
+		Navigation.rodaE.setSpeed(veloE);
 	}
-	
+
+
+
 	/**
-	 * seta velocidade em graus/s DA RODA
-	 * @param velo
+	 * Parar o robo
 	 */
-	public static void setVelocidade (int velo){
-		setAcceleration(700, 700);
-		Navigation.rodaD.setSpeed(velo);
-		Navigation.rodaE.setSpeed(velo);
-
-
+	public static void stop() {
+		rodaD.stop(true);
+		rodaE.stop(false); // evita aquela jogadinha pro lado quando robo termina um movimento
 	}
-	
-	
-	
+
 	/**
 	 * fechar garra
 	 */
@@ -182,22 +194,29 @@ public class Navigation {
 		}
 	}
 
-	/**
-	 * Parar o robo
-	 */
-	public static void stop() {
-		rodaD.setAcceleration(1500);
-		rodaE.setAcceleration(1500);
-		rodaD.stop(true);
-		rodaE.stop(false);
-	}
 
+	/**
+	 * Metodo que converte o valor do PID para velocidades
+	 * angulares das rodas em graus/seg
+	 * @return float[]:<br>
+	 * [0] Wd, graus/seg da roda direita;<br>
+	 * [1] We, graus/seg da roda esquerda;
+	 */
 	private static float[] convertePara_WdWe() {
 		float Wd = (2 * VELO_INI - DISTANCIA_ENTRE_RODAS * PID.getPID()) / (2 * RAIO);
 		float We = (2 * VELO_INI + DISTANCIA_ENTRE_RODAS * PID.getPID()) / (2 * RAIO);
 
 		return new float[] { Wd, We };
 
+	}
+
+	/**
+	 * seta velocidade de cada roda de acordo com o PID em graus/s DA RODA
+	 */
+	public static void setVelocidade(){
+		WdWe = convertePara_WdWe();
+		Navigation.rodaD.setSpeed(WdWe[0]);
+		Navigation.rodaE.setSpeed(WdWe[1]);
 	}
 
 	/**
@@ -211,10 +230,5 @@ public class Navigation {
 			motorG = new EV3MediumRegulatedMotor(MotorPort.C);
 
 		}
-	}
-
-	public static void close(){
-		rodaD.close();
-		rodaE.close();
 	}
 }
