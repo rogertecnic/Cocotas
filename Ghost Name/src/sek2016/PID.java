@@ -10,7 +10,7 @@ import lejos.utility.Delay;
  *Controla o PID
  */
 public class PID implements Runnable {
-	public static ArrayList<Float> lista = new ArrayList<Float>(); //teste
+	//public static ArrayList<Float> lista = new ArrayList<Float>(); //teste
 	
 	/**
 	 * @pidRunning
@@ -31,10 +31,17 @@ public class PID implements Runnable {
 			Kd = 0.0025f, // parametro do controle derivativo
 			angEsperado = 0f, // 
 			angReal = 0f; //
+			
+			/**
+			 * [0]: velocidade angular em graus/s<br>
+			 * [1]: posicao angular em graus
+			 */
 	public static float[] veloAng = new float[2];
 	
+	// ------------Metodos do PID-----------------------------
 	/**
-	 * metodo que zera o PID
+	 * metodo que zera: PID, erro, erro anterior, angulo esperado (objetivo)
+	 * e angulo real (lido pelo gyro)
 	 */
 	public static void zeraPID(){
 		PID = 0;
@@ -54,14 +61,16 @@ public class PID implements Runnable {
 	public void run() {
 		Sensors.resetAngle();
 		zeraPID();
-		lista.clear();
+		//lista.clear();
 		while(AlienRescue.alienRescueON){
+			calculaPID();
+			Navigation.setVelocidade();
 			while(!pidRunning && AlienRescue.alienRescueON){
 				Delay.msDelay(20);
 			}
-			calculaPID();
-			Navigation.setVelocidade();
 		}
+		Sensors.resetAngle();
+		zeraPID();
 	}
 	
 	/**
