@@ -10,13 +10,17 @@ Temos também a wiki do repositório que pode ser usada para anotações e expli
 3. Selecione os branchs que deseja copiar, (branchs são copias inteiras paralelas do repositorio podendo ser alteradas separadamente e depois "juntadas"), NEXT;  
 4. ***ATENÇÃO*** Selecione o local onde salvará o repositorio git local O PROJETO FICA DENTRO DO REPOSITORIO GIT, NÃO FICA DENTRO DO WORKSPACE, NEXT;  
 5. Import Existing Eclipse Project, NEXT;  
-6. ***ATENÇÃO*** Marque a caixa **Search for nested project** e *NÃO* marque o projeto "sek-2016", marque somente o "GhostName" e clique em FINISH, se caso a opção estiver indisponível em cinza é porque ja exite um projeto com o mesmo nome no seu eclipse no workspace aberto no seu eclipse, NÃO importe o sek-2016, ele não é um projeto, é a pasta repositorio, clique em cancel, o repositorio ja foi importado para o pc e o projeto esta dentro dele, neste caso siga estes paços:  
+6. marque somente o "GhostName" e clique em FINISH, se caso a opção estiver indisponível em cinza é porque ja exite um projeto com o mesmo nome no seu workspace aberto no eclipse, clique em cancel, o repositorio ja foi importado para o pc e o projeto esta dentro dele, neste caso siga estes paços:  
 
 > Modifique o nome ou delete o projeto ja existente do seu workspace;  
 >va em File>Import>Projects from Git>Existing local repository, NEXT;  
 >selecione o repositorio Sek-2016 que ja está no seu pc, NEXT;  
 >deixe marcado a pasta "Working tree", selecione Import "existing eclipse project", NEXT;  
->faça o mesmo procedimento descrito no final do paço 6, ***não importe o Sek-2016***;
+>faça o mesmo procedimento descrito no final do paço 6;
+
+****dúvidas ou erros por favor me comunique.****
+
+****Desculpem minha falta de conhecimento sobre essa bosta de git para poder explicar melhor, sei que estao tendo problemas, ja tive que deletar e importar tudo umas 3x devido a conflitos e erros.****
 
 ***Favor não dar commit and push no eclipse se não tiver certeza do que está upando para o github, sempre dar um pull antes de começar a editar o codigo para ver se tem nova alteração no codigo, caso contrario podera haver conflitos de alterações, dar o commit and push sempre ao final do trabalho, comentando direitinho o que foi feito no codigo***
 --
