@@ -5,6 +5,9 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.utility.Delay;
+import testes_variados.MainTeste;
+import testes_variados.Testa_PID;
+
 
 /**
  * Controle de movimento do robo
@@ -16,46 +19,54 @@ public class Navigation {
 	static EV3MediumRegulatedMotor motorG;
 
 	//---------------------CONSTANTES DE DESCRICAO--------------------------
-	private final static float VELO_INI = 8.0f;
-	private final static float DISTANCIA_ENTRE_RODAS = 0.1378f;//metros, ja conferido
-	private final static float RAIO = 0.0280f; //metros, ja conferido (se alterar tem que alterar o de cima)
+	private final static float VELO_INI = 0.3f; // em m/s, velocidade linear do robo andar
+	private final static float VELO_CURVA = 0.1f; // em m/s, velocidade linear do robo girar
+	public final static int aceleration = 800; // 6000 de default do lejos
+	private final static float DISTANCIA_ENTRE_RODAS = 0.13445f;//metros, ja conferido
+	private final static float RAIO = 0.0272f; //metros, ja conferido (se alterar tem que alterar o de cima)
 
 	//---------------------VARIAVEIS DE PROCESSO----------------------------
 	static float[] WdWe = new float[2]; //Velocidade angular da roda Direita e Esquerda
-	private static boolean garraFechada = false;//para não abrir se ja estiver aberta ou vice versa
+	private static boolean garraFechada = false,//para não abrir se ja estiver aberta ou vice versa
+			curva = false; // o robo esta realisando uma curva
+
 
 	// --------------------METODOS------------------------------------------
 	/**
 	 * Gira o robo no proprio eixo, (não usa o giroscopio,
 	 * usa o tacometro da rodaE, o método segura o programa dentro dele)
-	 * @param graus inteiro positivo (horário)
-	 * inteiro negativo (antihorário)
+	 * @param graus inteiro positivo (anti-horário)
+	 * inteiro negativo (horário)
 	 */
 	public static void turn(float graus){
 		PID.pidRunning=false; // pausa o pid para não zoar as velocidades
-		
-		setVelocidade(300, 300);
-		setAcceleration(400, 400);
-		//float theta = ((3.14159265f*graus/180)*DISTANCIA_ENTRE_RODAS*180f)/(2f*RAIO*3.14159265f);
-		float theta = (graus*DISTANCIA_ENTRE_RODAS)/(2*RAIO);
-		int	thetaAnterior = rodaE.getTachoCount();
-		if(graus<0){ // anti horario
+		curva=true;
+		Delay.msDelay(80);
+
+
+		float theta = (graus*DISTANCIA_ENTRE_RODAS)/(2*RAIO); // angulo que a roda precisa girar
+		float positioninicialE = rodaE.getTachoCount(); // posicao em graus da roda e
+		float positioninicialD = rodaD.getTachoCount(); // posicao em graus da roda d
+		float wRoda = VELO_CURVA/RAIO*(float)(180/Math.PI);
+
+		if(graus>0){
 			rodaD.forward();
 			rodaE.backward();
-			while(rodaE.getTachoCount()> thetaAnterior+theta){ // tacho diminui
-				Delay.msDelay(20);
+			float ang_defasado = wRoda*(wRoda/aceleration)-(aceleration/2)*(wRoda/aceleration)*(wRoda/aceleration);
+			while(rodaE.getTachoCount()>(positioninicialE-theta+ang_defasado) && 
+					rodaD.getTachoCount()<(positioninicialD+theta-ang_defasado)){
 			}
-		}else{ // horario
+		}
+		if(graus<0){
 			rodaE.forward();
 			rodaD.backward();
-			while(rodaE.getTachoCount()< thetaAnterior+theta){ // thaco aumenta
-				Delay.msDelay(20);
+			float ang_defasado = wRoda*(wRoda/aceleration)-(aceleration/2)*(wRoda/aceleration)*(wRoda/aceleration);
+			while(rodaD.getTachoCount()>(positioninicialD+theta+ang_defasado) && 
+					rodaE.getTachoCount()<(positioninicialE-theta-ang_defasado)){
 			}
 		}
 		Navigation.stop();
-		PID.zeraPID(); // zera o pid para a nova posição
-		PID.pidRunning=true; // continua o pid
-
+		curva = false;
 	}
 
 	/**
@@ -107,15 +118,21 @@ public class Navigation {
 	 * <h1>ESSE METODO NAO RESETA O PID, ISSO PODE CAUSAR PROBLEMAS</h1>
 	 * @param dist ditancia em metros
 	 */
-	public static void forward(float dist){ //   s=theta*r
-		float theta;
-		theta=(dist*180)/(RAIO*3.14159265f);
-		float position = rodaE.getTachoCount(); // posicao em graus
-		//rodaD.rotate(theta); //se usar o rodaX.rotate() o robo da uma viradinha quando chega
-		//rodaE.rotate(theta);
-		Navigation.forward();
-		while(rodaE.getTachoCount()<(position+theta)){
-			Delay.msDelay(20);
+	public static void forward(float dist){
+		curva = false;
+		PID.pidRunning = false;
+		Delay.msDelay(80);
+		PID.pidRunning = true;
+
+		float theta =(dist/RAIO)*(float)(180/Math.PI); // graus da roda
+		float positionE = rodaE.getTachoCount(); // posicao em graus da roda e
+		float positionD = rodaD.getTachoCount(); // posicao em graus da roda d
+		rodaE.forward();
+		rodaD.forward();
+		float wRoda = VELO_INI/RAIO*(float)(180/Math.PI);
+		float ang_defasado = wRoda*(wRoda/aceleration)-(aceleration/2)*(wRoda/aceleration)*(wRoda/aceleration);
+		while(rodaE.getTachoCount()<(positionE+theta-ang_defasado) && 
+				rodaD.getTachoCount()<(positionD+theta-ang_defasado)){
 		}
 		Navigation.stop();
 	}
@@ -161,9 +178,12 @@ public class Navigation {
 	/**
 	 * Parar o robo
 	 */
-	public static void stop() {
+	public static void stop(){
 		rodaD.stop(true);
-		rodaE.stop(false); // evita aquela jogadinha pro lado quando robo termina um movimento
+		rodaE.stop(true); // evita aquela jogadinha pro lado quando robo termina um movimento
+		while(rodaE.isMoving() || rodaD.isMoving()){
+			Delay.msDelay(30);
+		}
 	}
 
 	/**
@@ -203,8 +223,8 @@ public class Navigation {
 	 * [1] We, graus/seg da roda esquerda;
 	 */
 	private static float[] convertePara_WdWe() {
-		float Wd = (2 * VELO_INI - DISTANCIA_ENTRE_RODAS * PID.getPID()) / (2 * RAIO);
-		float We = (2 * VELO_INI + DISTANCIA_ENTRE_RODAS * PID.getPID()) / (2 * RAIO);
+		float Wd = (2 * (float)(180/Math.PI)*VELO_INI - DISTANCIA_ENTRE_RODAS * PID.getPID()) / (2 * RAIO);
+		float We = (2 * (float)(180/Math.PI)*VELO_INI + DISTANCIA_ENTRE_RODAS * PID.getPID()) / (2 * RAIO);
 
 		return new float[] { Wd, We };
 
@@ -215,8 +235,14 @@ public class Navigation {
 	 */
 	public static void setVelocidade(){
 		WdWe = convertePara_WdWe();
-		Navigation.rodaD.setSpeed(WdWe[0]);
-		Navigation.rodaE.setSpeed(WdWe[1]);
+		if(curva){
+			float wRoda = VELO_CURVA/RAIO*(float)(180/Math.PI);
+			Navigation.rodaD.setSpeed(wRoda);
+			Navigation.rodaE.setSpeed(wRoda);
+		}else{
+			Navigation.rodaD.setSpeed(WdWe[0]);
+			Navigation.rodaE.setSpeed(WdWe[1]);
+		}
 	}
 
 	/**

@@ -17,16 +17,16 @@ Navigation:
 		resetar o PID dentro do metodo forward(dist) e de todos os metodos que movimentam o robo (o PID so é usado para andar reto mesmo;
 		
 	Testar:
-		metodo turn(ang);
-		forward(dist);
 	
 	
 PID:
 	Sugestoes:
-		resetar o PID e o gyro no inicio e no final da thread do PID; (ja implementado) evita dela calcular o pid depois que a AlienRescue ja tiver parado
-	
+		
 	Testar:
 		a thread do PID
 		
 Testes variados:
-	testar as 2 classes de teste (testar os testadores rsrsr)
+
+
+Sugestoes gerais:
+	criar um metodo que zera TODAS as variaveis de TODAS as classes para chamalo quando reiniciar a AlienRescue

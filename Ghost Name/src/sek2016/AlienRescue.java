@@ -38,15 +38,19 @@ public class AlienRescue implements Runnable{
 			threadPID.setName("threadPID");
 			PID.pidRunning = true;
 			threadPID.start();
-			Navigation.setAcceleration(500, 500);
+			Navigation.setAcceleration(Navigation.aceleration,Navigation.aceleration);
 			
-			victorySong();
-			boolean flag = true; // utilidade de testes
+			//victorySong();
+			boolean flag = false; // utilidade de testes
 			Navigation.openGarra();
-			Navigation.forward(0.3f);
-			Navigation.setVelocidade(360,360);
-			//Navigation.turn(360*5);
-			//Navigation.forward();
+			Navigation.forward(0.5f);
+			Navigation.turn(-90);
+			Navigation.forward(0.5f);
+			Navigation.turn(-90);
+			Navigation.forward(0.5f);
+			Navigation.turn(-90);
+			Navigation.forward(0.5f);
+			Navigation.turn(-90);
 			
 			while (flag){
 				if(Sensors.verificaObstaculo()==true){
@@ -57,7 +61,6 @@ public class AlienRescue implements Runnable{
 				else{
 				}
 			}
-			Navigation.turn(360*5);
 			
 //======FINAL DO CODIGO=============================================================
 			alienRescueON = false;

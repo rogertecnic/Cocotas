@@ -19,6 +19,7 @@ public class PID implements Runnable {
 	 */
 	public static boolean pidRunning;
 	
+	
 	// ------------Variáveis do PID-----------------------------
 	public static float PID = 0, // valor final do PID para calculo da velocidade das rodas
 			e = 0, // erro, diferença de angulo entre o valor de zero do gyro e o valor lido do gyro
@@ -44,6 +45,7 @@ public class PID implements Runnable {
 	 * e angulo real (lido pelo gyro)
 	 */
 	public static void zeraPID(){
+		Sensors.resetAngle();
 		PID = 0;
 		e = 0;
 		eAnt = 0;
@@ -52,6 +54,7 @@ public class PID implements Runnable {
 		D = 0;
 		angEsperado = 0f;
 		angReal = 0f;
+		Navigation.setVelocidade();
 	}
 	
 	/**
@@ -59,18 +62,14 @@ public class PID implements Runnable {
 	 */
 	@Override
 	public void run() {
-		Sensors.resetAngle();
 		zeraPID();
-		//lista.clear();
 		while(AlienRescue.alienRescueON){
 			calculaPID();
 			Navigation.setVelocidade();
 			while(!pidRunning && AlienRescue.alienRescueON){
-				Delay.msDelay(20);
+				zeraPID();
 			}
 		}
-		Sensors.resetAngle();
-		zeraPID();
 	}
 	
 	/**
@@ -78,15 +77,6 @@ public class PID implements Runnable {
 	 */
 	public static void calculaPID() {
 		angReal = Sensors.getAngle();
-		veloAng = Sensors.getAllGyro();
-		//System.out.println("ang:"+angReal+"   ac:" + veloAng[1]);
-		//if(veloAng[0]!=0)
-		//lista.add(new Float(veloAng[0]));
-		
-		//if(lista.size() >=100){
-			//AlienRescue.alienRescueON = false;
-		//}
-		
 		e = angReal - angEsperado;
 		P = Kp * e;
 		I += e * Ki;
