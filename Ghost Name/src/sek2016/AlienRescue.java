@@ -59,6 +59,7 @@ public class AlienRescue implements Runnable{
 	 */
 	@Override
 	public void run() {
+		Navigation.garraFechada = false;
 		try{ // o codigo deve ficar dentro desse try gigante
 			//======INICIO DO CODIGO=============================================================
 			threadPID = new Thread(new PID());
@@ -69,15 +70,15 @@ public class AlienRescue implements Runnable{
 
 			//victorySong();
 			Navigation.openGarra();
-			Navigation.andar(0.5f);
+			Navigation.andar(0.3f);
+			Navigation.turn(-90);
+			Navigation.andar(0.3f);
+			Navigation.turn(-90);
+			Navigation.andar(0.3f);
 			Navigation.turn(-90);
 			Navigation.andar(0.5f);
 			Navigation.turn(-90);
-			Navigation.andar(0.5f);
-			Navigation.turn(-90);
-			Navigation.andar(0.5f);
-			Navigation.turn(-90);
-
+/*
 			boolean captured = false;
 			boolean temp = true;// só temporária, até resolver uns bugs aí
 			while(temp){
@@ -89,7 +90,7 @@ public class AlienRescue implements Runnable{
 						Navigation.closeGarra();
 						/*
 						 * codigo de checagem de cor
-						 */
+						 
 
 						alienRescueON = false;
 						captured = true;
@@ -102,7 +103,7 @@ public class AlienRescue implements Runnable{
 				}
 
 			}
-
+*/
 			//======FINAL DO CODIGO=============================================================
 			alienRescueON = false;
 		}

@@ -16,7 +16,7 @@ public class PID implements Runnable {
 	 * variavel que determina se a Thread do PID esta pausada ou
 	 * rodando, lembre-se de reajustar a velocidade dos motores quando necessario.
 	 */
-	public static boolean pidRunning = false;
+	public static boolean pidRunning = false; // seta a pausa do PID mas nao é instantaneo
 	
 	
 	// ------------Variáveis do PID-----------------------------
@@ -26,10 +26,11 @@ public class PID implements Runnable {
 			P = 0, // valor do controle proporcional
 			I = 0, // valor do controle integral
 			D = 0, // valor do controle derivativo
-			Kp = 2f, // parametro do controle proporcional
-			Ki = 0.03f, // parametro do controle integral
+			Kp = 1f, // parametro do controle proporcional
+			Ki = 0.0003f, // parametro do controle integral
 			Kd = 0.0025f; // parametro do controle derivativo
 	public static float[] WdWe = new float[2]; //Velocidade angular da roda Direita e Esquerda
+	public static boolean PIDparado = false; // o PID ja esta parado?
 	
 	// ------------Metodos do PID-----------------------------
 	/**
@@ -55,10 +56,10 @@ public class PID implements Runnable {
 		while(AlienRescue.alienRescueON){
 			calculaPID();
 			setWdWePID();
+			if(!pidRunning) PIDparado = true;
 			while(!pidRunning && AlienRescue.alienRescueON){
-				zeraPID();
-				Delay.msDelay(50);
 			}
+			PIDparado = false;
 		}
 	}
 	

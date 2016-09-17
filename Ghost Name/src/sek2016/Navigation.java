@@ -20,7 +20,7 @@ public class Navigation {
 
 
 	//---------------------CONSTANTES DE DESCRICAO--------------------------
-	public final static float VELO_INI = 0.3f; // em m/s, velocidade linear do robo andar
+	public final static float VELO_INI = 0.1f; // em m/s, velocidade linear do robo andar
 	public final static float VELO_CURVA = 0.1f; // em m/s, velocidade linear do robo girar
 	public final static float aceleration = 0.37978f; // m/s^2 PARA A RODA (equivale a 800 graus/s^2), 6000 de default do lejos (equivale a 2.84837 m/s^2
 	public final static float DISTANCIA_ENTRE_RODAS = 0.13445f;//metros, ja conferido
@@ -42,7 +42,7 @@ public class Navigation {
 
 
 	//---------------------VARIAVEIS DE PROCESSO----------------------------
-	private static boolean garraFechada = false,//a garra esta fechada?
+	public static boolean garraFechada = false,//a garra esta fechada?
 			curva = false; // o robo esta realisando uma curva?
 
 
@@ -56,10 +56,13 @@ public class Navigation {
 	 */
 	public static void turn(float graus){
 		PID.pidRunning=false; // pausa o pid para não zoar as velocidades
-		curva=true;
-		while(Sensors.getAngle() != 0){
-			Delay.msDelay(30);
+		
+		while(!PID.PIDparado){
+			
 		}
+		PID.zeraPID();
+		
+		setVelocidade(VELO_CURVA, VELO_CURVA);
 
 		if (-graus < 0) {
 			int giro = (int) (-graus / -90);
@@ -78,11 +81,12 @@ public class Navigation {
 		float positioninicialE = rodaE.getTachoCount(); // posicao em graus da roda e
 		float positioninicialD = rodaD.getTachoCount(); // posicao em graus da roda d
 		float wRoda = VELO_CURVA/RAIO*(float)(180/Math.PI);
-
+		float acc = aceleration/RAIO*(float)(180/Math.PI);
+		float ang_defasado = wRoda*(wRoda/acc)-(acc/2)*(wRoda/acc)*(wRoda/acc);
+		
 		if(graus>0){
 			rodaD.forward();
 			rodaE.backward();
-			float ang_defasado = wRoda*(wRoda/aceleration)-(aceleration/2)*(wRoda/aceleration)*(wRoda/aceleration);
 			while(rodaE.getTachoCount()>(positioninicialE-theta+ang_defasado) && 
 					rodaD.getTachoCount()<(positioninicialD+theta-ang_defasado)){
 			}
@@ -90,7 +94,6 @@ public class Navigation {
 		if(graus<0){
 			rodaE.forward();
 			rodaD.backward();
-			float ang_defasado = wRoda*(wRoda/aceleration)-(aceleration/2)*(wRoda/aceleration)*(wRoda/aceleration);
 			while(rodaD.getTachoCount()>(positioninicialD+theta+ang_defasado) && 
 					rodaE.getTachoCount()<(positioninicialE-theta-ang_defasado)){
 			}
@@ -109,18 +112,23 @@ public class Navigation {
 	 * @param dist ditancia em metros
 	 */
 	public static void andar(float dist){
-		curva = false;
-		PID.pidRunning = false;
-		while(Sensors.getAngle() !=0){
-			Delay.msDelay(30);
+		PID.pidRunning=false; // pausa o pid para não zoar as velocidades
+		Delay.msDelay(40);
+		while(!PID.PIDparado){
 		}
+		PID.zeraPID();
+		while(Sensors.getAngle() !=0){
+			Sensors.resetAngle();
+		}
+		
 		PID.pidRunning = true;
-
+		
 		float theta =(dist/RAIO)*(float)(180/Math.PI); // graus da roda
 		float positionE = rodaE.getTachoCount(); // posicao em graus da roda e
 		float positionD = rodaD.getTachoCount(); // posicao em graus da roda d
 		float wRoda = VELO_INI/RAIO*(float)(180/Math.PI);
-		float ang_defasado = wRoda*(wRoda/aceleration)-(aceleration/2)*(wRoda/aceleration)*(wRoda/aceleration);
+		float acc = aceleration/RAIO*(float)(180/Math.PI);
+		float ang_defasado = wRoda*(wRoda/(acc*(float)(180/Math.PI)))-(acc/2)*(wRoda/acc)*(wRoda/acc);
 
 		if(dist>0){
 			rodaE.forward();
