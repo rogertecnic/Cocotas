@@ -52,15 +52,16 @@ public class PID implements Runnable {
 	 */
 	@Override
 	public void run() {
+		PIDparado = false;
 		zeraPID();
 		while(AlienRescue.alienRescueON){
 			calculaPID();
 			setWdWePID();
+			PIDparado = false;
 			if(!pidRunning)
 				PIDparado = true;
 			while(!pidRunning && AlienRescue.alienRescueON){
 			}
-			PIDparado = false;
 		}
 	}
 	

@@ -20,8 +20,8 @@ public class Navigation {
 
 
 	//---------------------CONSTANTES DE DESCRICAO--------------------------
-	public final static float VELO_INI = 0.1f; // em m/s, velocidade linear do robo andar
-	public final static float VELO_CURVA = 0.1f; // em m/s, velocidade linear do robo girar
+	public final static float VELO_INI = 0.2f; // em m/s, velocidade linear do robo andar
+	public final static float VELO_CURVA = 0.08f; // em m/s, velocidade linear do robo girar
 	public final static float aceleration = 0.37978f; // m/s^2 PARA A RODA (0.37978f equivale a 800 graus/s^2), 6000 de default do lejos (equivale a 2.84837 m/s^2
 	public final static float DISTANCIA_ENTRE_RODAS = 0.13445f;//metros, ja conferido
 	public final static float RAIO = 0.0272f; //metros, ja conferido (se alterar tem que alterar o de cima)
@@ -56,12 +56,9 @@ public class Navigation {
 	 */
 	public static void turn(float graus){
 		PID.pidRunning=false; // pausa o pid para não zoar as velocidades
-		
 		while(!PID.PIDparado){
 		}
-		
 		PID.zeraPID();
-		
 		setVelocidade(VELO_CURVA, VELO_CURVA);
 
 		if (-graus < 0) {
@@ -99,7 +96,6 @@ public class Navigation {
 			}
 		}
 		Navigation.stop();
-		curva = false;
 	}
 
 
@@ -116,8 +112,9 @@ public class Navigation {
 		while(!PID.PIDparado){
 		}
 		PID.zeraPID();
-		
 		PID.pidRunning = true;
+		while(!PID.PIDparado){
+		}
 		
 		float theta =(dist/RAIO)*(float)(180/Math.PI); // graus da roda
 		float positionE = rodaE.getTachoCount(); // posicao em graus da roda e

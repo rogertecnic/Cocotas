@@ -68,7 +68,7 @@ public class AlienRescue implements Runnable{
 			PID.pidRunning = true;
 			threadPID.start();
 
-			//victorySong();
+			victorySong();
 			Navigation.openGarra();
 			Navigation.andar(0.5f);
 			Navigation.turn(-90);
