@@ -70,11 +70,11 @@ public class AlienRescue implements Runnable{
 
 			//victorySong();
 			Navigation.openGarra();
-			Navigation.andar(0.3f);
+			Navigation.andar(0.5f);
 			Navigation.turn(-90);
-			Navigation.andar(0.3f);
+			Navigation.andar(0.5f);
 			Navigation.turn(-90);
-			Navigation.andar(0.3f);
+			Navigation.andar(0.5f);
 			Navigation.turn(-90);
 			Navigation.andar(0.5f);
 			Navigation.turn(-90);

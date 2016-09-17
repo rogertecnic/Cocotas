@@ -22,7 +22,7 @@ public class Navigation {
 	//---------------------CONSTANTES DE DESCRICAO--------------------------
 	public final static float VELO_INI = 0.1f; // em m/s, velocidade linear do robo andar
 	public final static float VELO_CURVA = 0.1f; // em m/s, velocidade linear do robo girar
-	public final static float aceleration = 0.37978f; // m/s^2 PARA A RODA (equivale a 800 graus/s^2), 6000 de default do lejos (equivale a 2.84837 m/s^2
+	public final static float aceleration = 0.37978f; // m/s^2 PARA A RODA (0.37978f equivale a 800 graus/s^2), 6000 de default do lejos (equivale a 2.84837 m/s^2
 	public final static float DISTANCIA_ENTRE_RODAS = 0.13445f;//metros, ja conferido
 	public final static float RAIO = 0.0272f; //metros, ja conferido (se alterar tem que alterar o de cima)
 
@@ -58,8 +58,8 @@ public class Navigation {
 		PID.pidRunning=false; // pausa o pid para não zoar as velocidades
 		
 		while(!PID.PIDparado){
-			
 		}
+		
 		PID.zeraPID();
 		
 		setVelocidade(VELO_CURVA, VELO_CURVA);
@@ -113,13 +113,9 @@ public class Navigation {
 	 */
 	public static void andar(float dist){
 		PID.pidRunning=false; // pausa o pid para não zoar as velocidades
-		Delay.msDelay(40);
 		while(!PID.PIDparado){
 		}
 		PID.zeraPID();
-		while(Sensors.getAngle() !=0){
-			Sensors.resetAngle();
-		}
 		
 		PID.pidRunning = true;
 		

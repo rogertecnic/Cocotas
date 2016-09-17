@@ -56,7 +56,8 @@ public class PID implements Runnable {
 		while(AlienRescue.alienRescueON){
 			calculaPID();
 			setWdWePID();
-			if(!pidRunning) PIDparado = true;
+			if(!pidRunning)
+				PIDparado = true;
 			while(!pidRunning && AlienRescue.alienRescueON){
 			}
 			PIDparado = false;
