@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import sek2016.Celula.STATUS;
-
-public class Astar {
+public class Astar_Backup {
 
 	Celula[][] mapa;
 	ArrayList<Celula> listaAberta = new ArrayList<Celula>();
 	ArrayList<Celula> listaFechada = new ArrayList<Celula>();
 
-	Astar(Celula[][] mapa) {
+	Astar_Backup(Celula[][] mapa) {
 		this.mapa = mapa;
 		listaAberta = new ArrayList<Celula>();
 		listaFechada = new ArrayList<Celula>();
@@ -29,7 +27,7 @@ public class Astar {
 	 * @throws PathNotFoundException
 	 *             caminho não encontrado
 	 */
-
+	
 	public List<Celula> search(Posicao inicio, Posicao fim) throws Exception {
 		// Apagam os valores calculados do mapa e as listas
 		apagarMap();
@@ -40,21 +38,20 @@ public class Astar {
 		listaAberta.add(mapa[inicio.x][inicio.y]);
 
 		while (listaAberta.size() > 0) {
-
-			// Pega o menor f(x) para ir para o
-			// proximo--------------------------
+			
+			// Pega o menor f(x) para ir para o proximo--------------------------
 			int indiceMenor = 0;
 			for (int i = 0; i < listaAberta.size(); i++) {
 				if (listaAberta.get(i).f < listaAberta.get(indiceMenor).f) {
 					indiceMenor = i;
 				}
-				// --------------------------------------------------------------------
-
+			//--------------------------------------------------------------------
+				
 			}
-
+			
 			Celula noAtual = listaAberta.get(indiceMenor);
 			// Fim -- o resultado foi encontrado, retorne o caminho encontrado
-
+			
 			if (noAtual == mapa[fim.x][fim.y]) {
 				Celula atual = noAtual;
 				Stack<Celula> ret = new Stack<Celula>();
@@ -75,7 +72,7 @@ public class Astar {
 
 			for (int i = 0; i < vizinhos.size(); i++) {
 				Celula vizinho = vizinhos.get(i);
-				if (vizinho.getStatus() == STATUS.occupied || listaFechada.contains(vizinho)) {
+				if (vizinho.isOccupied() || listaFechada.contains(vizinho)) {
 					// não é um nó válido, pule para o proximo vizinho
 					continue;
 				}
@@ -156,8 +153,7 @@ public class Astar {
 
 			for (int i = 0; i < vizinhos.size(); i++) {
 				Celula vizinho = vizinhos.get(i);
-				if (vizinho.getStatus() == STATUS.occupied || listaFechada.contains(vizinho)
-						|| vizinho.getStatus() == STATUS.unchecked) {
+				if (vizinho.isOccupied() || listaFechada.contains(vizinho) || !vizinho.isChecked()) {
 					// não é um nó válido, pule para o proximo vizinho
 					continue;
 				}

@@ -77,6 +77,9 @@ public class EV3MainMenuClass {
 			LCD.drawString("<A>        r", 0, 1);
 			LCD.drawString("         P C P", 0, 2);
 			LCD.drawString("           r", 0, 3);
+			LCD.drawString("r mod. entrada",0, 4);
+			LCD.drawString("P perifericos",0, 5);
+			LCD.drawString("C central",0, 6);
 			break;
 		}
 		case 2:{
@@ -84,12 +87,18 @@ public class EV3MainMenuClass {
 			LCD.drawString("<B>        P", 0, 1);
 			LCD.drawString("         r C P", 0, 2);
 			LCD.drawString("           r", 0, 3);
+			LCD.drawString("r mod. entrada",0, 4);
+			LCD.drawString("P perifericos",0, 5);
+			LCD.drawString("C central",0, 6);
 			break;
 		}case 3:{
 			LCD.drawString("CONFIG DA ARENA", 0, 0);
 			LCD.drawString("<C>        P", 0, 1);
 			LCD.drawString("         P C r", 0, 2);
 			LCD.drawString("           r", 0, 3);
+			LCD.drawString("r mod. entrada",0, 4);
+			LCD.drawString("P perifericos",0, 5);
+			LCD.drawString("C central",0, 6);
 			break;
 		}
 		}
@@ -161,11 +170,9 @@ public class EV3MainMenuClass {
 		AlienRescue.alienRescueON = true;
 		Navigation.init(!jaIniciado);
 		Sensors.init(!jaIniciado,!jaIniciado,!jaIniciado,!jaIniciado);
-		jaIniciado = true;
 		threadPrograma = new Thread(new AlienRescue());
 		threadPrograma.setDaemon(true);
 		threadPrograma.setName("AlienRescue");
-		threadPrograma.start();
 		Delay.msDelay(500);
 		//-------------------------------------------------------------
 		if(configArena == ARENA_A){
@@ -194,6 +201,8 @@ public class EV3MainMenuClass {
 				LCD.drawString("C ESQ", 0, 3);			}
 		}
 		LCD.drawString("boneco:" + (bonecoNoCentro?"sim":"nao"), 0, 2);
+		jaIniciado = true;
+		threadPrograma.start();
 	}
 
 	/**

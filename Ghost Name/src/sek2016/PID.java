@@ -10,14 +10,13 @@ import lejos.utility.Delay;
  *Controla o PID
  */
 public class PID implements Runnable {
-	//public static ArrayList<Float> lista = new ArrayList<Float>(); //teste
 	
 	/**
 	 * @pidRunning
 	 * variavel que determina se a Thread do PID esta pausada ou
 	 * rodando, lembre-se de reajustar a velocidade dos motores quando necessario.
 	 */
-	public static boolean pidRunning;
+	public static boolean pidRunning = false;
 	
 	
 	// ------------Variáveis do PID-----------------------------
@@ -29,15 +28,8 @@ public class PID implements Runnable {
 			D = 0, // valor do controle derivativo
 			Kp = 2f, // parametro do controle proporcional
 			Ki = 0.03f, // parametro do controle integral
-			Kd = 0.0025f, // parametro do controle derivativo
-			angEsperado = 0f, // 
-			angReal = 0f; //
-			
-			/**
-			 * [0]: velocidade angular em graus/s<br>
-			 * [1]: posicao angular em graus
-			 */
-	public static float[] veloAng = new float[2];
+			Kd = 0.0025f; // parametro do controle derivativo
+	public static float[] WdWe = new float[2]; //Velocidade angular da roda Direita e Esquerda
 	
 	// ------------Metodos do PID-----------------------------
 	/**
@@ -45,16 +37,13 @@ public class PID implements Runnable {
 	 * e angulo real (lido pelo gyro)
 	 */
 	public static void zeraPID(){
-		Sensors.resetAngle();
 		PID = 0;
 		e = 0;
 		eAnt = 0;
 		P = 0;
 		I = 0;
 		D = 0;
-		angEsperado = 0f;
-		angReal = 0f;
-		Navigation.setVelocidade();
+		Sensors.resetAngle();
 	}
 	
 	/**
@@ -65,9 +54,10 @@ public class PID implements Runnable {
 		zeraPID();
 		while(AlienRescue.alienRescueON){
 			calculaPID();
-			Navigation.setVelocidade();
+			setWdWePID();
 			while(!pidRunning && AlienRescue.alienRescueON){
 				zeraPID();
+				Delay.msDelay(50);
 			}
 		}
 	}
@@ -76,8 +66,7 @@ public class PID implements Runnable {
 	 * metodo que calcula o PID
 	 */
 	public static void calculaPID() {
-		angReal = Sensors.getAngle();
-		e = angReal - angEsperado;
+		e  = Sensors.getAngle();
 		P = Kp * e;
 		I += e * Ki;
 		D = (eAnt - e) * Kd;
@@ -86,19 +75,22 @@ public class PID implements Runnable {
 	}
 	
 	/**
-	 * @return Retorna o valor atual da variavel PID
+	 * Metodo que converte o valor do PID para velocidades
+	 * angulares das rodas em graus/seg
+	 * @return float[]:<br>
+	 
 	 */
-	public static float getPID(){
-		return PID;
-
+	
+	/**
+	 * seta velocidade de cada roda de acordo com o PID em graus/s DA RODA<br>
+	 * Vetor WdWe de duas posicoes:<Br>
+	 * [0] Wd, graus/seg da roda direita;<br>
+	 * [1] We, graus/seg da roda esquerda;
+	 */
+	public static void setWdWePID(){
+		WdWe[0] = (2 * (float)(180/Math.PI)*Navigation.VELO_INI - Navigation.DISTANCIA_ENTRE_RODAS * PID) / (2 * Navigation.RAIO);
+		WdWe[1] = (2 * (float)(180/Math.PI)*Navigation.VELO_INI + Navigation.DISTANCIA_ENTRE_RODAS * PID) / (2 * Navigation.RAIO);
+		Navigation.rodaD.setSpeed(WdWe[0]);
+		Navigation.rodaE.setSpeed(WdWe[1]);
 	}
-
-	public static void setAngEsperado(float angEsper){
-		angEsperado = angEsper;
-
-	}
-	public static float getAngEsperado(){
-		return angEsperado;
-	}
-
 }

@@ -1,8 +1,6 @@
 Sensors:
 	Sugestoes:
-		sensores podem ser iniciados na seguinte ordem: gyro, ultrassom, floor, doll; (ja implementado)
-		parar o robo dentro do metodo resetAngle;
-		colocar o Delay dentro do metodo resetAngle antes do gyro.reset;
+
 		
 	Testar:
 		testar o metodo verifica obstaculo;
@@ -10,23 +8,47 @@ Sensors:
 	
 Navigation:
 	Sugestoes:
-		criar uma constante global para setar a aceleracao, afinal nao tem motivos par altera-la
-		criar um metodo que seta a velocidade e aceleracao do robo, e nao das rodas;
-		mudar o nome do metodo que passa a velocidade do pid para as rodas de setVelocidade para setWeWdPID ou algo similar;
-		levar tudo que eh referentes ao PID da classe Navigation para a classe PID (setVelocidade e converteWdWe);
-		resetar o PID dentro do metodo forward(dist) e de todos os metodos que movimentam o robo (o PID so é usado para andar reto mesmo;
 		
 	Testar:
-	
+		testar metodo andar para traz com valores negativos;
 	
 PID:
 	Sugestoes:
 		
 	Testar:
-		a thread do PID
 		
 Testes variados:
 
 
 Sugestoes gerais:
 	criar um metodo que zera TODAS as variaveis de TODAS as classes para chamalo quando reiniciar a AlienRescue
+	
+CODIGO DO DIEGO:
+	Posicao: (ja copiado mas nao integrado)
+		é necessario get e get? sao variaveis publicas
+		
+	Celula: (ja copiado mas nao integrado)
+		
+	Astar: (ja copiado mas nao integrado)
+		
+	NAvigation: (copiado)
+		Variaveis copiadas
+		Metodos:
+			turn() e executeTurn() integrados, tive que trocar o sinal da variavel, testar isso
+			turnLeft() e turnRight() tirado, é so usar o turn() com angulo reto
+			forward() os dois forwards nao foram copiados (ja tem)
+			backward() nao foi copiado (ja tem)
+			setAceleration() e setVelocidade() nao foram copiados (ja tem)
+			setVelocidade() do PID, nao foi copiado (movido para classe PID)
+			closeGarra() e openGarra() nao foi copiado (ja tem)
+			stop() nao foi copiado (ja tem)
+			getThaco() totalmente copiado
+			resetThaco() totalmente copiado
+			alterOrientation() totalmente copiado
+			
+	AlienRescue: (copiado)
+	importado a ENUM STATUS da classe Celula
+		Variaveis copiadas
+		Metodos:
+			Todos copiados depois da divisoria (Logica de captura, mapeamento e retorno)
+			

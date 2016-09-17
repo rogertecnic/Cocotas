@@ -8,13 +8,14 @@ import lejos.robotics.SampleProvider;
 
 public class Sensors {
 
-	private static EV3GyroSensor gyro;
-	private static EV3UltrasonicSensor ultrasonic;
-	private static EV3ColorSensor dollColor;
-	private static EV3ColorSensor floorColor;
+	private static EV3GyroSensor gyro; // nem preciso falar
+	private static EV3UltrasonicSensor ultrasonic; // nem esse
+	private static EV3ColorSensor dollColor; // verificar cor do boneco no modo RGB
+	private static EV3ColorSensor floorColor; // verificar a cor do chao
 	private static float[] angleSample,		// vetor contendo um elemento do gyro, angulo em graus
-				veloAngleSample,			// vetor contendo dois elemento do gyro, velo em graus/seg e angulo em graus
-				distSample;					// vetor contendo um elemento do ultrassom, a dist em metros
+				distSample,     			// vetor contendo um elemento do ultrassom, a dist em metros
+				rgbSample;					// vetor contendo 3 elementos de nivel de intensidade RGB de 0 a 1 do doll color
+
 	private static final float DIST_MIN = 0.07320f; // distancia minima do boneco
 	private static final float DIST_MAX = 0.0953f; // distancia maxima do boneco
 	
@@ -29,7 +30,6 @@ public class Sensors {
 		if(GR == true){
 			gyro = new EV3GyroSensor(SensorPort.S2);
 			angleSample = new float[1];
-			veloAngleSample = new float [2];
 		}
 		if(US == true){
 			ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
@@ -40,6 +40,7 @@ public class Sensors {
 		}
 		if(DC == true){
 			dollColor = new EV3ColorSensor(SensorPort.S1);
+			rgbSample = new float [3];
 		}
 	}
 	
@@ -58,20 +59,8 @@ public class Sensors {
 	}
 	
 	/**
-	 * Metodo que verifica a aceleracao angular e a posicao do gyro;
-	 * @return array float[] com:<br>
-	 * [0]: velocidade angular em graus/s<br>
-	 * [1]: posicao angular em graus
-	 */
-	public static float[] getAllGyro() {
-		gyro.getAngleAndRateMode().fetchSample(veloAngleSample, 0);
-		return veloAngleSample;
-	}
-	
-	/**
 	 * Metodo que verifica somente a posicao do gyro;
-	 * @return array float[] com:<br>
-	 * [0]: posicao angular em graus
+	 * @return valor float com a diferenca em graus da posicao da ultima zerada para a posicao atual
 	 */
 	public static float getAngle() {
 		gyro.getAngleMode().fetchSample(angleSample, 0);
@@ -83,6 +72,16 @@ public class Sensors {
 	 * <h1>O ROBO DEVE ESTAR PARADO;
 	 */
 	public static void resetAngle(){
+		if(Navigation.rodaD.isMoving() || Navigation.rodaE.isMoving()){
+			Navigation.stop();
+		}
 		gyro.reset();
 	}
+	
+	public static int Verificacordoll(){
+		dollColor.getRGBMode().fetchSample(color, 0);
+		
+		
+	}
 }
+

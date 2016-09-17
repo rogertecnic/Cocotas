@@ -1,17 +1,18 @@
 package sek2016;
 
+
 public class Celula {
-	enum STATUS {
-		unchecked, empty, occupied;
+
+	public static float commonSize = 0.2f; // tamanho padrão das células, cm
+
+	private float size; // tamanho da célula
+	private boolean occupied = true;// está ocupado?
+	private Posicao posicao;// posição da célula no mapa
+	public void setPosicao(Posicao posicao) {
+		this.posicao = posicao;
 	}
 
-	public static final float commonSize = 0.2f; // tamanho padrão das células,
-													// m
-
-	private float size = commonSize; // tamanho da célula
-	private STATUS status = STATUS.unchecked;// está ocupado?
-	private Posicao posicao;// posição da célula no mapa
-
+	private boolean checked;// está checado?
 	private int typeOfObject;
 	private boolean temParede;
 
@@ -20,21 +21,21 @@ public class Celula {
 	public int h;
 	public Celula parent;
 
-	public void setPosicao(Posicao posicao) {
-		this.posicao = posicao;
-	}
-
 	Celula(Posicao posicao) {
-		this(STATUS.empty, posicao, true);
+		this(commonSize, true, posicao, true);
 	}
 
-	Celula(Posicao posicao, STATUS status) {
-		this.status = status;
+	Celula(int size, Posicao posicao, boolean checked) {
+		this.size = size;
+		this.occupied = true;
 		this.posicao = posicao;
+		this.checked = checked;
 	}
 
-	public Celula(STATUS occupied, Posicao posicao, boolean checked) {
-		this.status = occupied;
+	public Celula(float size, boolean occupied, Posicao posicao, boolean checked) {
+		this.size = size;
+		this.occupied = occupied;
+		this.checked = checked;
 		this.f = 0;
 		this.g = 0;
 		this.h = 0;
@@ -42,9 +43,6 @@ public class Celula {
 		this.posicao = posicao;
 	}
 
-	/**
-	 * apaga os valores de f,g,h e do parent
-	 */
 	public void apagar() {
 		this.f = 0;
 		this.g = 0;
@@ -68,6 +66,14 @@ public class Celula {
 		this.size = size;
 	}
 
+	public boolean isOccupied() {
+		return occupied;
+	}
+
+	public void setOccupied(boolean occupied) {
+		this.occupied = occupied;
+	}
+
 	public boolean temParede() {
 		return temParede;
 	}
@@ -79,12 +85,12 @@ public class Celula {
 	public Posicao getPosicao() {
 		return this.posicao;
 	}
-	
-	public STATUS getStatus(){
-		return this.status;
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
 	}
-	
-	public void setStatus(STATUS status){
-		this.status = status;
+
+	public boolean isChecked() {
+		return this.checked;
 	}
 }
