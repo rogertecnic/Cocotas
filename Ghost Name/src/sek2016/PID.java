@@ -10,15 +10,6 @@ import lejos.utility.Delay;
  *Controla o PID
  */
 public class PID implements Runnable {
-	
-	/**
-	 * @pidRunning
-	 * variavel que determina se a Thread do PID esta pausada ou
-	 * rodando, lembre-se de reajustar a velocidade dos motores quando necessario.
-	 */
-	public static boolean pidRunning = false; // seta a pausa do PID mas nao é instantaneo
-	
-	
 	// ------------Variáveis do PID-----------------------------
 	public static float PID = 0, // valor final do PID para calculo da velocidade das rodas
 			e = 0, // erro, diferença de angulo entre o valor de zero do gyro e o valor lido do gyro
@@ -30,6 +21,11 @@ public class PID implements Runnable {
 			Ki = 0.0003f, // parametro do controle integral
 			Kd = 0.0025f; // parametro do controle derivativo
 	public static float[] WdWe = new float[2]; //Velocidade angular da roda Direita e Esquerda
+	/**
+	 * variavel que determina se a Thread do PID esta pausada ou
+	 * rodando, lembre-se de reajustar a velocidade dos motores quando necessario.
+	 */
+	public static boolean pidRunning = false; // seta a pausa do PID mas nao é instantaneo
 	public static boolean PIDparado = false; // o PID ja esta parado?
 	
 	// ------------Metodos do PID-----------------------------
@@ -57,10 +53,9 @@ public class PID implements Runnable {
 		while(AlienRescue.alienRescueON){
 			calculaPID();
 			setWdWePID();
-			PIDparado = false;
-			if(!pidRunning)
-				PIDparado = true;
+			PIDparado = false; // indica que o pid nao esta mais parado e ja foi executado uma vez
 			while(!pidRunning && AlienRescue.alienRescueON){
+				PIDparado = true; // indica que o pid realmente esta parado e que pode ser zerado sem preigo de ocorrer mais uma iteracao que mude
 			}
 		}
 	}
@@ -75,14 +70,9 @@ public class PID implements Runnable {
 		D = (eAnt - e) * Kd;
 		eAnt = e;
 		PID = P + I + D;
+		if(Navigation.andandoRe)
+		PID = -PID; // inverte o valor do pid se o robo for andar de re
 	}
-	
-	/**
-	 * Metodo que converte o valor do PID para velocidades
-	 * angulares das rodas em graus/seg
-	 * @return float[]:<br>
-	 
-	 */
 	
 	/**
 	 * seta velocidade de cada roda de acordo com o PID em graus/s DA RODA<br>

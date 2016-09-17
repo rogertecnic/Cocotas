@@ -29,7 +29,7 @@ public class AlienRescue implements Runnable{
 
 
 	// =========================CONSTANTES DE PROCESSO=========================
-	private static final float PI = 3.141592f;
+	private static final float PI = (float)Math.PI;
 	private static final float CELL_SIZE = Celula.commonSize;// tamanho da
 	// celula em
 	// Metros
@@ -68,16 +68,12 @@ public class AlienRescue implements Runnable{
 			PID.pidRunning = true;
 			threadPID.start();
 
-			victorySong();
-			Navigation.openGarra();
-			Navigation.andar(0.5f);
-			Navigation.turn(-90);
-			Navigation.andar(0.5f);
-			Navigation.turn(-90);
-			Navigation.andar(0.5f);
-			Navigation.turn(-90);
-			Navigation.andar(0.5f);
-			Navigation.turn(-90);
+			//victorySong();
+			//Navigation.openGarra();
+			float dist = -0.3f;
+			int ang = 45;
+			Navigation.andar(dist);
+			
 /*
 			boolean captured = false;
 			boolean temp = true;// só temporária, até resolver uns bugs aí

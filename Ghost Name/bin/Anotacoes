@@ -10,7 +10,6 @@ Navigation:
 	Sugestoes:
 		
 	Testar:
-		testar metodo andar para traz com valores negativos;
 	
 PID:
 	Sugestoes:
@@ -23,13 +22,15 @@ Testes variados:
 Sugestoes gerais:
 	criar um metodo que zera TODAS as variaveis de TODAS as classes para chamalo quando reiniciar a AlienRescue
 	
+	
+	
 CODIGO DO DIEGO:
-	Posicao: (ja copiado mas nao integrado)
+	Posicao: (ja copiado)
 		é necessario get e get? sao variaveis publicas
 		
-	Celula: (ja copiado mas nao integrado)
+	Celula: (ja copiado)
 		
-	Astar: (ja copiado mas nao integrado)
+	Astar: (ja copiado)
 		
 	NAvigation: (copiado)
 		Variaveis copiadas

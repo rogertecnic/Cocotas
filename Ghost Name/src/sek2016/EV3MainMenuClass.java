@@ -12,13 +12,11 @@ import lejos.utility.Delay;
  */
 public class EV3MainMenuClass {
 	/**
-	 * @exit
 	 *  variavel que confirma se é pra dar reset no brick
 	 */
 	private static boolean exit = false;
 
 	/**
-	 * @MotorInstanciado
 	 * Variavel que controla a instancia dos sensores e motores.<br>
 	 * <b>true:</b> ja foi instanciado, (resetar gyroscopio);<br>
 	 * <b>false:</b> ainda não foi instanciado, (primeira execução do codigo);
@@ -26,7 +24,6 @@ public class EV3MainMenuClass {
 	private static boolean jaIniciado = false;
 
 	/**
-	 * @threadPrograma
 	 *  principal do codigo, é instanciada dentro do selecionaOpcao
 	 */
 	public static Thread threadPrograma = null;
@@ -49,7 +46,7 @@ public class EV3MainMenuClass {
 	bonecoNoCentro = true; // autoexplicativo (alterado a cada reinicio)
 
 	//=====================MAIN===================================
-	public static void main(String[] args) {
+	public static void main(String[] args) { // foca so no metodo start, o resto eh coisa pra controlar o menu
 		while (!exit) {
 			controleMenu();
 			if (!exit) {
@@ -163,7 +160,10 @@ public class EV3MainMenuClass {
 
 	}
 
-
+	/**
+	 * Metodo que executa a thread do AlienRescue e faz<br>
+	 * todas as definicoes de acordo com as opcoes escolhidas nos menus
+	 */
 	private static void start(){
 		//System.out.println(configArena + "  " + configCave + "  " + bonecoNoCentro);
 		//------------tirar apos todos os codigos ja estarem feitos
@@ -176,33 +176,34 @@ public class EV3MainMenuClass {
 		Delay.msDelay(500);
 		//-------------------------------------------------------------
 		if(configArena == ARENA_A){
-			if(configCave == CAV_DIR){
-				LCD.clear();
-				LCD.drawString("A DIR", 0, 3);
-			}else if(configCave == CAV_ESQ){
-				LCD.clear();
-				LCD.drawString("A ESQ", 0, 3);
+			if(configCave == CAV_DIR){ // qui eh executado na configuracao arena A cave dir
+				LCD.clear(); // pode apagar
+				LCD.drawString("A DIR", 0, 3); // pode apagar
+			}else if(configCave == CAV_ESQ){// qui eh executado na configuracao arena A cave esq
+				LCD.clear(); // pode apagar
+				LCD.drawString("A ESQ", 0, 3); // pode apagar
 			}
 		}
 		if(configArena == ARENA_B){
-			if(configCave == CAV_CIMA){
-				LCD.clear();
-				LCD.drawString("B CIMA", 0, 3);
-			}else if(configCave == CAV_DIR){
-				LCD.clear();
-				LCD.drawString("B DIR", 0, 3);
+			if(configCave == CAV_CIMA){// qui eh executado na configuracao arena B cave cima
+				LCD.clear(); // pode apagar
+				LCD.drawString("B CIMA", 0, 3); // pode apagar
+			}else if(configCave == CAV_DIR){// qui eh executado na configuracao arena B cave dir
+				LCD.clear(); // pode apagar
+				LCD.drawString("B DIR", 0, 3); // pode apagar
 			}
 		}
 		if(configArena == ARENA_C){
-			LCD.clear();
-			if(configCave == CAV_CIMA){
-				LCD.drawString("C CIMA", 0, 3);
-			}else if(configCave == CAV_ESQ){
-				LCD.drawString("C ESQ", 0, 3);			}
+			LCD.clear(); // pode apagar
+			if(configCave == CAV_CIMA){// qui eh executado na configuracao arena C cave cima
+				LCD.drawString("C CIMA", 0, 3); // pode apagar
+			}else if(configCave == CAV_ESQ){// qui eh executado na configuracao arena C cave esq
+				LCD.drawString("C ESQ", 0, 3);// pode apagar
+				}
 		}
-		LCD.drawString("boneco:" + (bonecoNoCentro?"sim":"nao"), 0, 2);
-		jaIniciado = true;
-		threadPrograma.start();
+		LCD.drawString("boneco:" + (bonecoNoCentro?"sim":"nao"), 0, 2); // pode apagar
+		jaIniciado = true; // seta que a thread do programa ja iniciou
+		threadPrograma.start(); // inicia a thread
 	}
 
 	/**

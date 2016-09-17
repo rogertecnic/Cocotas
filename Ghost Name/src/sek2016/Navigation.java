@@ -20,14 +20,14 @@ public class Navigation {
 
 
 	//---------------------CONSTANTES DE DESCRICAO--------------------------
-	public final static float VELO_INI = 0.2f; // em m/s, velocidade linear do robo andar
-	public final static float VELO_CURVA = 0.08f; // em m/s, velocidade linear do robo girar
-	public final static float aceleration = 0.37978f; // m/s^2 PARA A RODA (0.37978f equivale a 800 graus/s^2), 6000 de default do lejos (equivale a 2.84837 m/s^2
-	public final static float DISTANCIA_ENTRE_RODAS = 0.13445f;//metros, ja conferido
+	public final static float VELO_INI = 0.09f; // em m/s, velocidade linear do robo andar
+	public final static float VELO_CURVA = 0.08f; // em m/s, velocidade linear do robo fazer o turn
+	public final static float aceleration = 0.26f; // m/s^2 PARA A RODA  (0.26f <=> 548 graus/s^2), (0.37978f <=> 800 graus/s^2), default: 2.84837 m/s^2 <=> 6000 m/s^2) 
+	public final static float DISTANCIA_ENTRE_RODAS = 0.1378f;//metros, ja conferido (0.14f)
 	public final static float RAIO = 0.0272f; //metros, ja conferido (se alterar tem que alterar o de cima)
 
 	// ------------------- CONSTANTES DE ORIENTACAO------------------------
-	/**
+	/*
 	 * Constantes de orientação do robo    <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<EM RELACAO A QUE?
 	 */
 	final static int BACK = 0,
@@ -43,23 +43,25 @@ public class Navigation {
 
 	//---------------------VARIAVEIS DE PROCESSO----------------------------
 	public static boolean garraFechada = false,//a garra esta fechada?
-			curva = false; // o robo esta realisando uma curva?
+			andandoRe = false; // o robo esta andando de RE? para inverter o pid no metodo calculaPID se caso ele for andar de re
 
 
 	// --------------------METODOS------------------------------------------
 
 	/**
-	 * Gira o robo no proprio eixo, (não usa o giroscopio,
-	 * usa o tacometro da rodaE, o método segura o programa dentro dele)
+	 * Gira o robo no proprio eixo, não usa o giroscopio,
+	 * usa o tacometro das rodas, o método segura o programa dentro dele
 	 * @param graus inteiro positivo (anti-horário)
 	 * inteiro negativo (horário)
 	 */
 	public static void turn(float graus){
-		PID.pidRunning=false; // pausa o pid para não zoar as velocidades
-		while(!PID.PIDparado){
+		PID.pidRunning=false; // pausa o pid para o pid nao recalcular a velocidade durante o turn
+		while(!PID.PIDparado){ // aguarda o pid realmente parar
 		}
-		PID.zeraPID();
-		setVelocidade(VELO_CURVA, VELO_CURVA);
+		PID.zeraPID(); // apos o pid parado ele eh zerado
+		setVelocidade(VELO_CURVA, VELO_CURVA); // seta a velocidade da curva
+
+
 
 		if (-graus < 0) {
 			int giro = (int) (-graus / -90);
@@ -74,28 +76,30 @@ public class Navigation {
 		}
 
 
-		float theta = (graus*DISTANCIA_ENTRE_RODAS)/(2*RAIO); // angulo que a roda precisa girar
-		float positioninicialE = rodaE.getTachoCount(); // posicao em graus da roda e
-		float positioninicialD = rodaD.getTachoCount(); // posicao em graus da roda d
-		float wRoda = VELO_CURVA/RAIO*(float)(180/Math.PI);
-		float acc = aceleration/RAIO*(float)(180/Math.PI);
-		float ang_defasado = wRoda*(wRoda/acc)-(acc/2)*(wRoda/acc)*(wRoda/acc);
-		
-		if(graus>0){
+
+		float theta = (graus*DISTANCIA_ENTRE_RODAS)/(2*RAIO); // angulo que a roda precisa girar para o robo girar os graus passados
+		float positioninicialE = rodaE.getTachoCount(); // posicao inicial em graus da roda e
+		float positioninicialD = rodaD.getTachoCount(); // posicao inicial em graus da roda d
+		float wRoda = VELO_CURVA/RAIO*(float)(180/Math.PI); // velo angular das rodas em graus/s
+		float acc = (aceleration)/RAIO*(float)(180/Math.PI); // aceleracao das rodas em graus/s^2 
+		float t = wRoda/(acc); // tempo que o robo demora a parar depois que ele chama o metodo stop devido a desaceleracao normal do lejos
+		float ang_defasado = wRoda*t-(acc/2)*t*t; // robo deve chamar o metodo stop antes do local de parar, esse ang_defasado é essa distancia em graus da roda
+
+		if(graus>0){ // turn anti horario
 			rodaD.forward();
 			rodaE.backward();
-			while(rodaE.getTachoCount()>(positioninicialE-theta+ang_defasado) && 
-					rodaD.getTachoCount()<(positioninicialD+theta-ang_defasado)){
+			while(rodaE.getTachoCount()>(positioninicialE-theta+ang_defasado) && // espera o robo girar as rodas ate a posicao de chamar o metodo stop
+					rodaD.getTachoCount()<(positioninicialD+theta-ang_defasado)){ // no momento certo antes da posical final do giro, sai do while e vai direto para o metodo stop
 			}
 		}
-		if(graus<0){
+		if(graus<0){ // turn horario
 			rodaE.forward();
 			rodaD.backward();
-			while(rodaD.getTachoCount()>(positioninicialD+theta+ang_defasado) && 
-					rodaE.getTachoCount()<(positioninicialE-theta-ang_defasado)){
+			while(rodaD.getTachoCount()>(positioninicialD+theta+ang_defasado) && // mesma ideia do de cima
+					rodaE.getTachoCount()<(positioninicialE-theta-ang_defasado)){ // 
 			}
 		}
-		Navigation.stop();
+		Navigation.stop(); // metodo chamado no momento de desaceleracao do robo para ele parar onde ele deve
 	}
 
 
@@ -103,40 +107,49 @@ public class Navigation {
 	/**
 	 * robo anda pra frente(positivo) ou para traz (negativo) em uma determinada distancia.<br>
 	 * velocidade definida pelo PID, metodo segura a thread dentro dele
-	 * ate o robo chegar
-	 * <h1>ESSE METODO NAO RESETA O PID, ISSO PODE CAUSAR PROBLEMAS</h1>
-	 * @param dist ditancia em metros
+	 * ate o robo completar a distancia
+	 * @param dist ditancia em metros que o robo vai andar
 	 */
 	public static void andar(float dist){
-		PID.pidRunning=false; // pausa o pid para não zoar as velocidades
-		while(!PID.PIDparado){
+		PID.pidRunning=false; // pausa o pid para reinicia-lo
+		while(!PID.PIDparado){ // espera o pid realmente parar
 		}
-		PID.zeraPID();
-		PID.pidRunning = true;
-		while(!PID.PIDparado){
+		PID.zeraPID(); // zera o pid
+		PID.pidRunning = true; // inicia o pid
+		while(!PID.PIDparado){ // espera o pid ter a primeira iteracao para ja ter alterado a velocidade, se nao, o metodo continuaria e o robo andaria antes do pid setar as velocidades pois sao threads diferentes
 		}
-		
-		float theta =(dist/RAIO)*(float)(180/Math.PI); // graus da roda
-		float positionE = rodaE.getTachoCount(); // posicao em graus da roda e
-		float positionD = rodaD.getTachoCount(); // posicao em graus da roda d
-		float wRoda = VELO_INI/RAIO*(float)(180/Math.PI);
-		float acc = aceleration/RAIO*(float)(180/Math.PI);
-		float ang_defasado = wRoda*(wRoda/(acc*(float)(180/Math.PI)))-(acc/2)*(wRoda/acc)*(wRoda/acc);
 
-		if(dist>0){
+		float theta =(dist/RAIO)*(float)(180/Math.PI); // graus que a roda deve girar para o robo andar a distancia determinada
+		float positionE = rodaE.getTachoCount(); // posicao inicial em graus da roda e
+		float positionD = rodaD.getTachoCount(); // posicao inicial em graus da roda d
+		float wRoda = VELO_INI/RAIO*(float)(180/Math.PI); // velocidade angular em graus/s das rodas de modo geral, nao eh a velocidade que o pid regula, essa velocidade seria a velocidade que o pid mantem se o erro fosse 0 e seria igual para as 2 rodas
+		float acc = aceleration/RAIO*(float)(180/Math.PI); // aceleracao angular  em graus/s^2 das rodas
+		float t = wRoda/(acc); // tempo que o robo demora a parar depois que ele chama o metodo stop devido a desaceleracao normal do lejos
+		float ang_defasado = wRoda*t-(acc/2)*t*t; // robo deve chamar o metodo stop antes do local de parar, esse ang_defasado é essa distancia em graus da roda
+
+		Delay.msDelay(30); /* tem que ter esse delay, o motivo nao sabemos ao certo o por que, verificamos a 
+		 *velocidade do pid nesse instante e ela continua certinha, 
+		 *se nao o robo exporadicamente vai girar a roda direita para traz por um curto 
+		 *periodo de tempo com velocidade maxima quando o robo for se movimentar
+		 */
+		if(dist>0){ // a ideia aqui eh a mesma do turn
+			andandoRe = false;
 			rodaE.forward();
 			rodaD.forward();
 			while(rodaE.getTachoCount()<(positionE+theta-ang_defasado) && 
 					rodaD.getTachoCount()<(positionD+theta-ang_defasado)){
 			}
 		}else{
+			andandoRe = true;
 			rodaE.backward();
 			rodaD.backward();
+
 			while(rodaE.getTachoCount()>(positionE+theta+ang_defasado) && 
 					rodaD.getTachoCount()>(positionD+theta+ang_defasado)){
 			}
 		}
 		Navigation.stop();
+		andandoRe = false;
 	}
 
 	/**
@@ -270,10 +283,10 @@ public class Navigation {
 			setVelocidade(VELO_INI, VELO_INI);
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	//---------------------METODOS DA TACOMETRIA---------------------------
 	/**
 	 * Metodo que retorna a tacometria dos motores de acordo com os parametros
@@ -304,7 +317,7 @@ public class Navigation {
 			return (Float) null;
 		}
 	}
-	
+
 	/**
 	 * Reseta a contagem dos tacometros de cada roda
 	 */
@@ -312,7 +325,7 @@ public class Navigation {
 		rodaE.resetTachoCount();
 		rodaD.resetTachoCount();
 	}
-	
+
 	/**
 	 * Altera a orientacao do robo 
 	 * @param ortt NAO ENTENDI O METODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Q Q ISSO???
