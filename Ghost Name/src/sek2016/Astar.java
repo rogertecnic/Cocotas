@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import sek2016.Celula.STATUS;
+import sek2016.Celula.Status;
 
 public class Astar {
 
@@ -75,7 +75,7 @@ public class Astar {
 
 			for (int i = 0; i < vizinhos.size(); i++) {
 				Celula vizinho = vizinhos.get(i);
-				if (vizinho.getStatus() == STATUS.occupied || listaFechada.contains(vizinho)) {
+				if (vizinho.getStatus() == Status.occupied || listaFechada.contains(vizinho)) {
 					// não é um nó válido, pule para o proximo vizinho
 					continue;
 				}
@@ -156,8 +156,8 @@ public class Astar {
 
 			for (int i = 0; i < vizinhos.size(); i++) {
 				Celula vizinho = vizinhos.get(i);
-				if (vizinho.getStatus() == STATUS.occupied || listaFechada.contains(vizinho)
-						|| vizinho.getStatus() == STATUS.unchecked) {
+				if (vizinho.getStatus() == Status.occupied || listaFechada.contains(vizinho)
+						|| vizinho.getStatus() == Status.unchecked) {
 					// não é um nó válido, pule para o proximo vizinho
 					continue;
 				}

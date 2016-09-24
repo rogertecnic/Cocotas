@@ -1,7 +1,8 @@
 package sek2016;
 
+
 public class Celula {
-	enum STATUS {
+	enum Status {
 		unchecked, empty, occupied;
 	}
 
@@ -9,7 +10,7 @@ public class Celula {
 													// m
 
 	private float size = commonSize; // tamanho da célula
-	private STATUS status = STATUS.unchecked;// está ocupado?
+	private Status status = Status.unchecked;// está ocupado?
 	private Posicao posicao;// posição da célula no mapa
 
 	private int typeOfObject;
@@ -25,15 +26,15 @@ public class Celula {
 	}
 
 	Celula(Posicao posicao) {
-		this(STATUS.empty, posicao, true);
+		this(Status.empty, posicao, true);
 	}
 
-	Celula(Posicao posicao, STATUS status) {
+	Celula(Posicao posicao, Status status) {
 		this.status = status;
 		this.posicao = posicao;
 	}
 
-	public Celula(STATUS occupied, Posicao posicao, boolean checked) {
+	public Celula(Status occupied, Posicao posicao, boolean checked) {
 		this.status = occupied;
 		this.f = 0;
 		this.g = 0;
@@ -80,11 +81,11 @@ public class Celula {
 		return this.posicao;
 	}
 	
-	public STATUS getStatus(){
+	public Status getStatus(){
 		return this.status;
 	}
 	
-	public void setStatus(STATUS status){
+	public void setStatus(Status status){
 		this.status = status;
 	}
 }

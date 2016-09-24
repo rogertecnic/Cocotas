@@ -77,26 +77,11 @@ public class Sensors {
 		}
 		gyro.reset();
 	}
-	
-	/**
-	 * metodo para ver a cor do boneco
-	 * @return 3 branco
-	 * 4 preto
-	 * 5 vermelho
-	 * 
-	 */
-	public static int VerificaCorDoll(){
-		dollColor.getRGBMode().fetchSample(rgbSample, 0);
-		if (rgbSample[0]<r2 && rgbSample[0]>r1){
-			if(rgbSample[1]<g2 && rgbSample[1]>g1){
-				if(rgbSample[2]<b2 && rgbSample[2]>b1){
-					
-				}
-			}
-			
-		}
+	/*
+	public static int Verificacordoll(){
+		dollColor.getRGBMode().fetchSample(color, 0);
 		
 		
-	}
+	}*/
 }
 

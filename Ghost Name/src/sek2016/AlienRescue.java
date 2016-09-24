@@ -1,10 +1,8 @@
 package sek2016;
 
-import lejos.hardware.Button;
 import lejos.hardware.Sound;
-import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
-import sek2016.Celula.STATUS;
+import sek2016.Celula.Status;
 
 /**
  * 
@@ -278,9 +276,9 @@ public class AlienRescue implements Runnable{
 		 */
 		for(int i = 0; i < LIN_AMT; i++){
 			for(int j = 0; j < COL_AMT; j++){
-				CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j), STATUS.unchecked);
-				CAVE_MAP[i][j] = new Celula(new Posicao(i, j), STATUS.unchecked);
-				OBSTACLE_MAP[i][j] = new Celula(new Posicao(i, j), STATUS.unchecked);
+				CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+				CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+				OBSTACLE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
 
 			}
 		}

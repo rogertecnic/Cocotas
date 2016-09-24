@@ -1,8 +1,10 @@
-package sek2016;
+package Backups;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+import sek2016.Posicao;
 
 public class Astar_Backup {
 
