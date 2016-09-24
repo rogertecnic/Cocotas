@@ -7,16 +7,16 @@ import sek2016.Celula.Status;
 /**
  * 
  * @author Equipe Sek 2016:<br>
- * Diego Costa - Eng. da Computacao<br>
- * Karinny Golçalves<br>
- * Lucas Simões - Eng. da Computacao<br>
- * Mariana Moreno - Eng. Mecânica<br>
- * Rogério Pereira Batista - Eng. Elétrica<br>
+ *         Diego Costa - Eng. da Computacao<br>
+ *         Karinny Golçalves<br>
+ *         Lucas Simões - Eng. da Computacao<br>
+ *         Mariana Moreno - Eng. Mecânica<br>
+ *         Rogério Pereira Batista - Eng. Elétrica<br>
  */
-public class AlienRescue implements Runnable{
+public class AlienRescue implements Runnable {
 	/**
-	 * Variavel global que indica se a Thread do programa
-	 * está executando (ON) ou fechada (OFF)
+	 * Variavel global que indica se a Thread do programa está executando (ON)
+	 * ou fechada (OFF)
 	 */
 	public static boolean alienRescueON;
 
@@ -29,13 +29,10 @@ public class AlienRescue implements Runnable{
 	 */
 	private static Thread threadTacometria;
 
-
-
 	// =========================CONSTANTES DE PROCESSO=========================
 
 	private static final int COL_AMT = 9; // quantidade de colunas na matriz
 	private static final int LIN_AMT = 9;// quantidade de linhas na matriz
-
 
 	// =======================VARIAVEIS DO MAPA==============================
 	private final static Celula[][] CENTRAL_MAP = new Celula[LIN_AMT][COL_AMT];
@@ -48,7 +45,6 @@ public class AlienRescue implements Runnable{
 	private static Posicao obstacleEntrace;
 	private static Posicao obstacleExit;
 
-
 	// ========================================================================
 	/**
 	 * Metodo que rege todo o codigo do robo
@@ -56,8 +52,9 @@ public class AlienRescue implements Runnable{
 	@Override
 	public void run() {
 		Navigation.garraFechada = false;
-		try{ // o codigo deve ficar dentro desse try gigante
-			//======INICIO DO CODIGO=============================================================
+		try { // o codigo deve ficar dentro desse try gigante
+				// ======INICIO DO
+				// CODIGO=============================================================
 			/*
 			 * Thread da PID é iniciada aqui.
 			 */
@@ -66,7 +63,7 @@ public class AlienRescue implements Runnable{
 			threadPID.setName("threadPID");
 			PID.pidRunning = true;
 			threadPID.start();
-			
+
 			/*
 			 * Thread da Tacometria é iniciada aqui.
 			 */
@@ -75,42 +72,39 @@ public class AlienRescue implements Runnable{
 			threadTacometria.setName("Thread Tacometria");
 			threadTacometria.start();
 
-			//victorySong();
-			//Navigation.openGarra();
+			// victorySong();
+			// Navigation.openGarra();
 			float dist = -0.3f;
 			int ang = 45;
 			Navigation.andar(dist);
-			
-/*
-			boolean captured = false;
-			boolean temp = true;// só temporária, até resolver uns bugs aí
-			while(temp){
-				cellExchanger();
 
-				if (allowedReading() && !captured){
-					if (Sensors.verificaObstaculo()){
-						Navigation.stop();
-						Navigation.closeGarra();
-						/*
-						 * codigo de checagem de cor
-						 
-
-						alienRescueON = false;
-						captured = true;
-
-
-					}else{
-
-					}
-
-				}
-
-			}
-*/
-			//======FINAL DO CODIGO=============================================================
+			/*
+			 * boolean captured = false; boolean temp = true;// só temporária,
+			 * até resolver uns bugs aí 
+			 * 
+			 * while(temp){ cellExchanger();
+			 * 
+			 * if (allowedReading() && !captured){ if
+			 * (Sensors.verificaObstaculo()){ Navigation.stop();
+			 * Navigation.closeGarra(); /* codigo de checagem de cor
+			 * 
+			 * 
+			 * alienRescueON = false; captured = true;
+			 * 
+			 * 
+			 * }else{
+			 * 
+			 * }
+			 * 
+			 * }
+			 * 
+			 * }
+			 */
+			// ======FINAL DO
+			// CODIGO=============================================================
 			alienRescueON = false;
-		}
-		catch(ThreadDeath e){// quando o menu é chamado, essa thread é desligada e lança essa exception
+		} catch (ThreadDeath e) {// quando o menu é chamado, essa thread é
+									// desligada e lança essa exception
 			e.getStackTrace();
 		}
 	}
@@ -118,7 +112,7 @@ public class AlienRescue implements Runnable{
 	/**
 	 * Reproduz o alegre som de sambar na cara das inimigas
 	 */
-	private static void victorySong(){
+	private static void victorySong() {
 		Sound.setVolume(50);
 		Sound.playTone(3000, 100);
 		Sound.playTone(4000, 100);
@@ -129,8 +123,7 @@ public class AlienRescue implements Runnable{
 		Sound.playTone(5000, 500);
 	}
 
-	//======================Logica de captura, mapeamento e retorno============
-
+	// ======================Logica de captura, mapeamento e retorno============
 
 	private static boolean allowedReading() {
 
@@ -162,9 +155,63 @@ public class AlienRescue implements Runnable{
 
 		}
 	}
-	
-	private static void frontRobotCell(){
-		
+
+	/**
+	 * Faz a checagem da celula que está em frente ao robo, usando o sensor de
+	 * presença e distancia<br>
+	 * Caso tenha algo a captura é realizada, caso contrário, a célula é marcada
+	 * como vazia<br>
+	 * Sò deve ser acionado depois que a leitura for permitida (allowedReading),
+	 * para evitar inconsistencias nas leituras
+	 */
+	private static void checkFrontRobotCell() {
+		if (Navigation.orientation == Navigation.FRONT) {
+
+			if (Sensors.verificaObstaculo()) {
+				CENTRAL_MAP[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.occupied);
+				Navigation.stop();
+				Navigation.closeGarra();
+
+			} else {
+				CENTRAL_MAP[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
+			}
+
+		}
+
+		else if (Navigation.orientation == Navigation.BACK) {
+
+			if (Sensors.verificaObstaculo()) {
+				CENTRAL_MAP[Navigation.robotPosition.x - 1][Navigation.robotPosition.y].setStatus(Status.occupied);
+				Navigation.stop();
+				Navigation.closeGarra();
+
+			} else {
+				CENTRAL_MAP[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
+			}
+
+		}
+
+		else if (Navigation.orientation == Navigation.LEFT) {
+			if (Sensors.verificaObstaculo()) {
+				CENTRAL_MAP[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].setStatus(Status.occupied);
+				Navigation.stop();
+				Navigation.closeGarra();
+			} else {
+				CENTRAL_MAP[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].setStatus(Status.empty);
+			}
+
+		}
+
+		else if (Navigation.orientation == Navigation.RIGTH) {
+			if (Sensors.verificaObstaculo()) {
+				CENTRAL_MAP[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].setStatus(Status.occupied);
+				Navigation.stop();
+				Navigation.closeGarra();
+			} else {
+				CENTRAL_MAP[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].setStatus(Status.empty);
+			}
+
+		}
 	}
 
 	public static void iniciaPerifericoFrenteDireita(int cave) {
@@ -172,92 +219,93 @@ public class AlienRescue implements Runnable{
 		 * Chama o launcher dos mapas
 		 */
 		mapLauncher();
-		
-		switch (cave){
-		
+
+		switch (cave) {
+
 		case EV3MainMenuClass.CAV_DIR:
 
 			caveEntrance = new Posicao(4, 0);
 			obstacleEntrace = new Posicao(8, 4);
-			
+
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
 			break;
-			
+
 		case EV3MainMenuClass.CAV_CIMA:
 			caveEntrance = new Posicao(8, 4);
 			obstacleEntrace = new Posicao(4, 0);
-			
+
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
 			break;
 		}
-		
+
 	}
-	
-	public static void iniciaPerifericoFrenteEsquerda(int cave){
+
+	public static void iniciaPerifericoFrenteEsquerda(int cave) {
 		/*
 		 * chama o launcher dos mapas
 		 */
 		mapLauncher();
-		
-		switch (cave){
-		
+
+		switch (cave) {
+
 		case EV3MainMenuClass.CAV_CIMA:
 			caveEntrance = new Posicao(8, 4);
 			obstacleEntrace = new Posicao(4, 8);
-			
+
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
-			
+
 			break;
-		
+
 		case EV3MainMenuClass.CAV_ESQ:
 			caveEntrance = new Posicao(4, 8);
 			obstacleEntrace = new Posicao(8, 4);
-			
+
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
-			
+
 			break;
 		}
-		
+
 	}
-	
-	public static void iniciaPerifericoLateral(int cave){
+
+	public static void iniciaPerifericoLateral(int cave) {
 		/*
 		 * chama o launcher dos mapas
 		 */
 		mapLauncher();
-		
-		switch (cave){
-		
+
+		switch (cave) {
+
 		case EV3MainMenuClass.CAV_ESQ:
 			caveEntrance = new Posicao(4, 8);
 			obstacleEntrace = new Posicao(4, 0);
-			
+
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
-			
+
 			break;
-			
+
 		case EV3MainMenuClass.CAV_DIR:
 			caveEntrance = new Posicao(4, 0);
 			obstacleEntrace = new Posicao(4, 8);
-			
+
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
-			
+
 			break;
 		}
 	}
-	
-	private static void mapLauncher(){
+
+	private static void mapLauncher() {
 		/*
-		 * Inicia o modulo central e perifericos com todas as celulas como não checadas
+		 * Inicia o modulo central e perifericos com todas as celulas como não
+		 * checadas
 		 */
-		for(int i = 0; i < LIN_AMT; i++){
-			for(int j = 0; j < COL_AMT; j++){
+		for (int i = 0; i < LIN_AMT; i++) {
+			for (int j = 0; j < COL_AMT; j++) {
 				CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
 				CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
 				OBSTACLE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
@@ -265,5 +313,5 @@ public class AlienRescue implements Runnable{
 			}
 		}
 	}
-	
+
 }
