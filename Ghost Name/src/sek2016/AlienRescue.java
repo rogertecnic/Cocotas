@@ -24,13 +24,15 @@ public class AlienRescue implements Runnable{
 	 * Thread que comanda a execução do PID
 	 */
 	public static Thread threadPID;
+	/**
+	 * Thread que permite que a tacometria seja usada
+	 */
+	private static Thread threadTacometria;
+
 
 
 	// =========================CONSTANTES DE PROCESSO=========================
-	private static final float PI = (float)Math.PI;
-	private static final float CELL_SIZE = Celula.commonSize;// tamanho da
-	// celula em
-	// Metros
+
 	private static final int COL_AMT = 9; // quantidade de colunas na matriz
 	private static final int LIN_AMT = 9;// quantidade de linhas na matriz
 
@@ -40,15 +42,11 @@ public class AlienRescue implements Runnable{
 	private final static Celula[][] CAVE_MAP = new Celula[LIN_AMT][COL_AMT];
 	private final static Celula[][] OBSTACLE_MAP = new Celula[LIN_AMT][COL_AMT];
 
-	private static Posicao inputCell = new Posicao(0, 4);
+	public static Posicao inputCell = new Posicao(0, 4);
 	private static Posicao caveEntrance;
 	private static Posicao caveExit;
 	private static Posicao obstacleEntrace;
 	private static Posicao obstacleExit;
-
-
-	// ====================VARIAVEIS DE PROCESSO===============================
-	private static Posicao robotPosition = inputCell; // posição de entrada
 
 
 	// ========================================================================
@@ -60,11 +58,22 @@ public class AlienRescue implements Runnable{
 		Navigation.garraFechada = false;
 		try{ // o codigo deve ficar dentro desse try gigante
 			//======INICIO DO CODIGO=============================================================
+			/*
+			 * Thread da PID é iniciada aqui.
+			 */
 			threadPID = new Thread(new PID());
 			threadPID.setDaemon(true);
 			threadPID.setName("threadPID");
 			PID.pidRunning = true;
 			threadPID.start();
+			
+			/*
+			 * Thread da Tacometria é iniciada aqui.
+			 */
+			threadTacometria = new Thread(new Navigation());
+			threadTacometria.setDaemon(true);
+			threadTacometria.setName("Thread Tacometria");
+			threadTacometria.start();
 
 			//victorySong();
 			//Navigation.openGarra();
@@ -122,52 +131,25 @@ public class AlienRescue implements Runnable{
 
 	//======================Logica de captura, mapeamento e retorno============
 
-	private static void cellExchanger() {
-		float tacho = Navigation.getTacho("B");
-		float dist = (2 * PI * Navigation.RAIO) * tacho;
-		if (dist >= CELL_SIZE) {
-			newPosition();
-			Navigation.resetTacho();
-		}
-	}
-
-	private static void newPosition() {
-		if (Navigation.orientation == Navigation.FRONT) {
-			robotPosition.setLinha(robotPosition.x + 1);
-		}
-
-		else if (Navigation.orientation == Navigation.BACK) {
-			robotPosition.setLinha(robotPosition.x - 1);
-		}
-
-		else if (Navigation.orientation == Navigation.LEFT) {
-			robotPosition.setColuna(robotPosition.y + 1);
-		}
-
-		else if (Navigation.orientation == Navigation.RIGTH) {
-			robotPosition.setColuna(robotPosition.y - 1);
-		}
-
-	}
 
 	private static boolean allowedReading() {
 
-		if (robotPosition.x == (LIN_AMT - 1) && (Navigation.orientation == Navigation.FRONT
+		if (Navigation.robotPosition.x == (LIN_AMT - 1) && (Navigation.orientation == Navigation.FRONT
 				|| Navigation.orientation == Navigation.LEFT || Navigation.orientation == Navigation.RIGTH)) {
 
 			return false;
 
-		} else if (robotPosition.x == 0 && (Navigation.orientation == Navigation.BACK
+		} else if (Navigation.robotPosition.x == 0 && (Navigation.orientation == Navigation.BACK
 				|| Navigation.orientation == Navigation.LEFT || Navigation.orientation == Navigation.RIGTH)) {
 
 			return false;
 
-		} else if (robotPosition.y == (COL_AMT - 1) && (Navigation.orientation == Navigation.LEFT
+		} else if (Navigation.robotPosition.y == (COL_AMT - 1) && (Navigation.orientation == Navigation.LEFT
 				|| Navigation.orientation == Navigation.BACK || Navigation.orientation == Navigation.FRONT)) {
 
 			return false;
 
-		} else if (robotPosition.y == 0 && (Navigation.orientation == Navigation.RIGTH
+		} else if (Navigation.robotPosition.y == 0 && (Navigation.orientation == Navigation.RIGTH
 				|| Navigation.orientation == Navigation.BACK || Navigation.orientation == Navigation.FRONT)) {
 
 			return false;
