@@ -26,17 +26,17 @@ public class Sensors {
 	// =====================constantes de processo=======================
 	private static final float DIST_MIN = 0.07320f, // distancia minima do
 													// boneco
-			DIST_MAX = 0.0953f; // distancia maxima do boneco
-			/*
-			 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que
-			 * vao corresponder a cada cor de bonecos, esses intervalos serao
-			 * definidos no metodo de calibragem, com o menor valor sendo 0,
-			 * exemplo: 0 <p< r1 < b < r2 < v < r3; REFERENTES A COR DO BONECO
-			 * v: vermelho b: branco p: preto
-			 */
-	//		r1, r2, r3, // red
-	//		g1, g2, g3, // green
-	//		b1, b2, b3; // blue
+			DIST_MAX = 0.18f; // distancia maxima do boneco (0.18 para nao dar erro)
+	/*
+	 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que vao
+	 * corresponder a cada cor de bonecos, esses intervalos serao definidos no
+	 * metodo de calibragem, com o menor valor sendo 0 e o maior valor sendo 1 e
+	 * os intervalos serao entre estes 2 extremos; exemplo: 0 <p< r1 < b < r2 <
+	 * v < 1; REFERENTES A COR DO BONECO v: vermelho b: branco p: preto
+	 */
+	private static float r1, r2, // red
+			g1, g2, // green
+			b1, b2; // blue
 
 	// ======================metodos======================
 	/**
@@ -106,46 +106,50 @@ public class Sensors {
 		gyro.reset();
 	}
 
+	/*
+	 * public static int VerificaCorDoll() {
+	 * dollColor.getRGBMode().fetchSample(rgbSample, 0); if (rgbSample[0] < vr2
+	 * && rgbSample[0] > vr1) { // verificação vermelho if (rgbSample[1] < vg2
+	 * && rgbSample[1] > vg1) { if (rgbSample[2] < vb2 && rgbSample[2] > vb1) {
+	 * System.out.println("vermelho"); return 5;
+	 * 
+	 * } }
+	 * 
+	 * }
+	 * 
+	 * if (rgbSample[0] < br2 && rgbSample[0] > br1) { // verificação branco if
+	 * (rgbSample[1] < bg2 && rgbSample[1] > bg1) { if (rgbSample[2] < bb2 &&
+	 * rgbSample[2] > bb1) { System.out.println("branco"); return 3; } }
+	 * 
+	 * }
+	 * 
+	 * if (rgbSample[0] < r1 && rgbSample[0] > 0) { // verificação preto if
+	 * (rgbSample[1] < g1 && rgbSample[1] > 0) { if (rgbSample[2] < b1 &&
+	 * rgbSample[2] > 0) { System.out.println("preto"); return 4; } }
+	 * 
+	 * } System.out.println(); return 0; }
+	 */
+
 	/**
 	 * metodo para ver a cor do boneco
 	 * 
-	 * @return 3 branco 4 preto 5 vermelho
+	 * @return 3 branco 4 vermelho 5 preto
 	 * 
 	 */
 	public static int VerificaCorDoll() {
 		dollColor.getRGBMode().fetchSample(rgbSample, 0);
-		if (rgbSample[0] < vr2 && rgbSample[0] > vr1) { // verificação vermelho
-			if (rgbSample[1] < vg2 && rgbSample[1] > vg1) {
-				if (rgbSample[2] < vb2 && rgbSample[2] > vb1) {
-					System.out.println("vermelho");
-					return 5;
-
-				}
+		if (rgbSample[0] > r1) { // verificação vermelho
+			if (rgbSample[1] > g1 && rgbSample[2] > b1) {
+				System.out.println("branco");
+				return 3;
+			} else {
+				System.out.println("vermelho");
+				return 4;
 			}
-
+		} else {
+			System.out.println("preto");
+			return 5;
 		}
-
-		if (rgbSample[0] < br2 && rgbSample[0] > br1) { // verificação branco
-			if (rgbSample[1] < bg2 && rgbSample[1] > bg1) {
-				if (rgbSample[2] < bb2 && rgbSample[2] > bb1) {
-					System.out.println("branco");
-					return 3;
-				}
-			}
-
-		}
-
-		if (rgbSample[0] < pr2 && rgbSample[0] > pr1) { // verificação preto
-			if (rgbSample[1] < pg2 && rgbSample[1] > pg1) {
-				if (rgbSample[2] < pb2 && rgbSample[2] > pb1) {
-					System.out.println("preto");
-					return 4;
-				}
-			}
-
-		}
-		System.out.println();
-		return 0;
 	}
 
 	/**
@@ -181,45 +185,46 @@ public class Sensors {
 		red[2] = rgbSample[0];
 		green[2] = rgbSample[1];
 		blue[2] = rgbSample[2];
-		t=0;
+		t = 0;
 		// organizando os intervalos do red
-		for(int i = 0; i<=2;i++){
-			for(int j=0;j<=2-i;j++){
-				if(red[j]>=red[i]){
-					t=red[i];
+		for (int i = 0; i <= 2; i++) {
+			for (int j = 2; j > i; j--) {
+				if (red[j] <= red[i]) {
+					t = red[i];
 					red[i] = red[j];
 					red[j] = t;
 				}
 			}
 		}
-		
-		t=0;
+
+		t = 0;
 		// organizando os intervalos do green
-		for(int i = 0; i<=2;i++){
-			for(int j=0;j<=2-i;j++){
-				if(green[j]>=green[i]){
-					t=green[i];
+		for (int i = 0; i <= 2; i++) {
+			for (int j = 2; j > i; j--) {
+				if (green[j] <= green[i]) {
+					t = green[i];
 					green[i] = green[j];
 					green[j] = t;
 				}
 			}
 		}
-		
-		t=0;
+
+		t = 0;
 		// organizando os intervalos do blue
-		for(int i = 0; i<=2;i++){
-			for(int j=0;j<=2-i;j++){
-				if(blue[j]>=blue[i]){
-					t=blue[i];
+		for (int i = 0; i <= 2; i++) {
+			for (int j = 2; j > i; j--) {
+				if (blue[j] <= blue[i]) {
+					t = blue[i];
 					blue[i] = blue[j];
 					blue[j] = t;
 				}
 			}
 		}
+
 		LCD.clear();
-		System.out.printf("%.4f;%.4f;%.4f\n", red[0], red[1], red[2]);
-		System.out.printf("%.4f;%.4f;%.4f\n", green[0], green[1], green[2]);
-		System.out.printf("%.4f;%.4f;%.4f\n", blue[0], blue[1], blue[2]);
-		Button.ENTER.waitForPressAndRelease();
+		r1 = red[0] * 2;
+		g1 = blue[0] * 2;
+		b1 = green[0] * 2;
+
 	}
 }

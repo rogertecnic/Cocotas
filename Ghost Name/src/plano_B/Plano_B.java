@@ -1,6 +1,5 @@
 package plano_B;
 
-import lejos.hardware.lcd.LCD;
 import sek2016.EV3MainMenuClass;
 
 public class Plano_B {
@@ -29,32 +28,7 @@ public class Plano_B {
 		configCave = EV3MainMenuClass.configCave;
 		bonecoNoCentro = EV3MainMenuClass.bonecoNoCentro;
 
-		
-		
+		Navegacao_secundaria.setaArena(configArena, configCave);
 	}
 }
 
-/*
-LCD.drawString("<A>        r", 0, 1);
-LCD.drawString("         P C P", 0, 2);
-LCD.drawString("           r", 0, 3);
-LCD.drawString("r mod. entrada",0, 4);
-LCD.drawString("P perifericos",0, 5);
-LCD.drawString("C central",0, 6);
-break;
-}
-case 2:{
-LCD.drawString("CONFIG DA ARENA", 0, 0);
-LCD.drawString("<B>        P", 0, 1);
-LCD.drawString("         r C P", 0, 2);
-LCD.drawString("           r", 0, 3);
-LCD.drawString("r mod. entrada",0, 4);
-LCD.drawString("P perifericos",0, 5);
-LCD.drawString("C central",0, 6);
-break;
-}case 3:{
-LCD.drawString("CONFIG DA ARENA", 0, 0);
-LCD.drawString("<C>        P", 0, 1);
-LCD.drawString("         P C r", 0, 2);
-LCD.drawString("           r", 0, 3);
- */

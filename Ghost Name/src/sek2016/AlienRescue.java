@@ -3,6 +3,7 @@ package sek2016;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
+import plano_B.Plano_B;
 import sek2016.Celula.Status;
 
 /**
@@ -71,24 +72,40 @@ public class AlienRescue implements Runnable {
 			threadTacometria = new Thread(new Navigation());
 			threadTacometria.setDaemon(true);
 			threadTacometria.setName("Thread Tacometria");
-			threadTacometria.start();
+			// threadTacometria.start();
 
-			victorySong();
+			// Plano_B.partiu();
+			// victorySong();
 			// Navigation.openGarra();
-			float dist = -0.3f;
-			int ang = 45;
-			//Navigation.andar(dist);
-			
-			//Sensors.calibraCorDoll();
-			Button.ENTER.waitForPressAndRelease();
-//			while (Button.ENTER.isUp()){
-//				ang = Sensors.VerificaCorDoll();
-//	}
-			
-			
-			
-			
-			// ======FINAL DO CODIGO=====================================================
+			// float dist = 0.3f;
+			// int ang = 45;
+			// Navigation.andar(dist);
+
+			// Button.ENTER.waitForPressAndRelease();
+			while (Button.ENTER.isUp()) {
+				Navigation.openGarra();
+				Navigation.andar(-0.1f);
+				Delay.msDelay(3000);
+
+				while (!Sensors.verificaObstaculo()) {
+					Delay.msDelay(200);
+				}
+				Navigation.forward();
+				while (Sensors.verificaObstaculo()) {
+				}
+				Navigation.stop();
+				if (Sensors.VerificaCorDoll() == 3) {
+					Navigation.closeGarra();
+				}
+				Delay.msDelay(1000);
+			}
+
+			while (Button.ENTER.isUp()) {
+				Sensors.VerificaCorDoll();
+			}
+
+			// ======FINAL DO
+			// CODIGO=====================================================
 			alienRescueON = false;
 		} catch (ThreadDeath e) {// quando o menu é chamado, essa thread é
 									// desligada e lança essa exception

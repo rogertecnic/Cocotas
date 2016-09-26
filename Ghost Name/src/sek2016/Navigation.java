@@ -344,6 +344,17 @@ public class Navigation implements Runnable {
 	 * Frente, velocidade definida pelo PID
 	 */
 	public static void forward() {
+		PID.pidRunning = false; // pausa o pid para reinicia-lo
+		while (!PID.PIDparado) { // espera o pid realmente parar
+		}
+		PID.zeraPID(); // zera o pid
+		PID.pidRunning = true; // inicia o pid
+		while (!PID.PIDparado) { // espera o pid ter a primeira iteracao para ja
+									// ter alterado a velocidade, se nao, o
+									// metodo continuaria e o robo andaria antes
+									// do pid setar as velocidades pois sao
+									// threads diferentes
+		}
 		rodaE.forward();
 		rodaD.forward();
 	}

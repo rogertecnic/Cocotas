@@ -169,12 +169,14 @@ public class EV3MainMenuClass {
 		//------------tirar apos todos os codigos ja estarem feitos
 		AlienRescue.alienRescueON = true;
 		Navigation.init(!jaIniciado);
-		Sensors.init(!jaIniciado,false,false,!jaIniciado);
-		Sensors.calibraCorDoll();
+		Sensors.init(!jaIniciado,!jaIniciado,false,!jaIniciado);
 		threadPrograma = new Thread(new AlienRescue());
 		threadPrograma.setDaemon(true);
 		threadPrograma.setName("AlienRescue");
-		Delay.msDelay(500);
+		if(!jaIniciado){
+			Sensors.calibraCorDoll();
+		}
+		Delay.msDelay(1000);
 		//-------------------------------------------------------------
 		if(configArena == ARENA_A){
 			if(configCave == CAV_DIR){ // qui eh executado na configuracao arena A cave dir
