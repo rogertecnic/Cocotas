@@ -68,12 +68,12 @@ public class AlienRescue implements Runnable {
 			/*
 			 * Thread da Tacometria é iniciada aqui.
 			 */
-			//threadTacometria = new Thread(new Navigation());
-			//threadTacometria.setDaemon(true);
-			//threadTacometria.setName("Thread Tacometria");
-			//threadTacometria.start();
+			threadTacometria = new Thread(new Navigation());
+			threadTacometria.setDaemon(true);
+			threadTacometria.setName("Thread Tacometria");
+			threadTacometria.start();
 
-			// victorySong();
+			victorySong();
 			// Navigation.openGarra();
 			float dist = -0.3f;
 			int ang = 45;
@@ -84,30 +84,11 @@ public class AlienRescue implements Runnable {
 //			while (Button.ENTER.isUp()){
 //				ang = Sensors.VerificaCorDoll();
 //	}
-			/*
-			 * boolean captured = false; boolean temp = true;// só temporária,
-			 * até resolver uns bugs aí 
-			 * 
-			 * while(temp){ cellExchanger();
-			 * 
-			 * if (allowedReading() && !captured){ if
-			 * (Sensors.verificaObstaculo()){ Navigation.stop();
-			 * Navigation.closeGarra(); /* codigo de checagem de cor
-			 * 
-			 * 
-			 * alienRescueON = false; captured = true;
-			 * 
-			 * 
-			 * }else{
-			 * 
-			 * }
-			 * 
-			 * }
-			 * 
-			 * }
-			 */
-			// ======FINAL DO
-			// CODIGO=============================================================
+			
+			
+			
+			
+			// ======FINAL DO CODIGO=====================================================
 			alienRescueON = false;
 		} catch (ThreadDeath e) {// quando o menu é chamado, essa thread é
 									// desligada e lança essa exception

@@ -2,7 +2,7 @@ package Backups;
 
 import sek2016.Posicao;
 
-public class Celula {
+public class Celula_Backup {
 
 	public static float commonSize = 0.2f; // tamanho padrão das células, cm
 
@@ -20,20 +20,20 @@ public class Celula {
 	public int f;
 	public int g;
 	public int h;
-	public Celula parent;
+	public Celula_Backup parent;
 
-	Celula(Posicao posicao) {
+	Celula_Backup(Posicao posicao) {
 		this(commonSize, true, posicao, true);
 	}
 
-	Celula(int size, Posicao posicao, boolean checked) {
+	Celula_Backup(int size, Posicao posicao, boolean checked) {
 		this.size = size;
 		this.occupied = true;
 		this.posicao = posicao;
 		this.checked = checked;
 	}
 
-	public Celula(float size, boolean occupied, Posicao posicao, boolean checked) {
+	public Celula_Backup(float size, boolean occupied, Posicao posicao, boolean checked) {
 		this.size = size;
 		this.occupied = occupied;
 		this.checked = checked;

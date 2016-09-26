@@ -8,14 +8,14 @@ import sek2016.Posicao;
 
 public class Astar_Backup {
 
-	Celula[][] mapa;
-	ArrayList<Celula> listaAberta = new ArrayList<Celula>();
-	ArrayList<Celula> listaFechada = new ArrayList<Celula>();
+	Celula_Backup[][] mapa;
+	ArrayList<Celula_Backup> listaAberta = new ArrayList<Celula_Backup>();
+	ArrayList<Celula_Backup> listaFechada = new ArrayList<Celula_Backup>();
 
-	Astar_Backup(Celula[][] mapa) {
+	Astar_Backup(Celula_Backup[][] mapa) {
 		this.mapa = mapa;
-		listaAberta = new ArrayList<Celula>();
-		listaFechada = new ArrayList<Celula>();
+		listaAberta = new ArrayList<Celula_Backup>();
+		listaFechada = new ArrayList<Celula_Backup>();
 	}
 
 	/**
@@ -30,7 +30,7 @@ public class Astar_Backup {
 	 *             caminho não encontrado
 	 */
 	
-	public List<Celula> search(Posicao inicio, Posicao fim) throws Exception {
+	public List<Celula_Backup> search(Posicao inicio, Posicao fim) throws Exception {
 		// Apagam os valores calculados do mapa e as listas
 		apagarMap();
 		listaAberta.clear();
@@ -51,12 +51,12 @@ public class Astar_Backup {
 				
 			}
 			
-			Celula noAtual = listaAberta.get(indiceMenor);
+			Celula_Backup noAtual = listaAberta.get(indiceMenor);
 			// Fim -- o resultado foi encontrado, retorne o caminho encontrado
 			
 			if (noAtual == mapa[fim.x][fim.y]) {
-				Celula atual = noAtual;
-				Stack<Celula> ret = new Stack<Celula>();
+				Celula_Backup atual = noAtual;
+				Stack<Celula_Backup> ret = new Stack<Celula_Backup>();
 				while (atual.parent != null) {
 					ret.push(atual);
 					atual = atual.parent;
@@ -70,10 +70,10 @@ public class Astar_Backup {
 			// cada um dos vizinhos
 			listaAberta.remove(noAtual);
 			listaFechada.add(noAtual);
-			List<Celula> vizinhos = vizinhos(noAtual);
+			List<Celula_Backup> vizinhos = vizinhos(noAtual);
 
 			for (int i = 0; i < vizinhos.size(); i++) {
-				Celula vizinho = vizinhos.get(i);
+				Celula_Backup vizinho = vizinhos.get(i);
 				if (vizinho.isOccupied() || listaFechada.contains(vizinho)) {
 					// não é um nó válido, pule para o proximo vizinho
 					continue;
@@ -113,7 +113,7 @@ public class Astar_Backup {
 		throw new Exception();
 	}
 
-	public List<Celula> searchReversePath(Posicao inicio, Posicao fim) throws Exception {
+	public List<Celula_Backup> searchReversePath(Posicao inicio, Posicao fim) throws Exception {
 
 		// Apagam os valores calculados do mapa e as listas
 		apagarMap();
@@ -131,12 +131,12 @@ public class Astar_Backup {
 					indiceMenor = i;
 				}
 			}
-			Celula noAtual = listaAberta.get(indiceMenor);
+			Celula_Backup noAtual = listaAberta.get(indiceMenor);
 
 			// Fim -- o resultado foi encontrado, retorne o caminho encontrado
 			if (noAtual == mapa[fim.x][fim.y]) {
-				Celula atual = noAtual;
-				Stack<Celula> ret = new Stack<Celula>();
+				Celula_Backup atual = noAtual;
+				Stack<Celula_Backup> ret = new Stack<Celula_Backup>();
 				while (atual.parent != null) {
 
 					ret.push(atual);
@@ -151,10 +151,10 @@ public class Astar_Backup {
 			// cada um dos vizinhos
 			listaAberta.remove(noAtual);
 			listaFechada.add(noAtual);
-			List<Celula> vizinhos = vizinhos(noAtual);
+			List<Celula_Backup> vizinhos = vizinhos(noAtual);
 
 			for (int i = 0; i < vizinhos.size(); i++) {
-				Celula vizinho = vizinhos.get(i);
+				Celula_Backup vizinho = vizinhos.get(i);
 				if (vizinho.isOccupied() || listaFechada.contains(vizinho) || !vizinho.isChecked()) {
 					// não é um nó válido, pule para o proximo vizinho
 					continue;
@@ -199,8 +199,8 @@ public class Astar_Backup {
 	 *            pilha
 	 * @return retorna a pilha em ordem reversa na forma de lista
 	 */
-	private List<Celula> reverse(Stack<Celula> stack) {
-		ArrayList<Celula> listaReversa = new ArrayList<Celula>();
+	private List<Celula_Backup> reverse(Stack<Celula_Backup> stack) {
+		ArrayList<Celula_Backup> listaReversa = new ArrayList<Celula_Backup>();
 		while (!stack.empty()) {
 			listaReversa.add(stack.pop());
 		}
@@ -214,8 +214,8 @@ public class Astar_Backup {
 	 * @return retorna uma lista de células vizinhas a celula passada como
 	 *         parametro
 	 */
-	private List<Celula> vizinhos(Celula no) {
-		ArrayList<Celula> ret = new ArrayList<Celula>();
+	private List<Celula_Backup> vizinhos(Celula_Backup no) {
+		ArrayList<Celula_Backup> ret = new ArrayList<Celula_Backup>();
 		Posicao posicao = no.getPosicao();
 		if (posicao.x > 0) {
 			ret.add(mapa[posicao.x - 1][posicao.y]);

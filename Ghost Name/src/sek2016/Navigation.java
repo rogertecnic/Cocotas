@@ -54,7 +54,7 @@ public class Navigation implements Runnable {
 								// no metodo calculaPID se caso ele for andar de
 								// re
 
-	public static Posicao robotPosition = AlienRescue.inputCell; // posição de
+	public static Posicao robotPosition; // posição de
 																	// entrada
 
 	// ========================Constantes de processo=====================
@@ -71,7 +71,9 @@ public class Navigation implements Runnable {
 	@Override
 	public void run() {
 
-		while (true) {
+		robotPosition = AlienRescue.inputCell;
+		
+		while (AlienRescue.alienRescueON) {
 			cellExchanger();
 		}
 
