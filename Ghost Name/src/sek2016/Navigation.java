@@ -5,8 +5,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.utility.Delay;
-import testes_variados.MainTeste;
-import testes_variados.Testa_PID;
+import plano_B.*;
 
 
 /**
