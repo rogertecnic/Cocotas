@@ -3,7 +3,7 @@ package sek2016;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
-import plano_B.Plano_B;
+import plano_B.*;
 import sek2016.Celula.Status;
 
 /**
