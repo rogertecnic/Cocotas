@@ -78,9 +78,12 @@ public class AlienRescue implements Runnable {
 			float dist = -0.3f;
 			int ang = 45;
 			//Navigation.andar(dist);
-			while (Button.ENTER.isUp()){
-				ang = Sensors.VerificaCorDoll();
-	}
+			
+			//Sensors.calibraCorDoll();
+			Button.ENTER.waitForPressAndRelease();
+//			while (Button.ENTER.isUp()){
+//				ang = Sensors.VerificaCorDoll();
+//	}
 			/*
 			 * boolean captured = false; boolean temp = true;// só temporária,
 			 * até resolver uns bugs aí 

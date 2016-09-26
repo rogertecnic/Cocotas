@@ -170,6 +170,7 @@ public class EV3MainMenuClass {
 		AlienRescue.alienRescueON = true;
 		Navigation.init(!jaIniciado);
 		Sensors.init(!jaIniciado,false,false,!jaIniciado);
+		Sensors.calibraCorDoll();
 		threadPrograma = new Thread(new AlienRescue());
 		threadPrograma.setDaemon(true);
 		threadPrograma.setName("AlienRescue");

@@ -1,5 +1,7 @@
 package sek2016;
 
+import lejos.hardware.Button;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
@@ -24,21 +26,17 @@ public class Sensors {
 	// =====================constantes de processo=======================
 	private static final float DIST_MIN = 0.07320f, // distancia minima do
 													// boneco
-			DIST_MAX = 0.0953f, // distancia maxima do boneco
+			DIST_MAX = 0.0953f; // distancia maxima do boneco
 			/*
-			 * REFERENTES A VARIAVEL DO SENSOR RGB
-			 * r: red
-			 * g: green
-			 * b: blue
-			 * 
-			 * REFERENTES A COR DO BONECO
-			 * v: vermelho
-			 * b: branco
-			 * p: preto
+			 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que
+			 * vao corresponder a cada cor de bonecos, esses intervalos serao
+			 * definidos no metodo de calibragem, com o menor valor sendo 0,
+			 * exemplo: 0 <p< r1 < b < r2 < v < r3; REFERENTES A COR DO BONECO
+			 * v: vermelho b: branco p: preto
 			 */
-			vr1 = 0.08f, vr2 = 0.2f, vg1 = 0.05f, vg2 = 0.15f, vb1 = 0.015f, vb2 = 0.02f, // Vermelho
-			br1 = 0.01f, br2 = 0.08f, bg1 = 0.015f, bg2 = 0.03f, bb1 = 0.015f, bb2 = 0.02f, // Branco
-			pr1 = 0f, pr2 = 0.01f, pg1 = 0f, pg2 = 0.05f, pb1 = 0f, pb2 = 0.015f; // Preto
+	//		r1, r2, r3, // red
+	//		g1, g2, g3, // green
+	//		b1, b2, b3; // blue
 
 	// ======================metodos======================
 	/**
@@ -121,7 +119,7 @@ public class Sensors {
 				if (rgbSample[2] < vb2 && rgbSample[2] > vb1) {
 					System.out.println("vermelho");
 					return 5;
-					
+
 				}
 			}
 
@@ -136,7 +134,7 @@ public class Sensors {
 			}
 
 		}
-		
+
 		if (rgbSample[0] < pr2 && rgbSample[0] > pr1) { // verificação preto
 			if (rgbSample[1] < pg2 && rgbSample[1] > pg1) {
 				if (rgbSample[2] < pb2 && rgbSample[2] > pb1) {
@@ -146,7 +144,82 @@ public class Sensors {
 			}
 
 		}
-			System.out.println("erro na cor");
+		System.out.println();
 		return 0;
+	}
+
+	/**
+	 * Calibragem do sensor de dollColor
+	 */
+	public static void calibraCorDoll() {
+		float[] red = new float[3], blue = new float[3], green = new float[3];
+		float t;
+		LCD.clear();
+		LCD.drawString("CALIBRAGEM", 0, 0);
+		LCD.drawString("Coloque o vermelho", 0, 1);
+		LCD.drawString("aperte o botao central", 0, 2);
+		Button.ENTER.waitForPressAndRelease();
+		dollColor.getRGBMode().fetchSample(rgbSample, 0);
+		red[0] = rgbSample[0];
+		green[0] = rgbSample[1];
+		blue[0] = rgbSample[2];
+		LCD.clear();
+		LCD.drawString("CALIBRAGEM", 0, 0);
+		LCD.drawString("Coloque o branco", 0, 1);
+		LCD.drawString("aperte o botao central", 0, 2);
+		Button.ENTER.waitForPressAndRelease();
+		dollColor.getRGBMode().fetchSample(rgbSample, 0);
+		red[1] = rgbSample[0];
+		green[1] = rgbSample[1];
+		blue[1] = rgbSample[2];
+		LCD.clear();
+		LCD.drawString("CALIBRAGEM", 0, 0);
+		LCD.drawString("Coloque o preto", 0, 1);
+		LCD.drawString("aperte o botao central", 0, 2);
+		Button.ENTER.waitForPressAndRelease();
+		dollColor.getRGBMode().fetchSample(rgbSample, 0);
+		red[2] = rgbSample[0];
+		green[2] = rgbSample[1];
+		blue[2] = rgbSample[2];
+		t=0;
+		// organizando os intervalos do red
+		for(int i = 0; i<=2;i++){
+			for(int j=0;j<=2-i;j++){
+				if(red[j]>=red[i]){
+					t=red[i];
+					red[i] = red[j];
+					red[j] = t;
+				}
+			}
+		}
+		
+		t=0;
+		// organizando os intervalos do green
+		for(int i = 0; i<=2;i++){
+			for(int j=0;j<=2-i;j++){
+				if(green[j]>=green[i]){
+					t=green[i];
+					green[i] = green[j];
+					green[j] = t;
+				}
+			}
+		}
+		
+		t=0;
+		// organizando os intervalos do blue
+		for(int i = 0; i<=2;i++){
+			for(int j=0;j<=2-i;j++){
+				if(blue[j]>=blue[i]){
+					t=blue[i];
+					blue[i] = blue[j];
+					blue[j] = t;
+				}
+			}
+		}
+		LCD.clear();
+		System.out.printf("%.4f;%.4f;%.4f\n", red[0], red[1], red[2]);
+		System.out.printf("%.4f;%.4f;%.4f\n", green[0], green[1], green[2]);
+		System.out.printf("%.4f;%.4f;%.4f\n", blue[0], blue[1], blue[2]);
+		Button.ENTER.waitForPressAndRelease();
 	}
 }
