@@ -36,7 +36,6 @@ public class Navegacao_secundaria {
 	 * @param configArena
 	 */
 	public static void inicioSemBoneco(int configArena, int configCave) {
-		initVariaveis();
 		switch (configArena) {
 		case ARENA_A: {
 			Navigation.andar(0.925f + 0.33f);
@@ -142,10 +141,10 @@ public class Navegacao_secundaria {
 		//======se achou vai buscar o boneco, se nao, gira p o angulo inicial e recomeca
 		// a busca
 		if(achouBoneco){
-			Navigation.andar(0.03f);
+
 			dist = Sensors.verificaDistObstaculo();
 			Navigation.andar(dist);
-			pushSegmento((int)graus, dist+0.03f, local);
+			pushSegmento((int)graus, dist, local);
 			Navigation.closeGarra();
 			return true;
 		}else{

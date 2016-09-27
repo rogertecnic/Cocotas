@@ -7,6 +7,7 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 
 public class Sensors {
 
@@ -25,9 +26,9 @@ public class Sensors {
 	floorSample;
 
 	// =====================constantes de processo=======================
-	private static final float DIST_MIN = 0.07320f, // distancia minima do
+	private static final float DIST_MIN = 0.05f, // distancia minima do
 			// boneco
-			DIST_MAX = 0.18f; // distancia maxima do boneco (0.18 para nao dar erro)
+			DIST_MAX = 0.2f; // distancia maxima do boneco (0.18 para nao dar erro)
 	/*
 	 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que vao
 	 * corresponder a cada cor de bonecos, esses intervalos serao definidos no
@@ -35,10 +36,10 @@ public class Sensors {
 	 * os intervalos serao entre estes 2 extremos; exemplo: 0 <p< r1 < b < r2 <
 	 * v < 1; REFERENTES A COR DO BONECO v: vermelho b: branco p: preto
 	 */
-	private static float r1, r2, // red
-	g1, g2, // green
-	b1, b2; // blue
-
+	private static float r1, r1floor, // red
+	g1, g1floor, // green
+	b1, b1floor; // blue
+	private static final int BRANCO = 3, VERMELHO = 4, PRETO = 5;
 	// ======================metodos======================
 	/**
 	 * Metodo que instancia todos os sensores.
@@ -93,23 +94,41 @@ public class Sensors {
 	 * @return distancia lida;
 	 */
 	public static float verificaDistObstaculo(){
-		ultrasonic.getDistanceMode().fetchSample(distSample, 0);
+		float[] dist = new float[10];
+		distSample[0] = 0f;
+		for(int i = 0;i<10;i++){
+			ultrasonic.getDistanceMode().fetchSample(dist, i);
+			distSample[0] += dist[i];
+		}
+
+		distSample[0] = distSample[0]/10;
+		System.out.println(distSample[0]);
 		if((distSample[0] >= DIST_MIN) && (distSample[0] <= DIST_MAX))
 			return distSample[0];
 		else 
 			return 0f;
 	}
-	
+
 	/**
-	 * Metodo que verifica a cor do chao
+	 * Metodo que verifica a cor do chao, a leitura do sensor eh dada em rgb,
+	 * obtemos empiricamente que para o r a variacao nao eh significante
+	 * para o g o valor maior de reflexao eh o floor verde (obvio)
+	 * para o b o valor maior de reflexao eh o floor azul
+	 * o metodo esta usando somente o g para testar
 	 * @return 5 se for preto e 3 se for branco;
 	 */
-	public static int verificaChao(){
+	public static int verificaFloor(){
 		floorColor.getRGBMode().fetchSample(floorSample, 0);
-		if(floorSample[1] > 0.1f){ // verificar isso aqui
-			return 5;
-		}else return 3;
+		if(floorSample[1] >=g1floor){ // solo verde, resgata boneco preto
+			System.out.println("resg PRETO");
+			return PRETO;
+		}else{
+			System.out.println("resg BRANCO");
+			Delay.msDelay(1000);
+			return BRANCO;
+		}
 	}
+	
 	/**
 	 * Metodo que verifica somente a posicao do gyro;
 	 * 
@@ -167,14 +186,14 @@ public class Sensors {
 		if (rgbSample[0] > r1) { // verificação vermelho
 			if (rgbSample[1] > g1 && rgbSample[2] > b1) {
 				System.out.println("branco");
-				return 3;
+				return BRANCO;
 			} else {
 				System.out.println("vermelho");
-				return 4;
+				return VERMELHO;
 			}
 		} else {
 			System.out.println("preto");
-			return 5;
+			return PRETO;
 		}
 	}
 
@@ -251,6 +270,64 @@ public class Sensors {
 		r1 = red[0] * 2;
 		g1 = blue[0] * 2;
 		b1 = green[0] * 2;
+
+	}
+
+	/**
+	 * Calibragem do sensor de dollColor
+	 */
+	public static void calibraCorChao() {
+		float[] red = new float[2], blue = new float[2], green = new float[2];
+		float t;
+		LCD.clear();
+		LCD.drawString("CALIBRAGEM ARENA", 0, 0);
+		LCD.drawString("Coloque no verde", 0, 1);
+		LCD.drawString("aperte o botao central", 0, 2);
+		Button.ENTER.waitForPressAndRelease();
+		floorColor.getRGBMode().fetchSample(floorSample, 0);
+		red[0] = floorSample[0];
+		green[0] = floorSample[1];
+		blue[0] = floorSample[2];
+		LCD.clear();
+		LCD.drawString("CALIBRAGEM ARENA", 0, 0);
+		LCD.drawString("Coloque no azul", 0, 1);
+		LCD.drawString("aperte o botao central", 0, 2);
+		Button.ENTER.waitForPressAndRelease();
+		floorColor.getRGBMode().fetchSample(floorSample, 0);
+		red[1] = floorSample[0];
+		green[1] = floorSample[1];
+		blue[1] = floorSample[2];
+
+		t = 0;
+		// organizando os intervalos do red
+		for (int i = 0; i <= 1; i++) {
+			for (int j = 1; j > i; j--) {
+				if (red[j] <= red[i]) {
+					t = red[i];
+					red[i] = red[j];
+					red[j] = t;
+				}
+			}
+		}
+
+		t = 0;
+		// organizando os intervalos do green
+		for (int i = 0; i <= 1; i++) {
+			for (int j = 1; j > i; j--) {
+				if (green[j] <= green[i]) {
+					t = green[i];
+					green[i] = green[j];
+					green[j] = t;
+				}
+			}
+		}
+
+
+
+
+		r1floor = red[0] * 2; // nem usa
+		b1floor = (blue[0] +blue[1])/2;
+		g1floor = (green[0] + green[1])/2;
 
 	}
 }

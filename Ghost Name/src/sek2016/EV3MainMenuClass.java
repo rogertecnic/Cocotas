@@ -17,7 +17,8 @@ public class EV3MainMenuClass {
 	private static boolean exit = false;
 
 	/**
-	 * Variavel que controla a instancia dos sensores e motores.<br>
+	 * Variavel que controla a instancia dos sensores e motores e 
+	 * configuracoes iniciais que serao feita uma vez.<br>
 	 * <b>true:</b> ja foi instanciado, (resetar gyroscopio);<br>
 	 * <b>false:</b> ainda não foi instanciado, (primeira execução do codigo);
 	 */
@@ -48,6 +49,12 @@ public class EV3MainMenuClass {
 	//=====================MAIN===================================
 	public static void main(String[] args) { // foca so no metodo start, o resto eh coisa pra controlar o menu
 		while (!exit) {
+			Navigation.init(!jaIniciado);
+			Sensors.init(!jaIniciado,!jaIniciado,!jaIniciado,!jaIniciado);
+			if(!jaIniciado){
+				Sensors.calibraCorDoll();
+				Sensors.calibraCorChao();
+			}
 			controleMenu();
 			if (!exit) {
 				Button.waitForAnyPress();
@@ -165,17 +172,10 @@ public class EV3MainMenuClass {
 	 * todas as definicoes de acordo com as opcoes escolhidas nos menus
 	 */
 	private static void start(){
-		//System.out.println(configArena + "  " + configCave + "  " + bonecoNoCentro);
-		//------------tirar apos todos os codigos ja estarem feitos
-		AlienRescue.alienRescueON = true;
-		Navigation.init(!jaIniciado);
-		Sensors.init(!jaIniciado,!jaIniciado,!jaIniciado,!jaIniciado);
 		threadPrograma = new Thread(new AlienRescue());
 		threadPrograma.setDaemon(true);
 		threadPrograma.setName("AlienRescue");
-		if(!jaIniciado){
-			Sensors.calibraCorDoll();
-		}
+		jaIniciado = true; // seta que a config inicial ja foi feita
 		Delay.msDelay(500);
 		//-------------------------------------------------------------
 		if(configArena == ARENA_A){
@@ -205,7 +205,8 @@ public class EV3MainMenuClass {
 				}
 		}
 		LCD.drawString("boneco:" + (bonecoNoCentro?"sim":"nao"), 0, 2); // pode apagar
-		jaIniciado = true; // seta que a thread do programa ja iniciou
+		
+		AlienRescue.alienRescueON = true;
 		threadPrograma.start(); // inicia a thread
 	}
 

@@ -32,8 +32,9 @@ public class Plano_B {
 		configCave = EV3MainMenuClass.configCave;
 		bonecoNoCentro = EV3MainMenuClass.bonecoNoCentro;
 		
-		cor_resgate = Sensors.verificaChao();
-		Navegacao_secundaria.inicioSemBoneco(configArena, configCave); // testar todas as 9 possibilidades
+		Navegacao_secundaria.initVariaveis();
+		cor_resgate = Sensors.verificaFloor();
+		//Navegacao_secundaria.inicioSemBoneco(configArena, configCave); // testar todas as 9 possibilidades
 		sequenciaBuscaParede(); // testar se esta buscando e resgatando mesmo
 		
 		

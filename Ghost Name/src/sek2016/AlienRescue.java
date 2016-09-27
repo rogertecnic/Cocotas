@@ -1,5 +1,6 @@
 package sek2016;
 
+import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
 import plano_B.Plano_B;
@@ -68,11 +69,16 @@ public class AlienRescue implements Runnable{
 			threadPID.start();
 
 			//victorySong();
-			//Navigation.openGarra();
+			Navigation.openGarra();
 			//float dist = -0.3f;
 			//int ang = 45;
 			//Navigation.andar(dist);
-			//Plano_B.partiu();
+			Plano_B.partiu();
+			
+/*			while(Button.ENTER.isUp()){
+				Sensors.verificaDistObstaculo();
+		//System.out.println(Sensors.verificaDistObstaculo());
+			}
 			
 			
 			
