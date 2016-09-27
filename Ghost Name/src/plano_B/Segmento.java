@@ -11,9 +11,10 @@ public class Segmento {
 	/**
 	 * Angulo em graus em que o segmento que o robo andou faz com o eixo x
 	 */
-	public static int ang; 
-	public static float dist;
+	public  int ang; 
+	public  float dist;
 	public Segmento(int ang, float dist){
-		
+		this.ang = ang;
+		this.dist = dist;
 	}
 }

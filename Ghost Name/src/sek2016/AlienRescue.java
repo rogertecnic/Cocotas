@@ -2,6 +2,7 @@ package sek2016;
 
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
+import plano_B.Plano_B;
 import sek2016.Celula.Status;
 
 /**
@@ -68,9 +69,12 @@ public class AlienRescue implements Runnable{
 
 			//victorySong();
 			//Navigation.openGarra();
-			float dist = -0.3f;
-			int ang = 45;
-			Navigation.andar(dist);
+			//float dist = -0.3f;
+			//int ang = 45;
+			//Navigation.andar(dist);
+			//Plano_B.partiu();
+			
+			
 			
 /*
 			boolean captured = false;

@@ -13,13 +13,13 @@ import plano_B.*;
  */
 public class Navigation {
 	//---------------------DECLARACAO DOS MOTORES---------------------------
-	static EV3LargeRegulatedMotor rodaE;
-	static EV3LargeRegulatedMotor rodaD;
-	static EV3MediumRegulatedMotor motorG;
+	public static EV3LargeRegulatedMotor rodaE;
+	public static EV3LargeRegulatedMotor rodaD;
+	public static EV3MediumRegulatedMotor motorG;
 
 
 	//---------------------CONSTANTES DE DESCRICAO--------------------------
-	public final static float VELO_INI = 0.09f; // em m/s, velocidade linear do robo andar
+	public final static float VELO_INI = 0.2f; // em m/s, velocidade linear do robo andar
 	public final static float VELO_CURVA = 0.08f; // em m/s, velocidade linear do robo fazer o turn
 	public final static float aceleration = 0.26f; // m/s^2 PARA A RODA  (0.26f <=> 548 graus/s^2), (0.37978f <=> 800 graus/s^2), default: 2.84837 m/s^2 <=> 6000 m/s^2) 
 	public final static float DISTANCIA_ENTRE_RODAS = 0.1378f;//metros, ja conferido (0.14f)

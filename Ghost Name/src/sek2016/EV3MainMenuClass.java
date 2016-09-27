@@ -169,10 +169,13 @@ public class EV3MainMenuClass {
 		//------------tirar apos todos os codigos ja estarem feitos
 		AlienRescue.alienRescueON = true;
 		Navigation.init(!jaIniciado);
-		Sensors.init(false,false,false,!jaIniciado);
+		Sensors.init(!jaIniciado,!jaIniciado,!jaIniciado,!jaIniciado);
 		threadPrograma = new Thread(new AlienRescue());
 		threadPrograma.setDaemon(true);
 		threadPrograma.setName("AlienRescue");
+		if(!jaIniciado){
+			Sensors.calibraCorDoll();
+		}
 		Delay.msDelay(500);
 		//-------------------------------------------------------------
 		if(configArena == ARENA_A){
