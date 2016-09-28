@@ -343,7 +343,7 @@ public class AlienRescue implements Runnable {
 				Navigation.forward();
 
 				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
-					//checkFrontRobotCell();
+					checkFrontRobotCell();
 				}
 
 				caminho.remove(i);
@@ -366,7 +366,7 @@ public class AlienRescue implements Runnable {
 				Navigation.forward();
 
 				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
-					//checkFrontRobotCell();
+					checkFrontRobotCell();
 				}
 
 				caminho.remove(i);
@@ -400,7 +400,7 @@ public class AlienRescue implements Runnable {
 				Navigation.forward();
 				
 				while(caminho.get(i).getPosicao() != Navigation.robotPosition){
-					//checkFrontRobotCell();
+					checkFrontRobotCell();
 				}
 				
 				caminho.remove(i);
@@ -435,7 +435,7 @@ public class AlienRescue implements Runnable {
 				Navigation.forward();
 				
 				while(caminho.get(i).getPosicao() != Navigation.robotPosition){
-					//checkFrontRobotCell();
+					checkFrontRobotCell();
 				}
 				
 				caminho.remove(i);
