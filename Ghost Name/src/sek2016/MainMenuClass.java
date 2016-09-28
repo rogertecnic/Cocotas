@@ -180,19 +180,23 @@ public class MainMenuClass {
 		//-------------------------------------------------------------
 		if(configArena == ARENA_A){
 			if(configCave == CAV_DIR){ // qui eh executado na configuracao arena A cave dir
-			
+				
+				AlienRescue.iniciaPerifericoLateral(configCave);
 			
 			}else if(configCave == CAV_ESQ){// qui eh executado na configuracao arena A cave esq
-
+				
+				AlienRescue.iniciaPerifericoLateral(configCave);
 				
 			}
 		}
 		if(configArena == ARENA_B){
 			if(configCave == CAV_CIMA){// qui eh executado na configuracao arena B cave cima
 				
+				AlienRescue.iniciaPerifericoFrenteDireita(configCave);
 				
 			}else if(configCave == CAV_DIR){// qui eh executado na configuracao arena B cave dir
 				
+				AlienRescue.iniciaPerifericoFrenteDireita(configCave);
 				
 			}
 		}
@@ -200,11 +204,18 @@ public class MainMenuClass {
 
 			if(configCave == CAV_CIMA){// qui eh executado na configuracao arena C cave cima
 
+				AlienRescue.iniciaPerifericoFrenteEsquerda(configCave);
 
 			}else if(configCave == CAV_ESQ){// qui eh executado na configuracao arena C cave esq
 
+				AlienRescue.iniciaPerifericoFrenteEsquerda(configCave);
+
 				
 				}
+		}
+		
+		if(bonecoNoCentro == true){
+			
 		}
 
 		jaIniciado = true; // seta que a thread do programa ja iniciou
