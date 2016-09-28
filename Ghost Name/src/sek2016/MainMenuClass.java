@@ -173,38 +173,40 @@ public class MainMenuClass {
 		threadPrograma = new Thread(new AlienRescue());
 		threadPrograma.setDaemon(true);
 		threadPrograma.setName("AlienRescue");
-		if(!jaIniciado){
+		/*if(!jaIniciado){
 			Sensors.calibraCorDoll();
-		}
+		}*/
 		Delay.msDelay(1000);
 		//-------------------------------------------------------------
 		if(configArena == ARENA_A){
 			if(configCave == CAV_DIR){ // qui eh executado na configuracao arena A cave dir
-				LCD.clear(); // pode apagar
-				LCD.drawString("A DIR", 0, 3); // pode apagar
+			
+			
 			}else if(configCave == CAV_ESQ){// qui eh executado na configuracao arena A cave esq
-				LCD.clear(); // pode apagar
-				LCD.drawString("A ESQ", 0, 3); // pode apagar
+
+				
 			}
 		}
 		if(configArena == ARENA_B){
 			if(configCave == CAV_CIMA){// qui eh executado na configuracao arena B cave cima
-				LCD.clear(); // pode apagar
-				LCD.drawString("B CIMA", 0, 3); // pode apagar
+				
+				
 			}else if(configCave == CAV_DIR){// qui eh executado na configuracao arena B cave dir
-				LCD.clear(); // pode apagar
-				LCD.drawString("B DIR", 0, 3); // pode apagar
+				
+				
 			}
 		}
 		if(configArena == ARENA_C){
-			LCD.clear(); // pode apagar
+
 			if(configCave == CAV_CIMA){// qui eh executado na configuracao arena C cave cima
-				LCD.drawString("C CIMA", 0, 3); // pode apagar
+
+
 			}else if(configCave == CAV_ESQ){// qui eh executado na configuracao arena C cave esq
-				LCD.drawString("C ESQ", 0, 3);// pode apagar
+
+				
 				}
 		}
-		LCD.drawString("boneco:" + (bonecoNoCentro?"sim":"nao"), 0, 2); // pode apagar
+
 		jaIniciado = true; // seta que a thread do programa ja iniciou
 		threadPrograma.start(); // inicia a thread
 	}
