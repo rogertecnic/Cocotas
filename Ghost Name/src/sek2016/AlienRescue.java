@@ -1,9 +1,9 @@
 package sek2016;
 
+import java.util.List;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
-import plano_B.*;
 import sek2016.Celula.Status;
 
 /**
@@ -47,6 +47,10 @@ public class AlienRescue implements Runnable {
 	private static Posicao obstacleEntrace;
 	private static Posicao obstacleExit;
 
+	private static Astar aStar;
+	static Posicao teste = new Posicao(5, 5);
+
+
 	// ========================================================================
 	/**
 	 * Metodo que rege todo o codigo do robo
@@ -72,8 +76,9 @@ public class AlienRescue implements Runnable {
 			threadTacometria = new Thread(new Navigation());
 			threadTacometria.setDaemon(true);
 			threadTacometria.setName("Thread Tacometria");
-			// threadTacometria.start();
+			threadTacometria.start();
 
+			goTo(teste);
 			// Plano_B.partiu();
 			// victorySong();
 			// Navigation.openGarra();
@@ -82,34 +87,17 @@ public class AlienRescue implements Runnable {
 			// Navigation.andar(dist);
 
 			// Button.ENTER.waitForPressAndRelease();
-			while (Button.ENTER.isUp()) {
-				Navigation.openGarra();
-				Navigation.andar(-0.1f);
-				Delay.msDelay(3000);
+			
 
-				while (!Sensors.verificaObstaculo()) {
-					Delay.msDelay(200);
-				}
-				Navigation.forward();
-				while (Sensors.verificaObstaculo()) {
-				}
-				Navigation.stop();
-				if (Sensors.VerificaCorDoll() == 3) {
-					Navigation.closeGarra();
-				}
-				Delay.msDelay(1000);
-			}
-
-			while (Button.ENTER.isUp()) {
-				Sensors.VerificaCorDoll();
-			}
-
-			// ======FINAL DO
-			// CODIGO=====================================================
+			// ======FINAL DO CODIGO=================================================
 			alienRescueON = false;
 		} catch (ThreadDeath e) {// quando o menu é chamado, essa thread é
 									// desligada e lança essa exception
 			e.getStackTrace();
+		} catch (Exception e) {
+			
+			e.getStackTrace();
+			
 		}
 	}
 
@@ -306,13 +294,152 @@ public class AlienRescue implements Runnable {
 	private static void mapLauncher() {
 		/*
 		 * Inicia o modulo central e perifericos com todas as celulas como não
-		 * checadas
+		 * checadas com excessão das celulas centrais do modulo caverna.
 		 */
 		for (int i = 0; i < LIN_AMT; i++) {
 			for (int j = 0; j < COL_AMT; j++) {
+
 				CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
-				CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
 				OBSTACLE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+
+				if ((i >= 3 && i <= 5) && (j >= 3 && j <= 5)) {
+
+					CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.occupied);
+
+				} else {
+
+					CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+
+				}
+			}
+		}
+	}
+
+	/**
+	 * Esse método implementa o ir do robô de sua posição para uma posição alvo
+	 * 
+	 * @param posicaoAlvo
+	 * @throws Exception
+	 */
+	private static void goTo(Posicao posicaoAlvo) throws Exception {
+
+		aStar = new Astar(CENTRAL_MAP);
+		List<Celula> caminho = aStar.search(Navigation.robotPosition, posicaoAlvo);
+
+		for (int i = 0; i < caminho.size(); i++) {
+			/*
+			 * A célula está a esquerda da posição do robounico modo de chegar
+			 * até ela é só quando a orientação for RIGHT
+			 */
+			if (caminho.get(i).getPosicao().x == Navigation.robotPosition.x
+					&& caminho.get(i).getPosicao().y > Navigation.robotPosition.y) {
+
+				while (Navigation.orientation != Navigation.RIGTH) {
+
+					Navigation.turn(-90);
+
+				}
+
+				Navigation.forward();
+
+				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
+					//checkFrontRobotCell();
+				}
+
+				caminho.remove(i);
+				continue;
+
+			}
+			/*
+			 * A célula está a esquerda da posição do robo, unico modo de chegar
+			 * até ela é só quando a orientação for LEFT
+			 */
+			else if (caminho.get(i).getPosicao().x == Navigation.robotPosition.x
+					&& caminho.get(i).getPosicao().y > Navigation.robotPosition.y) {
+
+				while (Navigation.orientation != Navigation.LEFT) {
+
+					Navigation.turn(90);
+
+				}
+
+				Navigation.forward();
+
+				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
+					//checkFrontRobotCell();
+				}
+
+				caminho.remove(i);
+				continue;
+			}
+			/*
+			 * A célula está a frente da posição do robo, unico modo de chegar
+			 * até ela é só quando a orientação for FRONT
+			 */
+			else if (caminho.get(i).getPosicao().x > Navigation.robotPosition.x
+					&& caminho.get(i).getPosicao().y == Navigation.robotPosition.y) {
+
+				while (Navigation.orientation != Navigation.FRONT) {
+
+					if (Navigation.orientation == Navigation.LEFT) {
+
+						Navigation.turn(90);
+
+					} else if (Navigation.orientation == Navigation.RIGTH) {
+
+						Navigation.turn(-90);
+
+					} else {
+
+						Navigation.turn(-90);
+
+					}
+
+				}
+				
+				Navigation.forward();
+				
+				while(caminho.get(i).getPosicao() != Navigation.robotPosition){
+					//checkFrontRobotCell();
+				}
+				
+				caminho.remove(i);
+				continue;
+
+			}
+			/*
+			 * A célula está atrás da posição do robo, unico modo de chegar até
+			 * ela é só quando a orientação for BACK
+			 */
+			else if (caminho.get(i).getPosicao().x < Navigation.robotPosition.x
+					&& caminho.get(i).getPosicao().y == Navigation.robotPosition.y) {
+
+				while (Navigation.orientation != Navigation.BACK) {
+
+					if (Navigation.orientation == Navigation.LEFT) {
+
+						Navigation.turn(90);
+
+					} else if (Navigation.orientation == Navigation.RIGTH) {
+
+						Navigation.turn(-90);
+
+					} else {
+
+						Navigation.turn(90);
+
+					}
+
+				}
+				
+				Navigation.forward();
+				
+				while(caminho.get(i).getPosicao() != Navigation.robotPosition){
+					//checkFrontRobotCell();
+				}
+				
+				caminho.remove(i);
+				continue;
 
 			}
 		}
