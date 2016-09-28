@@ -117,9 +117,8 @@ public class Navegacao_secundaria {
 			dist = Sensors.verificaDistObstaculo();
 			if(dist !=0f){
 				// ajuste fino
-				Delay.msDelay(100);
+				Delay.msDelay(200);
 				Navigation.stop();
-				dist = Sensors.verificaDistObstaculo();
 				graus = (Navigation.rodaD.getTachoCount()-positioninicialD)*Navigation.RAIO/(Navigation.DISTANCIA_ENTRE_RODAS/2);
 				achouBoneco = true;
 			}
@@ -137,7 +136,6 @@ public class Navegacao_secundaria {
 				// ajuste fino
 				Delay.msDelay(100);
 				Navigation.stop();
-				dist = Sensors.verificaDistObstaculo();
 				graus = (Navigation.rodaD.getTachoCount()-positioninicialD)*Navigation.RAIO/(Navigation.DISTANCIA_ENTRE_RODAS/2);
 				achouBoneco = true;
 			}
@@ -147,18 +145,13 @@ public class Navegacao_secundaria {
 		//======se achou vai buscar o boneco, se nao, gira p o angulo inicial
 		if(achouBoneco){
 			dist = Sensors.verificaDistObstaculo();
-			Navigation.andar(dist);
-			pushSegmento((int)graus, dist, local);
+			Navigation.andar(0.14f);
+			pushSegmento((int)graus, 0.14f, local);
 			Navigation.closeGarra();
 			return true;
 		}else{
 			Navigation.setVelocidade(Navigation.VELO_CURVA, Navigation.VELO_CURVA);
-			Navigation.rodaD.forward();
-			Navigation.rodaE.backward();
-			while(Navigation.rodaE.getTachoCount()>(positioninicialE+ang_defasado) && // espera o robo girar as rodas ate a posicao de chamar o metodo stop
-					Navigation.rodaD.getTachoCount()<(positioninicialD-ang_defasado)){ 
-			}
-			Navigation.stop();
+			Navigation.turn(graus-3);
 			return false;
 		}
 
@@ -239,18 +232,18 @@ public class Navegacao_secundaria {
 				break;
 			}
 			}
-			if(0.8f-0.15f*bonecosErrados<= 0.2f){
+			if(0.8f-0.05f*bonecosErrados<= 0.2f){
 				grau = -grau;
 			}
 			Navigation.turn(grau);
-			Navigation.andar( 0.8f-0.15f*bonecosErrados );
+			Navigation.andar( 0.8f-0.05f*bonecosErrados );
 			Navigation.openGarra();
 			bonecosErrados ++;
-			Navigation.andar(-(0.8f-0.15f*bonecosErrados));
+			Navigation.andar(-(0.8f-0.05f*bonecosErrados));
 			Navigation.turn(-grau);
 		}else if(local == CAVE){
 			int grau = 90;
-			if(0.8f-0.15f*bonecosErrados<= 0.2f){
+			if(0.8f-0.05f*bonecosErrados<= 0.2f){
 				grau = -grau;
 			}
 			Navigation.turn(grau);

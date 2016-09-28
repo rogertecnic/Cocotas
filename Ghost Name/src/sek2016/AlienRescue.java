@@ -59,7 +59,6 @@ public class AlienRescue implements Runnable{
 	 */
 	@Override
 	public void run() {
-		Navigation.garraFechada = false;
 		try{ // o codigo deve ficar dentro desse try gigante
 			//======INICIO DO CODIGO=============================================================
 			threadPID = new Thread(new PID());

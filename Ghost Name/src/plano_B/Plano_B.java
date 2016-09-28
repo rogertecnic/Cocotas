@@ -1,7 +1,9 @@
 package plano_B;
 
+import cx.ath.matthew.debug.Debug;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
+import lejos.utility.Delay;
 import sek2016.EV3MainMenuClass;
 import sek2016.Navigation;
 import sek2016.Sensors;
@@ -9,13 +11,13 @@ import sek2016.Sensors;
 public class Plano_B {
 	//======================VARIAVEIS DE CONDICAO INICIAL DA ARENA=================
 	public static int
-	cont = 0, // contadora auxiliar usada em varios casos
+	c1 = 0, c2 = 0, c3 = 0, // contadora auxiliar usada em varios casos
 	configParede = 0,
 	cor_resgate = 0,
 	configArena = 0, // config A = 1, config B = 2, config C = 3
 	configCave = 0; // da uma lida no metodo mostraMenu2
 	public static boolean
-	planob,
+	planob = true,
 	bonecoNoCentro = false; // autoexplicativo (alterado a cada reinicio)
 
 
@@ -33,15 +35,18 @@ public class Plano_B {
 	 * Metodo que rege todo o plano B, seria o main do plano B
 	 */
 	public static void partiu(){
-		planob = true;
 		configArena = EV3MainMenuClass.configArena;
 		configCave = EV3MainMenuClass.configCave;
 		bonecoNoCentro = EV3MainMenuClass.bonecoNoCentro;
-
 		Navegacao_secundaria.initVariaveis();
-		Navigation.openGarra();
 		cor_resgate = Sensors.verificaFloor();
-		//Navegacao_secundaria.inicioSemBoneco(configArena, configCave); // testar todas as 9 possibilidades
+		printDebug("RESGATAR" + cor_resgate);
+		Delay.msDelay(500);
+//		Navegacao_secundaria.inicioSemBoneco(configArena, configCave); // testar todas as 9 possibilidades
+//		while(!Sensors.verificaObstaculo()){
+			
+//		}
+//		Delay.msDelay(3000);
 		sequenciaBuscaParede(); // testar se esta buscando e resgatando mesmo
 
 
@@ -92,7 +97,7 @@ public class Plano_B {
 			LCD.drawString("CONFIG PAREDE", 0, 0);
 			LCD.drawString("<1> ---------", 0, 1);
 			LCD.drawString("    |\\      |", 0, 2);
-			LCD.drawString("    |\\      |", 0, 3);
+			LCD.drawString("    | \\     |", 0, 3);
 			LCD.drawString("    |       |", 0, 4);
 			LCD.drawString("    |--   --|", 0, 5);
 			break;
@@ -150,26 +155,13 @@ public class Plano_B {
 			}
 			}
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	}
 	/**
 	 * Metodo que procura os bonecos na sala que tem parede
 	 * deve se preocupar com a parede tambem
 	 */
 	public static void sequenciaBuscaParede() {
+		c1 = 0; c2 = 0; c3 = 0;
 		boolean achou = false,
 				resgatar = false;
 		while(!resgatar ){
@@ -177,45 +169,50 @@ public class Plano_B {
 			if(achou){
 				resgatar = Navegacao_secundaria.verificaBoneco(); // verificar se esta retornando o correto inclusive com o vermelho deve retornar false
 				if(resgatar){
+					printDebug("RESGATAR");
 					Navegacao_secundaria.voltaNaPilha(Navegacao_secundaria.PAREDE);
 					Navegacao_secundaria.voltaNaPilha(Navegacao_secundaria.CENTRAL);
+					// aqui ele volta e tem que reiniciar, objetivo concluido
 				}else{
+					printDebug("KILL HIM!!");
 					Navegacao_secundaria.tirarBonecoErrado(Navegacao_secundaria.PAREDE);
+					achou = false;
 				}
 				
 			}else{
+				printDebug("NAO ACHOU!!!");
 				switch(configParede){
 				case 1:{
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(0, 0.1f, Navegacao_secundaria.PAREDE);
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(0, 0.1f, Navegacao_secundaria.PAREDE);
-				Navigation.turn(90);
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(90, 0.1f, Navegacao_secundaria.PAREDE);
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(0, 0.1f, Navegacao_secundaria.PAREDE);
-				Navigation.turn(-90);
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(-90, 0.1f, Navegacao_secundaria.PAREDE);
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(0, 0.1f, Navegacao_secundaria.PAREDE);
-				Navigation.turn(90);
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(90, 0.1f, Navegacao_secundaria.PAREDE);
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(0, 0.1f, Navegacao_secundaria.PAREDE);
-				Navigation.turn(-90);
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(-90, 0.1f, Navegacao_secundaria.PAREDE);
-				Navigation.andar(0.1f);
-				Navegacao_secundaria.pushSegmento(0, 0.1f, Navegacao_secundaria.PAREDE);
+					if(c1<2){
+						Navigation.andar(0.15f);
+						Navegacao_secundaria.pushSegmento(0, 0.15f, Navegacao_secundaria.PAREDE);
+						c1++;
+					}else{
+						if(c2==0){
+							Navigation.turn(87);
+							Navigation.andar(0.15f);
+							Navegacao_secundaria.pushSegmento(87, 0.1f, Navegacao_secundaria.PAREDE);
+							c1=0;
+							c2=1;
+						}else{
+							Navigation.turn(-90);
+							Navigation.andar(0.15f);
+							Navegacao_secundaria.pushSegmento(-90, 0.15f, Navegacao_secundaria.PAREDE);
+							c1=0;
+							c2=0;
+						}
+					}
 				break;
 				}
 				
 				}
 			}
 		}
+	}
+	
+	public static void printDebug(String word){
+		LCD.clear();
+		LCD.drawString(word, 0, 0);
 	}
 }
 

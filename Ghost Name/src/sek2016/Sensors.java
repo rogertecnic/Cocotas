@@ -28,7 +28,7 @@ public class Sensors {
 	// =====================constantes de processo=======================
 	private static final float DIST_MIN = 0.05f, // distancia minima do
 			// boneco
-			DIST_MAX = 0.18f; // distancia maxima do boneco (0.18 para nao dar erro)
+			DIST_MAX = 0.17f; // distancia maxima do boneco (0.18 para nao dar erro)
 	/*
 	 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que vao
 	 * corresponder a cada cor de bonecos, esses intervalos serao definidos no
@@ -165,14 +165,11 @@ public class Sensors {
 		dollColor.getRGBMode().fetchSample(rgbSample, 0);
 		if (rgbSample[0] > r1) { // verificação vermelho
 			if (rgbSample[1] > g1 && rgbSample[2] > b1) {
-				System.out.println("branco");
 				return BRANCO;
 			} else {
-				System.out.println("vermelho");
 				return VERMELHO;
 			}
 		} else {
-			System.out.println("preto");
 			return PRETO;
 		}
 	}
@@ -188,10 +185,8 @@ public class Sensors {
 	public static int verificaFloor(){
 		floorColor.getRGBMode().fetchSample(floorSample, 0);
 		if(floorSample[1] >=g1floor){ // solo verde, resgata boneco preto
-			System.out.println("resg PRETO");
 			return PRETO;
 		}else{
-			System.out.println("resg BRANCO");
 			Delay.msDelay(1000);
 			return BRANCO;
 		}
