@@ -358,4 +358,9 @@ public class MainMenuClass {
 		}
 		if(!exit) start();
 	}
+	
+	public static void printDebug(String word){
+		LCD.clear();
+		LCD.drawString(word, 0, 0);
+	}
 }
