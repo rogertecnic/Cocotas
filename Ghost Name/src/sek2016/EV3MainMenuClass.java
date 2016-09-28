@@ -3,6 +3,7 @@ package sek2016;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import plano_B.Plano_B;
 
 /**
  * 
@@ -55,7 +56,17 @@ public class EV3MainMenuClass {
 				Sensors.calibraCorDoll();
 				Sensors.calibraCorChao();
 			}
+			
+			// ===== essa parte so eh executada se for o plano b
+			if(Plano_B.planob && !jaIniciado){
+				//birl, so fazer o menu la no planob e colocar aqui
+				Plano_B.controleMenuParede();
+			}
+			// ===== essa parte so eh executada se for o plano b
+			
+			Plano_B.planob = false;
 			controleMenu();
+
 			if (!exit) {
 				Button.waitForAnyPress();
 				Navigation.stop();
@@ -202,10 +213,10 @@ public class EV3MainMenuClass {
 				LCD.drawString("C CIMA", 0, 3); // pode apagar
 			}else if(configCave == CAV_ESQ){// qui eh executado na configuracao arena C cave esq
 				LCD.drawString("C ESQ", 0, 3);// pode apagar
-				}
+			}
 		}
 		LCD.drawString("boneco:" + (bonecoNoCentro?"sim":"nao"), 0, 2); // pode apagar
-		
+
 		AlienRescue.alienRescueON = true;
 		threadPrograma.start(); // inicia a thread
 	}

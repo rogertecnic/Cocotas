@@ -28,7 +28,7 @@ public class Sensors {
 	// =====================constantes de processo=======================
 	private static final float DIST_MIN = 0.05f, // distancia minima do
 			// boneco
-			DIST_MAX = 0.2f; // distancia maxima do boneco (0.18 para nao dar erro)
+			DIST_MAX = 0.18f; // distancia maxima do boneco (0.18 para nao dar erro)
 	/*
 	 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que vao
 	 * corresponder a cada cor de bonecos, esses intervalos serao definidos no
@@ -36,7 +36,7 @@ public class Sensors {
 	 * os intervalos serao entre estes 2 extremos; exemplo: 0 <p< r1 < b < r2 <
 	 * v < 1; REFERENTES A COR DO BONECO v: vermelho b: branco p: preto
 	 */
-	private static float r1, r1floor, // red
+	private static float r1, // red
 	g1, g1floor, // green
 	b1, b1floor; // blue
 	private static final int BRANCO = 3, VERMELHO = 4, PRETO = 5;
@@ -100,34 +100,14 @@ public class Sensors {
 			ultrasonic.getDistanceMode().fetchSample(dist, i);
 			distSample[0] += dist[i];
 		}
-
 		distSample[0] = distSample[0]/10;
-		System.out.println(distSample[0]);
 		if((distSample[0] >= DIST_MIN) && (distSample[0] <= DIST_MAX))
 			return distSample[0];
 		else 
 			return 0f;
 	}
 
-	/**
-	 * Metodo que verifica a cor do chao, a leitura do sensor eh dada em rgb,
-	 * obtemos empiricamente que para o r a variacao nao eh significante
-	 * para o g o valor maior de reflexao eh o floor verde (obvio)
-	 * para o b o valor maior de reflexao eh o floor azul
-	 * o metodo esta usando somente o g para testar
-	 * @return 5 se for preto e 3 se for branco;
-	 */
-	public static int verificaFloor(){
-		floorColor.getRGBMode().fetchSample(floorSample, 0);
-		if(floorSample[1] >=g1floor){ // solo verde, resgata boneco preto
-			System.out.println("resg PRETO");
-			return PRETO;
-		}else{
-			System.out.println("resg BRANCO");
-			Delay.msDelay(1000);
-			return BRANCO;
-		}
-	}
+	
 	
 	/**
 	 * Metodo que verifica somente a posicao do gyro;
@@ -197,6 +177,26 @@ public class Sensors {
 		}
 	}
 
+	/**
+	 * Metodo que verifica a cor do chao, a leitura do sensor eh dada em rgb,
+	 * obtemos empiricamente que para o r a variacao nao eh significante
+	 * para o g o valor maior de reflexao eh o floor verde (obvio)
+	 * para o b o valor maior de reflexao eh o floor azul
+	 * o metodo esta usando somente o g para testar
+	 * @return 5 se for preto e 3 se for branco;
+	 */
+	public static int verificaFloor(){
+		floorColor.getRGBMode().fetchSample(floorSample, 0);
+		if(floorSample[1] >=g1floor){ // solo verde, resgata boneco preto
+			System.out.println("resg PRETO");
+			return PRETO;
+		}else{
+			System.out.println("resg BRANCO");
+			Delay.msDelay(1000);
+			return BRANCO;
+		}
+	}
+	
 	/**
 	 * Calibragem do sensor de dollColor
 	 */
@@ -274,7 +274,7 @@ public class Sensors {
 	}
 
 	/**
-	 * Calibragem do sensor de dollColor
+	 * Calibragem do sensor de cor do chao
 	 */
 	public static void calibraCorChao() {
 		float[] red = new float[2], blue = new float[2], green = new float[2];
@@ -321,11 +321,6 @@ public class Sensors {
 				}
 			}
 		}
-
-
-
-
-		r1floor = red[0] * 2; // nem usa
 		b1floor = (blue[0] +blue[1])/2;
 		g1floor = (green[0] + green[1])/2;
 

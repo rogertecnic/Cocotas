@@ -9,8 +9,10 @@ public class Navegacao_secundaria {
 	// ========================CONSTANTES DESCRICAO==========================
 	public static final int ARENA_A = 1, ARENA_B = 2, ARENA_C = 3, CAV_DIR = 1, CAV_ESQ = 2, CAV_CIMA = 3,
 			CENTRAL = 0, CAVE = 1, PAREDE = 2, BRANCO = 3, VERMELHO = 4, PRETO = 5;
-	public static final float VELO_PROCURA = Navigation.VELO_CURVA*2/3;
+	public static final float VELO_PROCURA = Navigation.VELO_CURVA*3/4;
 
+	// =================VARIAVEIS DE PROCESSO==================
+	public static int bonecosErrados = 0;
 	// ======================PILHAS DE SEGMENTOS=========================
 	/**
 	 * pilha de segmentos que o robo vai seguir no modulo central voltando ate
@@ -105,7 +107,7 @@ public class Navegacao_secundaria {
 		float ang_defasado = wRoda*t-(acc/2)*t*t; // robo deve chamar o metodo stop antes do local de parar, esse ang_defasado é essa distancia em graus da roda
 		boolean achouBoneco = false;
 		float dist = 0f;
-		
+
 		//======virar para a esquerda procurando
 		Navigation.rodaD.forward();
 		Navigation.rodaE.backward();
@@ -114,8 +116,10 @@ public class Navegacao_secundaria {
 				!achouBoneco){ // no momento certo antes da posical final do giro, sai do while e vai direto para o metodo stop
 			dist = Sensors.verificaDistObstaculo();
 			if(dist !=0f){
-				Delay.msDelay(50); // para o robo alinhar melhor de frente com o boneco
+				// ajuste fino
+				Delay.msDelay(100);
 				Navigation.stop();
+				dist = Sensors.verificaDistObstaculo();
 				graus = (Navigation.rodaD.getTachoCount()-positioninicialD)*Navigation.RAIO/(Navigation.DISTANCIA_ENTRE_RODAS/2);
 				achouBoneco = true;
 			}
@@ -130,29 +134,29 @@ public class Navegacao_secundaria {
 				!achouBoneco){ //
 			dist = Sensors.verificaDistObstaculo();
 			if(dist !=0f){
-				Delay.msDelay(50); // para o robo alinhar melhor de frente com o boneco
+				// ajuste fino
+				Delay.msDelay(100);
 				Navigation.stop();
+				dist = Sensors.verificaDistObstaculo();
 				graus = (Navigation.rodaD.getTachoCount()-positioninicialD)*Navigation.RAIO/(Navigation.DISTANCIA_ENTRE_RODAS/2);
 				achouBoneco = true;
 			}
 		}
 		Navigation.stop();
-		
-		//======se achou vai buscar o boneco, se nao, gira p o angulo inicial e recomeca
-		// a busca
-		if(achouBoneco){
 
+		//======se achou vai buscar o boneco, se nao, gira p o angulo inicial
+		if(achouBoneco){
 			dist = Sensors.verificaDistObstaculo();
 			Navigation.andar(dist);
 			pushSegmento((int)graus, dist, local);
 			Navigation.closeGarra();
 			return true;
 		}else{
+			Navigation.setVelocidade(Navigation.VELO_CURVA, Navigation.VELO_CURVA);
 			Navigation.rodaD.forward();
 			Navigation.rodaE.backward();
 			while(Navigation.rodaE.getTachoCount()>(positioninicialE+ang_defasado) && // espera o robo girar as rodas ate a posicao de chamar o metodo stop
-					Navigation.rodaD.getTachoCount()<(positioninicialD-ang_defasado)&&
-					!achouBoneco){ // no momento certo antes da posical final do giro, sai do while e vai direto para o metodo stop
+					Navigation.rodaD.getTachoCount()<(positioninicialD-ang_defasado)){ 
 			}
 			Navigation.stop();
 			return false;
@@ -160,6 +164,7 @@ public class Navegacao_secundaria {
 
 
 	}
+
 
 	/**
 	 *  Metodo que adiciona (push) empurra no stack certo dependendo da onde o robo esta
@@ -191,13 +196,13 @@ public class Navegacao_secundaria {
 		switch(local){
 		case CENTRAL: {
 			if(segmentosCentral.size()>0)
-			return segmentosCentral.pop();
+				return segmentosCentral.pop();
 		}case CAVE:{
 			if(segmentosCaverna.size()>0)
-			return segmentosCaverna.pop();
+				return segmentosCaverna.pop();
 		}case PAREDE:{
 			if(segmentosParede.size()>0)
-			return segmentosParede.pop();
+				return segmentosParede.pop();
 		}default: return null;
 		}
 	}
@@ -217,7 +222,46 @@ public class Navegacao_secundaria {
 			return false;
 		}
 	}
-	
+
+	public static void tirarBonecoErrado(int local){
+		voltaNaPilha(local);
+		// nesse ponto o robo voltou ao inicio da arena e salvou o caminho
+		// agora dependendo do local (modulo) que o robo estiver ele vai
+		// executar um esquema diferente p tirar o boneco errado do caminho
+		if(local == PAREDE){
+			int grau = 0;
+			switch(Plano_B.configParede){
+			case 1:{
+				grau = -90;
+				break;
+			}case 7:{
+				grau = 90;
+				break;
+			}
+			}
+			if(0.8f-0.15f*bonecosErrados<= 0.2f){
+				grau = -grau;
+			}
+			Navigation.turn(grau);
+			Navigation.andar( 0.8f-0.15f*bonecosErrados );
+			Navigation.openGarra();
+			bonecosErrados ++;
+			Navigation.andar(-(0.8f-0.15f*bonecosErrados));
+			Navigation.turn(-grau);
+		}else if(local == CAVE){
+			int grau = 90;
+			if(0.8f-0.15f*bonecosErrados<= 0.2f){
+				grau = -grau;
+			}
+			Navigation.turn(grau);
+			Navigation.andar( 0.8f-0.15f*bonecosErrados );
+			Navigation.openGarra();
+			bonecosErrados ++;
+			Navigation.andar(-(0.8f-0.15f*bonecosErrados));
+			Navigation.turn(-grau);
+		}
+	}
+
 	/**
 	 * Metodo que retorna o caminho da pilha do local especificado onde o robo esta
 	 * @param local modulo onde o robo esta: (CENTRAL, CAVE, PAREDE)
