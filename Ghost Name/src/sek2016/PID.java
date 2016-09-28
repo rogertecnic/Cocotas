@@ -50,11 +50,15 @@ public class PID implements Runnable {
 	public void run() {
 		PIDparado = false;
 		zeraPID();
+		int c =0;
 		while(AlienRescue.alienRescueON){
 			calculaPID();
 			setWdWePID();
+			if(c>3){
 			PIDparado = false; // indica que o pid nao esta mais parado e ja foi executado uma vez
+			}else c++;
 			while(!pidRunning && AlienRescue.alienRescueON){
+				c = 0;
 				PIDparado = true; // indica que o pid realmente esta parado e que pode ser zerado sem preigo de ocorrer mais uma iteracao que mude
 			}
 		}

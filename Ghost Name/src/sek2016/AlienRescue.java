@@ -32,10 +32,14 @@ public class AlienRescue implements Runnable {
 	private static Thread threadTacometria;
 
 	// =========================CONSTANTES DE PROCESSO=========================
-
-	private static final int COL_AMT = 9; // quantidade de colunas na matriz
-	private static final int LIN_AMT = 9;// quantidade de linhas na matriz
-
+	/**
+	 * quantidade de colunas na matriz
+	 */
+	private static final int COL_AMT = 9; 
+	/**
+	 * quantidade de linhas na matriz
+	 */
+	private static final int LIN_AMT = 9;
 	// =======================VARIAVEIS DO MAPA==============================
 	private final static Celula[][] CENTRAL_MAP = new Celula[LIN_AMT][COL_AMT];
 	private final static Celula[][] CAVE_MAP = new Celula[LIN_AMT][COL_AMT];
@@ -76,8 +80,19 @@ public class AlienRescue implements Runnable {
 			threadTacometria.setDaemon(true);
 			threadTacometria.setName("Thread Tacometria");
 			threadTacometria.start();
-
-			goTo(teste);
+			Navigation.forward();
+			Delay.msDelay(2000);
+			Navigation.stop();
+			Navigation.forward();
+			Delay.msDelay(2000);
+			Navigation.stop();
+			Navigation.forward();
+			Delay.msDelay(2000);
+			Navigation.stop();
+			/*while(Button.ENTER.isUp()){
+				
+			}*/
+			//goTo(teste);
 			// Plano_B.partiu();
 			// victorySong();
 			// Navigation.openGarra();

@@ -142,13 +142,13 @@ public class Navigation implements Runnable {
 		PID.zeraPID(); // apos o pid parado ele eh zerado
 		setVelocidade(VELO_CURVA, VELO_CURVA); // seta a velocidade da curva
 
-		if (-graus < 0) {
-			int giro = (int) (-graus / -90);
+		if (graus > 0) {
+			int giro = (int) (graus / 90);
 			for (int x = 0; x < giro; x++) {
 				alterOrientation(-1);
 			}
-		} else if (-graus > 0) {
-			int giro = (int) (-graus / 90);
+		} else if (graus < 0) {
+			int giro = (int) (graus / -90);
 			for (int x = 0; x < giro; x++) {
 				alterOrientation(1);
 			}
@@ -344,6 +344,18 @@ public class Navigation implements Runnable {
 	 * Frente, velocidade definida pelo PID
 	 */
 	public static void forward() {
+		PID.pidRunning = false; // pausa o pid para reinicia-lo
+		while (!PID.PIDparado) { // espera o pid realmente parar
+		}
+		PID.zeraPID(); // zera o pid
+		PID.pidRunning = true; // inicia o pid
+		while (!PID.PIDparado) { // espera o pid ter a primeira iteracao para ja
+									// ter alterado a velocidade, se nao, o
+									// metodo continuaria e o robo andaria antes
+									// do pid setar as velocidades pois sao
+									// threads diferentes
+		}
+		
 		rodaE.forward();
 		rodaD.forward();
 	}
@@ -508,8 +520,6 @@ public class Navigation implements Runnable {
 	 * Altera a orientacao do robo
 	 * 
 	 * @param ortt
-	 *            NAO ENTENDI O METODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Q
-	 *            Q ISSO???
 	 */
 	private static void alterOrientation(int ortt) {
 		if (ortt > 1) {
