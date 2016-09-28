@@ -81,18 +81,31 @@ public class AlienRescue implements Runnable {
 			threadTacometria.setName("Thread Tacometria");
 			threadTacometria.start();
 			Navigation.forward();
-			Delay.msDelay(2000);
+			//System.out.println("Andou");
+			Delay.msDelay(500);
 			Navigation.stop();
 			Navigation.forward();
-			Delay.msDelay(2000);
+			//System.out.println("Andou");
+			Delay.msDelay(500);
 			Navigation.stop();
 			Navigation.forward();
-			Delay.msDelay(2000);
+			//System.out.println("Andou");
+			Delay.msDelay(500);
+			Navigation.stop();
+			Navigation.forward();
+			Delay.msDelay(3000);
+			Navigation.stop();
+			Navigation.turn(90);
+			Navigation.turn(90);
+			Navigation.stop();
+			Navigation.forward();
+			Delay.msDelay(3000);
 			Navigation.stop();
 			/*while(Button.ENTER.isUp()){
 				
 			}*/
 			//goTo(teste);
+			
 			// Plano_B.partiu();
 			// victorySong();
 			// Navigation.openGarra();
