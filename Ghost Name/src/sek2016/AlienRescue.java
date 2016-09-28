@@ -50,7 +50,6 @@ public class AlienRescue implements Runnable {
 	private static Astar aStar;
 	static Posicao teste = new Posicao(5, 5);
 
-
 	// ========================================================================
 	/**
 	 * Metodo que rege todo o codigo do robo
@@ -87,17 +86,17 @@ public class AlienRescue implements Runnable {
 			// Navigation.andar(dist);
 
 			// Button.ENTER.waitForPressAndRelease();
-			
 
-			// ======FINAL DO CODIGO=================================================
+			// ======FINAL DO
+			// CODIGO=================================================
 			alienRescueON = false;
 		} catch (ThreadDeath e) {// quando o menu é chamado, essa thread é
 									// desligada e lança essa exception
 			e.getStackTrace();
 		} catch (Exception e) {
-			
+
 			e.getStackTrace();
-			
+
 		}
 	}
 
@@ -343,7 +342,11 @@ public class AlienRescue implements Runnable {
 				Navigation.forward();
 
 				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
-					checkFrontRobotCell();
+					if (allowedReading()) {
+
+						checkFrontRobotCell();
+
+					}
 				}
 
 				caminho.remove(i);
@@ -366,7 +369,11 @@ public class AlienRescue implements Runnable {
 				Navigation.forward();
 
 				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
-					checkFrontRobotCell();
+					if (allowedReading()) {
+
+						checkFrontRobotCell();
+
+					}
 				}
 
 				caminho.remove(i);
@@ -396,13 +403,17 @@ public class AlienRescue implements Runnable {
 					}
 
 				}
-				
+
 				Navigation.forward();
-				
-				while(caminho.get(i).getPosicao() != Navigation.robotPosition){
-					checkFrontRobotCell();
+
+				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
+					if (allowedReading()) {
+
+						checkFrontRobotCell();
+
+					}
 				}
-				
+
 				caminho.remove(i);
 				continue;
 
@@ -431,13 +442,17 @@ public class AlienRescue implements Runnable {
 					}
 
 				}
-				
+
 				Navigation.forward();
-				
-				while(caminho.get(i).getPosicao() != Navigation.robotPosition){
-					checkFrontRobotCell();
+
+				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
+					if (allowedReading()) {
+
+						checkFrontRobotCell();
+
+					}
 				}
-				
+
 				caminho.remove(i);
 				continue;
 
