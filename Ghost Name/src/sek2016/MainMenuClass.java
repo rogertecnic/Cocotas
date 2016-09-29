@@ -169,7 +169,8 @@ public class MainMenuClass {
 		//------------tirar apos todos os codigos ja estarem feitos
 		AlienRescue.alienRescueON = true;
 		Navigation.init(!jaIniciado);
-		Sensors.init(!jaIniciado,!jaIniciado,false,!jaIniciado);
+		Sensors.init(false, false, false, !jaIniciado);
+		//Sensors.init(!jaIniciado,!jaIniciado,!jaIniciado,!jaIniciado);
 		threadPrograma = new Thread(new AlienRescue());
 		threadPrograma.setDaemon(true);
 		threadPrograma.setName("AlienRescue");

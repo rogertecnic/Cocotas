@@ -355,7 +355,8 @@ public class Navigation implements Runnable {
 									// do pid setar as velocidades pois sao
 									// threads diferentes
 		}
-		Delay.msDelay(300);
+		
+		Delay.msDelay(100);
 		rodaE.forward();
 		rodaD.forward();
 	}

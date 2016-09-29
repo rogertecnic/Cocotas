@@ -61,8 +61,7 @@ public class PID implements Runnable {
 			if (c > 10) {
 				PIDparado = false; // indica que o pid nao esta mais parado e ja
 									// foi executado uma vez
-			} else
-				c++;
+			} else c++;
 			while (!pidRunning && AlienRescue.alienRescueON) {
 				c = 0;
 				PIDparado = true; // indica que o pid realmente esta parado e
