@@ -68,7 +68,8 @@ public class EV3MainMenuClass {
 			controleMenu();
 
 			if (!exit) {
-				Button.waitForAnyPress();
+				Button.ENTER.waitForPressAndRelease();
+				//Button.waitForAnyPress();
 				Navigation.stop();
 				AlienRescue.alienRescueON = false;
 				threadPrograma.stop();

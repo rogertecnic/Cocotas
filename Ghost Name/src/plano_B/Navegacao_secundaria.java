@@ -41,15 +41,15 @@ public class Navegacao_secundaria {
 		switch (configArena) {
 		case ARENA_A: {
 			Navigation.andar(0.925f + 0.33f);
-			segmentosParede.push(new Segmento(0, 0.925f + 0.33f));
+			segmentosCentral.push(new Segmento(0, 0.925f + 0.33f));
 			if (configCave == CAV_DIR) {
 				Navigation.turn(90);
-				Navigation.andar(0.925f);
-				segmentosParede.push(new Segmento(90, 0.925f));
+				Navigation.andar(1f);
+				segmentosCentral.push(new Segmento(90, 1f));
 			} else {
 				Navigation.turn(-90);
-				Navigation.andar(0.925f);
-				segmentosParede.push(new Segmento(-90, 0.925f));
+				Navigation.andar(1f);
+				segmentosCentral.push(new Segmento(-90, 1f));
 			}
 
 			break;
@@ -57,26 +57,26 @@ public class Navegacao_secundaria {
 		case ARENA_B: {
 			if (configCave == CAV_CIMA) {
 				Navigation.andar(0.925f + 0.33f);
+				segmentosCentral.push(new Segmento(0, 0.925f + 0.33f));
 				Navigation.turn(-90);
-				Navigation.andar(0.925f);
-				segmentosParede.push(new Segmento(0, 0.925f + 0.33f));
-				segmentosParede.push(new Segmento(-90, 0.925f));
+				Navigation.andar(1f);
+				segmentosCentral.push(new Segmento(-90, 1f));
 			} else {
-				Navigation.andar(0.33f + 1.85f);
-				segmentosParede.push(new Segmento(0, 0.33f + 1.85f));
+				Navigation.andar(0.33f + 1.95f);
+				segmentosCentral.push(new Segmento(0, 0.33f + 1.95f));
 			}
 			break;
 		}
 		case ARENA_C: {
 			if (configCave == CAV_CIMA) {
 				Navigation.andar(0.925f + 0.33f);
+				segmentosCentral.push(new Segmento(0, 0.925f + 0.33f));
 				Navigation.turn(90);
-				Navigation.andar(0.925f);
-				segmentosParede.push(new Segmento(0, 0.925f + 0.33f));
-				segmentosParede.push(new Segmento(-90, 0.925f));
+				Navigation.andar(1f);
+				segmentosCentral.push(new Segmento(90, 1f));
 			} else {
-				Navigation.andar(0.33f + 1.85f);
-				segmentosParede.push(new Segmento(0, 0.33f + 1.85f));
+				Navigation.andar(0.33f + 1.95f);
+				segmentosCentral.push(new Segmento(0, 0.33f + 1.95f));
 			}
 			break;
 		}
@@ -143,15 +143,15 @@ public class Navegacao_secundaria {
 		Navigation.stop();
 
 		//======se achou vai buscar o boneco, se nao, gira p o angulo inicial
-		if(achouBoneco){
+		if(achouBoneco){// vai buscar o boneco
 			dist = Sensors.verificaDistObstaculo();
 			Navigation.andar(0.14f);
 			pushSegmento((int)graus, 0.14f, local);
 			Navigation.closeGarra();
 			return true;
-		}else{
+		}else{// volta pro angulo inicial antes de iniciar a busca
 			Navigation.setVelocidade(Navigation.VELO_CURVA, Navigation.VELO_CURVA);
-			Navigation.turn(graus-3);
+			Navigation.turn(graus);
 			return false;
 		}
 
@@ -232,14 +232,14 @@ public class Navegacao_secundaria {
 				break;
 			}
 			}
-			if(0.8f-0.05f*bonecosErrados<= 0.2f){
+			if(0.5f-0.05f*bonecosErrados<= 0.2f){
 				grau = -grau;
 			}
 			Navigation.turn(grau);
-			Navigation.andar( 0.8f-0.05f*bonecosErrados );
+			Navigation.andar( 0.5f-0.05f*bonecosErrados );
 			Navigation.openGarra();
 			bonecosErrados ++;
-			Navigation.andar(-(0.8f-0.05f*bonecosErrados));
+			Navigation.andar(-(0.5f-0.05f*bonecosErrados));
 			Navigation.turn(-grau);
 		}else if(local == CAVE){
 			int grau = 90;
@@ -247,10 +247,10 @@ public class Navegacao_secundaria {
 				grau = -grau;
 			}
 			Navigation.turn(grau);
-			Navigation.andar( 0.8f-0.15f*bonecosErrados );
+			Navigation.andar( 0.5f-0.05f*bonecosErrados );
 			Navigation.openGarra();
 			bonecosErrados ++;
-			Navigation.andar(-(0.8f-0.15f*bonecosErrados));
+			Navigation.andar(-(0.5f-0.05f*bonecosErrados));
 			Navigation.turn(-grau);
 		}
 	}

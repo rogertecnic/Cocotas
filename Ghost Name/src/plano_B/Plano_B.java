@@ -18,6 +18,7 @@ public class Plano_B {
 	configCave = 0; // da uma lida no metodo mostraMenu2
 	public static boolean
 	planob = true,
+	arenaSek = true,
 	bonecoNoCentro = false; // autoexplicativo (alterado a cada reinicio)
 
 
@@ -40,13 +41,10 @@ public class Plano_B {
 		bonecoNoCentro = EV3MainMenuClass.bonecoNoCentro;
 		Navegacao_secundaria.initVariaveis();
 		cor_resgate = Sensors.verificaFloor();
-		printDebug("RESGATAR" + cor_resgate);
+		printDebug("RESGATAR: " + (cor_resgate == 3? "BRANCO":"PRETO"));
 		Delay.msDelay(500);
-//		Navegacao_secundaria.inicioSemBoneco(configArena, configCave); // testar todas as 9 possibilidades
-//		while(!Sensors.verificaObstaculo()){
-			
-//		}
-//		Delay.msDelay(3000);
+		Navegacao_secundaria.inicioSemBoneco(configArena, configCave); // testar todas as 9 possibilidades
+		trocaModulo(arenaSek);
 		sequenciaBuscaParede(); // testar se esta buscando e resgatando mesmo
 
 
@@ -171,12 +169,16 @@ public class Plano_B {
 				if(resgatar){
 					printDebug("RESGATAR");
 					Navegacao_secundaria.voltaNaPilha(Navegacao_secundaria.PAREDE);
+					trocaModulo(arenaSek);
 					Navegacao_secundaria.voltaNaPilha(Navegacao_secundaria.CENTRAL);
+					Navigation.openGarra();
 					// aqui ele volta e tem que reiniciar, objetivo concluido
 				}else{
 					printDebug("KILL HIM!!");
 					Navegacao_secundaria.tirarBonecoErrado(Navegacao_secundaria.PAREDE);
 					achou = false;
+					c1=0;
+					c2=0;
 				}
 				
 			}else{
@@ -189,9 +191,9 @@ public class Plano_B {
 						c1++;
 					}else{
 						if(c2==0){
-							Navigation.turn(87);
+							Navigation.turn(90);
 							Navigation.andar(0.15f);
-							Navegacao_secundaria.pushSegmento(87, 0.1f, Navegacao_secundaria.PAREDE);
+							Navegacao_secundaria.pushSegmento(90, 0.1f, Navegacao_secundaria.PAREDE);
 							c1=0;
 							c2=1;
 						}else{
@@ -210,9 +212,21 @@ public class Plano_B {
 		}
 	}
 	
+	
+	//==============METODOS DE DEBUG=========
 	public static void printDebug(String word){
 		LCD.clear();
 		LCD.drawString(word, 0, 0);
+	}
+	
+	/**
+	 * espera apertar o botao pra cima
+	 * @param troca
+	 */
+	public static void trocaModulo(boolean troca){
+		if(troca){
+			Button.UP.waitForPressAndRelease();
+		}
 	}
 }
 
