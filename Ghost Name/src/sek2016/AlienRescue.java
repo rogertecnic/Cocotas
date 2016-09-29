@@ -1,7 +1,6 @@
 package sek2016;
 
 import java.util.List;
-import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
 import sek2016.Celula.Status;
@@ -35,11 +34,14 @@ public class AlienRescue implements Runnable {
 	/**
 	 * quantidade de colunas na matriz
 	 */
-	private static final int COL_AMT = 9; 
+	private static final int COL_AMT = 9;
 	/**
 	 * quantidade de linhas na matriz
 	 */
 	private static final int LIN_AMT = 9;
+	
+	private static final float  distAndar = Celula.commonSize + 0.005f;
+
 	// =======================VARIAVEIS DO MAPA==============================
 	private final static Celula[][] CENTRAL_MAP = new Celula[LIN_AMT][COL_AMT];
 	private final static Celula[][] CAVE_MAP = new Celula[LIN_AMT][COL_AMT];
@@ -52,7 +54,11 @@ public class AlienRescue implements Runnable {
 	private static Posicao obstacleExit;
 
 	private static Astar aStar;
-	static Posicao teste = new Posicao(5, 5);
+
+	/**
+	 * Variável que informa que houve uma mudança de célula
+	 */
+	public static boolean cellExchanged = false;
 
 	// ========================================================================
 	/**
@@ -80,8 +86,8 @@ public class AlienRescue implements Runnable {
 			threadTacometria.setDaemon(true);
 			threadTacometria.setName("Thread Tacometria");
 			threadTacometria.start();
-			
-			Navigation.forward();
+
+			/*Navigation.forward();
 			Delay.msDelay(1000);
 			Navigation.stop();
 			Navigation.forward();
@@ -92,10 +98,11 @@ public class AlienRescue implements Runnable {
 			Navigation.stop();
 			Navigation.forward();
 			Delay.msDelay(1000);
-			Navigation.stop();
-			
-			//goTo(teste);
-			
+			Navigation.stop();*/
+
+			goTo(caveEntrance);
+			goTo(obstacleEntrace);
+
 			// Plano_B.partiu();
 			// victorySong();
 			// Navigation.openGarra();
@@ -346,56 +353,89 @@ public class AlienRescue implements Runnable {
 		for (int i = 0; i < caminho.size(); i++) {
 			/*
 			 * A célula está a esquerda da posição do robounico modo de chegar
-			 * até ela é só quando a orientação for RIGHT
+			 * até ela é só quando a orientação for LEFT
 			 */
 			if (caminho.get(i).getPosicao().x == Navigation.robotPosition.x
 					&& caminho.get(i).getPosicao().y > Navigation.robotPosition.y) {
 
-				while (Navigation.orientation != Navigation.RIGTH) {
+				while (Navigation.orientation != Navigation.LEFT) {
 
-					Navigation.turn(-90);
+					if ( Navigation.orientation == Navigation.FRONT){
+						
+						Navigation.turn(90);
 
-				}
+					}else if (Navigation.orientation == Navigation.BACK){
+						
+						Navigation.turn(-90);
 
-				Navigation.forward();
-
-				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
-					if (allowedReading()) {
-
-						checkFrontRobotCell();
-
+					}else{
+						Navigation.turn(90);
 					}
+
 				}
 
-				caminho.remove(i);
-				continue;
+				Navigation.andar(distAndar);
+				Delay.msDelay(100);
+				
+
+				/*while (true) {
+
+					if (!cellExchanged) {
+						if (allowedReading()) {
+
+							checkFrontRobotCell();
+
+						}
+					}else{
+						Navigation.stop();
+						cellExchanged = false;
+						break;
+					}
+				}*/
+
 
 			}
 			/*
-			 * A célula está a esquerda da posição do robo, unico modo de chegar
-			 * até ela é só quando a orientação for LEFT
+			 * A célula está a direita da posição do robo, unico modo de chegar
+			 * até ela é só quando a orientação for RIGHT
 			 */
 			else if (caminho.get(i).getPosicao().x == Navigation.robotPosition.x
-					&& caminho.get(i).getPosicao().y > Navigation.robotPosition.y) {
+					&& caminho.get(i).getPosicao().y < Navigation.robotPosition.y) {
 
-				while (Navigation.orientation != Navigation.LEFT) {
+				while (Navigation.orientation != Navigation.RIGTH) {
 
-					Navigation.turn(90);
+					if (Navigation.orientation == Navigation.FRONT){
+						
+						Navigation.turn(-90);
 
-				}
+					} else if (Navigation.orientation == Navigation.BACK){
+						Navigation.turn(90);
 
-				Navigation.forward();
-
-				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
-					if (allowedReading()) {
-
-						checkFrontRobotCell();
+					}else{
+						Navigation.turn(90);
 
 					}
+
 				}
 
-				caminho.remove(i);
-				continue;
+				Navigation.andar(distAndar);
+				Delay.msDelay(100);
+
+				/*while (true) {
+
+					if (!cellExchanged) {
+						if (allowedReading()) {
+
+							checkFrontRobotCell();
+
+						}
+					}else{
+						Navigation.stop();
+						cellExchanged = false;
+						break;
+					}
+				}*/
+
 			}
 			/*
 			 * A célula está a frente da posição do robo, unico modo de chegar
@@ -408,11 +448,11 @@ public class AlienRescue implements Runnable {
 
 					if (Navigation.orientation == Navigation.LEFT) {
 
-						Navigation.turn(90);
+						Navigation.turn(-90);
 
 					} else if (Navigation.orientation == Navigation.RIGTH) {
 
-						Navigation.turn(-90);
+						Navigation.turn(90);
 
 					} else {
 
@@ -422,18 +462,24 @@ public class AlienRescue implements Runnable {
 
 				}
 
-				Navigation.forward();
+				Navigation.andar(distAndar);
+				Delay.msDelay(100);
 
-				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
-					if (allowedReading()) {
+				/*while (true) {
 
-						checkFrontRobotCell();
+					if (!cellExchanged) {
+						if (allowedReading()) {
 
+							checkFrontRobotCell();
+
+						}
+					}else{
+						Navigation.stop();
+						cellExchanged = false;
+						break;
 					}
-				}
+				}*/
 
-				caminho.remove(i);
-				continue;
 
 			}
 			/*
@@ -461,18 +507,23 @@ public class AlienRescue implements Runnable {
 
 				}
 
-				Navigation.forward();
+				Navigation.andar(distAndar);
+				Delay.msDelay(100);
 
-				while (caminho.get(i).getPosicao() != Navigation.robotPosition) {
-					if (allowedReading()) {
+				/*while (true) {
 
-						checkFrontRobotCell();
+					if (cellExchanged == false) {
+						if (allowedReading()) {
 
+							checkFrontRobotCell();
+
+						}
+					}else{
+						Navigation.stop();
+						cellExchanged = false;
+						break;
 					}
-				}
-
-				caminho.remove(i);
-				continue;
+				}*/
 
 			}
 		}

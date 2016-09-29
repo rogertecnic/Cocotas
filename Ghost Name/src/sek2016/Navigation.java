@@ -18,11 +18,11 @@ public class Navigation implements Runnable {
 	static EV3MediumRegulatedMotor motorG;
 
 	// ---------------------CONSTANTES DE DESCRICAO--------------------------
-	public final static float VELO_INI = 0.09f; // em m/s, velocidade linear do
+	public final static float VELO_INI = 0.15f; // em m/s, velocidade linear do
 												// robo andar
 	public final static float VELO_CURVA = 0.08f; // em m/s, velocidade linear
 													// do robo fazer o turn
-	public final static float aceleration = 0.26f; // m/s^2 PARA A RODA (0.26f
+	public final static float aceleration = 0.50f; // m/s^2 PARA A RODA (0.26f
 													// <=> 548 graus/s^2),
 													// (0.37978f <=> 800
 													// graus/s^2), default:
@@ -75,6 +75,7 @@ public class Navigation implements Runnable {
 		
 		while (AlienRescue.alienRescueON) {
 			cellExchanger();
+			Delay.msDelay(100);
 		}
 
 	}
@@ -87,7 +88,7 @@ public class Navigation implements Runnable {
 		float tacho = (Navigation.getTacho("B") / 360);
 		float dist = (2 * PI * Navigation.RAIO) * tacho;
 		if (dist >= CELL_SIZE) {
-			
+			AlienRescue.cellExchanged = true;
 			newPosition();
 			Navigation.resetTacho();
 			
@@ -238,7 +239,9 @@ public class Navigation implements Runnable {
 			}
 		}
 		Navigation.stop(); // metodo chamado no momento de desaceleracao do robo
-							// para ele parar onde ele deve
+		// para ele parar onde ele deve
+		Navigation.resetTacho();
+
 	}
 
 	/**
