@@ -39,8 +39,8 @@ public class AlienRescue implements Runnable {
 	 * quantidade de linhas na matriz
 	 */
 	private static final int LIN_AMT = 9;
-	
-	private static final float  distAndar = Celula.commonSize + 0.005f;
+
+	private static final float distAndar = Celula.commonSize + 0.05f;
 
 	// =======================VARIAVEIS DO MAPA==============================
 	private final static Celula[][] CENTRAL_MAP = new Celula[LIN_AMT][COL_AMT];
@@ -87,18 +87,12 @@ public class AlienRescue implements Runnable {
 			threadTacometria.setName("Thread Tacometria");
 			threadTacometria.start();
 
-			/*Navigation.forward();
-			Delay.msDelay(1000);
-			Navigation.stop();
-			Navigation.forward();
-			Delay.msDelay(1000);
-			Navigation.stop();
-			Navigation.forward();
-			Delay.msDelay(1000);
-			Navigation.stop();
-			Navigation.forward();
-			Delay.msDelay(1000);
-			Navigation.stop();*/
+			/*
+			 * Navigation.forward(); Delay.msDelay(1000); Navigation.stop();
+			 * Navigation.forward(); Delay.msDelay(1000); Navigation.stop();
+			 * Navigation.forward(); Delay.msDelay(1000); Navigation.stop();
+			 * Navigation.forward(); Delay.msDelay(1000); Navigation.stop();
+			 */
 
 			goTo(caveEntrance);
 			goTo(obstacleEntrace);
@@ -360,39 +354,46 @@ public class AlienRescue implements Runnable {
 
 				while (Navigation.orientation != Navigation.LEFT) {
 
-					if ( Navigation.orientation == Navigation.FRONT){
-						
+					if (Navigation.orientation == Navigation.FRONT) {
+
 						Navigation.turn(90);
 
-					}else if (Navigation.orientation == Navigation.BACK){
-						
+					} else if (Navigation.orientation == Navigation.BACK) {
+
 						Navigation.turn(-90);
 
-					}else{
+					} else {
 						Navigation.turn(90);
 					}
 
 				}
 
-				Navigation.andar(distAndar);
-				Delay.msDelay(100);
-				
+				Navigation.forward();
 
-				/*while (true) {
+				while (true) {
 
-					if (!cellExchanged) {
+					if (cellExchanged == false) {
 						if (allowedReading()) {
 
 							checkFrontRobotCell();
 
 						}
-					}else{
-						Navigation.stop();
-						cellExchanged = false;
-						break;
-					}
-				}*/
+					} else {
+						if ((i + 1) >= caminho.size()
+								|| (caminho.get(i + 1).getPosicao().x != Navigation.robotPosition.x
+										|| caminho.get(i + 1).getPosicao().y <= Navigation.robotPosition.y)) {
 
+							Navigation.stop();
+							cellExchanged = false;
+							break;
+
+						} else {
+
+							cellExchanged = false;
+							break;
+						}
+					}
+				}
 
 			}
 			/*
@@ -404,37 +405,46 @@ public class AlienRescue implements Runnable {
 
 				while (Navigation.orientation != Navigation.RIGTH) {
 
-					if (Navigation.orientation == Navigation.FRONT){
-						
+					if (Navigation.orientation == Navigation.FRONT) {
+
 						Navigation.turn(-90);
 
-					} else if (Navigation.orientation == Navigation.BACK){
+					} else if (Navigation.orientation == Navigation.BACK) {
 						Navigation.turn(90);
 
-					}else{
+					} else {
 						Navigation.turn(90);
 
 					}
 
 				}
 
-				Navigation.andar(distAndar);
-				Delay.msDelay(100);
+				Navigation.forward();
 
-				/*while (true) {
+				while (true) {
 
-					if (!cellExchanged) {
+					if (cellExchanged == false) {
 						if (allowedReading()) {
 
 							checkFrontRobotCell();
 
 						}
-					}else{
-						Navigation.stop();
-						cellExchanged = false;
-						break;
+					} else {
+						if ((i + 1) >= caminho.size() || (caminho.get(i + 1).getPosicao().x != Navigation.robotPosition.x
+								&& caminho.get(i + 1).getPosicao().y >= Navigation.robotPosition.y)) {
+
+							Navigation.stop();
+							cellExchanged = false;
+							break;
+
+						} else {
+
+							cellExchanged = false;
+							break;
+
+						}
 					}
-				}*/
+				}
 
 			}
 			/*
@@ -462,24 +472,32 @@ public class AlienRescue implements Runnable {
 
 				}
 
-				Navigation.andar(distAndar);
-				Delay.msDelay(100);
+				Navigation.forward();
 
-				/*while (true) {
+				while (true) {
 
-					if (!cellExchanged) {
+					if (cellExchanged == false) {
 						if (allowedReading()) {
 
 							checkFrontRobotCell();
 
 						}
-					}else{
-						Navigation.stop();
-						cellExchanged = false;
-						break;
-					}
-				}*/
+					} else {
+						if ((i + 1) >= caminho.size() || (caminho.get(i + 1).getPosicao().x <= Navigation.robotPosition.x
+								&& caminho.get(i + 1).getPosicao().y != Navigation.robotPosition.y)) {
 
+							Navigation.stop();
+							cellExchanged = false;
+							break;
+
+						} else {
+
+							cellExchanged = false;
+							break;
+
+						}
+					}
+				}
 
 			}
 			/*
@@ -507,10 +525,9 @@ public class AlienRescue implements Runnable {
 
 				}
 
-				Navigation.andar(distAndar);
-				Delay.msDelay(100);
+				Navigation.forward();
 
-				/*while (true) {
+				while (true) {
 
 					if (cellExchanged == false) {
 						if (allowedReading()) {
@@ -518,12 +535,22 @@ public class AlienRescue implements Runnable {
 							checkFrontRobotCell();
 
 						}
-					}else{
-						Navigation.stop();
-						cellExchanged = false;
-						break;
+					} else {
+						if ((i + 1) >= caminho.size() || (caminho.get(i + 1).getPosicao().x >= Navigation.robotPosition.x
+								&& caminho.get(i + 1).getPosicao().y != Navigation.robotPosition.y)) {
+							
+							Navigation.stop();
+							cellExchanged = false;
+							break;
+							
+						} else {
+							
+							cellExchanged = false;
+							break;
+							
+						}
 					}
-				}*/
+				}
 
 			}
 		}

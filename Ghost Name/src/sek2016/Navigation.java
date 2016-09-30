@@ -89,6 +89,7 @@ public class Navigation implements Runnable {
 		float dist = (2 * PI * Navigation.RAIO) * tacho;
 		if (dist >= CELL_SIZE) {
 			AlienRescue.cellExchanged = true;
+			System.out.println(AlienRescue.cellExchanged);
 			newPosition();
 			Navigation.resetTacho();
 			
@@ -357,6 +358,7 @@ public class Navigation implements Runnable {
 									// metodo continuaria e o robo andaria antes
 									// do pid setar as velocidades pois sao
 									// threads diferentes
+		
 		}
 		
 		Delay.msDelay(100);
