@@ -38,7 +38,8 @@ public class Navigation implements Runnable {
 	// ------------------- CONSTANTES DE ORIENTACAO------------------------
 	/*
 	 * Constantes de orientação do robo <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<EM
-	 * RELACAO A QUE?
+	 * RELACAO A QUE? <<<<<<<<<<<<<<<< Em relação a entrada do modulo, zé
+	 * roela...
 	 */
 	final static int BACK = 0, LEFT = 1, FRONT = 2, RIGTH = 3;
 
@@ -49,13 +50,15 @@ public class Navigation implements Runnable {
 
 	// ---------------------VARIAVEIS DE PROCESSO----------------------------
 
+	public static boolean avoidedError = false;
+
 	public static boolean garraFechada = false, // a garra esta fechada?
 			andandoRe = false; // o robo esta andando de RE? para inverter o pid
 								// no metodo calculaPID se caso ele for andar de
 								// re
 
 	public static Posicao robotPosition; // posição de
-																	// entrada
+											// entrada
 
 	// ========================Constantes de processo=====================
 
@@ -72,10 +75,10 @@ public class Navigation implements Runnable {
 	public void run() {
 
 		robotPosition = AlienRescue.inputCell;
-		
+
 		while (AlienRescue.alienRescueON) {
 			cellExchanger();
-			Delay.msDelay(100);
+			Delay.msDelay(50);
 		}
 
 	}
@@ -89,10 +92,9 @@ public class Navigation implements Runnable {
 		float dist = (2 * PI * Navigation.RAIO) * tacho;
 		if (dist >= CELL_SIZE) {
 			AlienRescue.cellExchanged = true;
-			System.out.println(AlienRescue.cellExchanged);
 			newPosition();
 			Navigation.resetTacho();
-			
+
 		}
 
 	}
@@ -277,29 +279,13 @@ public class Navigation implements Runnable {
 													// roda e
 		float positionD = rodaD.getTachoCount(); // posicao inicial em graus da
 													// roda d
-		float wRoda = VELO_INI / RAIO * (float) (180 / Math.PI); // velocidade
-																	// angular
-																	// em
-																	// graus/s
-																	// das rodas
-																	// de modo
-																	// geral,
-																	// nao eh a
-																	// velocidade
-																	// que o pid
-																	// regula,
-																	// essa
-																	// velocidade
-																	// seria a
-																	// velocidade
-																	// que o pid
-																	// mantem se
-																	// o erro
-																	// fosse 0 e
-																	// seria
-																	// igual
-																	// para as 2
-																	// rodas
+
+		/*
+		 * velocidade angular em graus/s das rodas de modo geral, nao eh a
+		 * velocidade que o pid regula, essa velocidade seria a velocidade que o
+		 * pid mantem se o erro fosse 0 e seria igual para as 2 rodas
+		 */
+		float wRoda = VELO_INI / RAIO * (float) (180 / Math.PI);
 		float acc = aceleration / RAIO * (float) (180 / Math.PI); // aceleracao
 																	// angular
 																	// em
@@ -348,22 +334,32 @@ public class Navigation implements Runnable {
 	 * Frente, velocidade definida pelo PID
 	 */
 	public static void forward() {
-		PID.pidRunning = false; // pausa o pid para reinicia-lo
-		while (!PID.PIDparado) { // espera o pid realmente parar
-		}
-		PID.zeraPID(); // zera o pid
-		PID.pidRunning = true; // inicia o pid
-		while (!PID.PIDparado) { // espera o pid ter a primeira iteracao para ja
-									// ter alterado a velocidade, se nao, o
-									// metodo continuaria e o robo andaria antes
-									// do pid setar as velocidades pois sao
-									// threads diferentes
-		
-		}
-		
-		Delay.msDelay(100);
+
+		avoidingError();
+
+		Delay.msDelay(50);
 		rodaE.forward();
 		rodaD.forward();
+	}
+
+	private static void avoidingError() {
+		if (avoidedError == false) {
+
+			PID.pidRunning = false; // pausa o pid para reinicia-lo
+			while (!PID.PIDparado) { // espera o pid realmente parar
+			}
+			PID.zeraPID(); // zera o pid
+			PID.pidRunning = true; // inicia o pid
+			/*
+			 * espera o pid ter a primeira iteracao para ja ter alterado a
+			 * velocidade, se nao, o metodo continuaria e o robo andaria antes
+			 * do pid setar as velocidades pois sao threads diferentes
+			 */
+			while (!PID.PIDparado) {
+
+			}
+			avoidedError = true;
+		}
 	}
 
 	/**
@@ -373,32 +369,6 @@ public class Navigation implements Runnable {
 		rodaE.backward();
 		rodaD.backward();
 	}
-
-	/**
-	 * Virar robo a esquerda 90 graus usando o giroscopio<br>
-	 * trava o programa dentro do metodo ate o giro terminar
-	 */
-	/*
-	 * public static void turnLeft() { PID.pidRunning=false; // pausa o pid para
-	 * não zoar as velocidades float angle = Sensors.getAngle(); while (angle <=
-	 * 85) { rodaE.setSpeed(100); rodaD.setSpeed(100); rodaE.backward();
-	 * rodaD.forward(); angle = Sensors.getAngle(); } stop(); Delay.msDelay(10);
-	 * Sensors.resetAngle(); PID.zeraPID(); // zera o pid para a nova posição
-	 * PID.pidRunning=true; // continua o pid }
-	 */
-
-	/**
-	 * Virar robo a direita 90 graus usando o giroscopio<br>
-	 * trava o programa dentro do metodo ate o giro terminar
-	 */
-	/*
-	 * public static void turnRight() { PID.pidRunning=false; // pausa o pid
-	 * para não zoar as velocidades float angle = Sensors.getAngle(); while
-	 * (angle >= -85) { rodaE.setSpeed(100); rodaD.setSpeed(100);
-	 * rodaE.forward(); rodaD.backward(); angle = Sensors.getAngle(); } stop();
-	 * Delay.msDelay(10); Sensors.resetAngle(); PID.zeraPID(); // zera o pid
-	 * para a nova posição PID.pidRunning=true; // continua o pid }
-	 */
 
 	/**
 	 * seta aceleracao em graus/s^2 de cada roda, EVITAR USAR
@@ -435,9 +405,10 @@ public class Navigation implements Runnable {
 							// um movimento
 		while (rodaE.isMoving() || rodaD.isMoving()) {
 		}
+		avoidedError = false;
 	}
 
-	/**
+	/** 
 	 * fechar garra
 	 */
 	public static void closeGarra() {

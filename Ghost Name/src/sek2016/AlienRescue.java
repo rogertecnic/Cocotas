@@ -68,8 +68,8 @@ public class AlienRescue implements Runnable {
 	public void run() {
 		Navigation.garraFechada = false;
 		try { // o codigo deve ficar dentro desse try gigante
-				// ======INICIO DO
-				// CODIGO=============================================================
+			// ======INICIO DO
+			// CODIGO=============================================================
 			/*
 			 * Thread da PID é iniciada aqui.
 			 */
@@ -87,30 +87,14 @@ public class AlienRescue implements Runnable {
 			threadTacometria.setName("Thread Tacometria");
 			threadTacometria.start();
 
-			/*
-			 * Navigation.forward(); Delay.msDelay(1000); Navigation.stop();
-			 * Navigation.forward(); Delay.msDelay(1000); Navigation.stop();
-			 * Navigation.forward(); Delay.msDelay(1000); Navigation.stop();
-			 * Navigation.forward(); Delay.msDelay(1000); Navigation.stop();
-			 */
-
 			goTo(caveEntrance);
 			goTo(obstacleEntrace);
-
-			// Plano_B.partiu();
-			// victorySong();
-			// Navigation.openGarra();
-			// float dist = 0.3f;
-			// int ang = 45;
-			// Navigation.andar(dist);
-
-			// Button.ENTER.waitForPressAndRelease();
 
 			// ======FINAL DO
 			// CODIGO=================================================
 			alienRescueON = false;
 		} catch (ThreadDeath e) {// quando o menu é chamado, essa thread é
-									// desligada e lança essa exception
+			// desligada e lança essa exception
 			e.getStackTrace();
 		} catch (Exception e) {
 
@@ -356,13 +340,17 @@ public class AlienRescue implements Runnable {
 
 					if (Navigation.orientation == Navigation.FRONT) {
 
+						Navigation.stop();
 						Navigation.turn(90);
 
 					} else if (Navigation.orientation == Navigation.BACK) {
 
+						Navigation.stop();
 						Navigation.turn(-90);
 
 					} else {
+
+						Navigation.stop();
 						Navigation.turn(90);
 					}
 
@@ -379,18 +367,19 @@ public class AlienRescue implements Runnable {
 
 						}
 					} else {
-						if ((i + 1) >= caminho.size()
-								|| (caminho.get(i + 1).getPosicao().x != Navigation.robotPosition.x
-										|| caminho.get(i + 1).getPosicao().y <= Navigation.robotPosition.y)) {
-
+						
+						if(i  == (caminho.size() -1) ){
+							
 							Navigation.stop();
 							cellExchanged = false;
 							break;
-
-						} else {
-
+							
+						}
+						else{
+							
 							cellExchanged = false;
 							break;
+							
 						}
 					}
 				}
@@ -407,12 +396,17 @@ public class AlienRescue implements Runnable {
 
 					if (Navigation.orientation == Navigation.FRONT) {
 
+						Navigation.stop();
 						Navigation.turn(-90);
 
 					} else if (Navigation.orientation == Navigation.BACK) {
+
+						Navigation.stop();
 						Navigation.turn(90);
 
 					} else {
+
+						Navigation.stop();
 						Navigation.turn(90);
 
 					}
@@ -430,18 +424,19 @@ public class AlienRescue implements Runnable {
 
 						}
 					} else {
-						if ((i + 1) >= caminho.size() || (caminho.get(i + 1).getPosicao().x != Navigation.robotPosition.x
-								&& caminho.get(i + 1).getPosicao().y >= Navigation.robotPosition.y)) {
 
+						if(i  == (caminho.size() -1)){
+							
 							Navigation.stop();
 							cellExchanged = false;
 							break;
-
-						} else {
-
+							
+						}
+						else{
+							
 							cellExchanged = false;
 							break;
-
+							
 						}
 					}
 				}
@@ -458,14 +453,17 @@ public class AlienRescue implements Runnable {
 
 					if (Navigation.orientation == Navigation.LEFT) {
 
+						Navigation.stop();
 						Navigation.turn(-90);
 
 					} else if (Navigation.orientation == Navigation.RIGTH) {
 
+						Navigation.stop();
 						Navigation.turn(90);
 
 					} else {
 
+						Navigation.stop();
 						Navigation.turn(-90);
 
 					}
@@ -483,18 +481,19 @@ public class AlienRescue implements Runnable {
 
 						}
 					} else {
-						if ((i + 1) >= caminho.size() || (caminho.get(i + 1).getPosicao().x <= Navigation.robotPosition.x
-								&& caminho.get(i + 1).getPosicao().y != Navigation.robotPosition.y)) {
-
+						
+						if(i  == (caminho.size() -1)){
+							
 							Navigation.stop();
 							cellExchanged = false;
 							break;
-
-						} else {
-
+							
+						}
+						else{
+							
 							cellExchanged = false;
 							break;
-
+							
 						}
 					}
 				}
@@ -511,14 +510,17 @@ public class AlienRescue implements Runnable {
 
 					if (Navigation.orientation == Navigation.LEFT) {
 
+						Navigation.stop();
 						Navigation.turn(90);
 
 					} else if (Navigation.orientation == Navigation.RIGTH) {
 
+						Navigation.stop();
 						Navigation.turn(-90);
 
 					} else {
 
+						Navigation.stop();
 						Navigation.turn(90);
 
 					}
@@ -536,14 +538,15 @@ public class AlienRescue implements Runnable {
 
 						}
 					} else {
-						if ((i + 1) >= caminho.size() || (caminho.get(i + 1).getPosicao().x >= Navigation.robotPosition.x
-								&& caminho.get(i + 1).getPosicao().y != Navigation.robotPosition.y)) {
+						
+						if (i == (caminho.size() - 1)) {
 							
 							Navigation.stop();
 							cellExchanged = false;
 							break;
 							
-						} else {
+						} 
+						else {
 							
 							cellExchanged = false;
 							break;
