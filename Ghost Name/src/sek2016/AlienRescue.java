@@ -72,7 +72,8 @@ public class AlienRescue implements Runnable{
 			Navigation.openGarra();
 			//float dist = -0.3f;
 			//int ang = 45;
-			//Navigation.andar(dist);
+			//Navigation.andar(Const.LADO_ARENA_CENTRAL+0.4f);
+			//Navigation.turn(360*2);
 			Plano_B.partiu();
 			
 /*			while(Button.ENTER.isUp()){

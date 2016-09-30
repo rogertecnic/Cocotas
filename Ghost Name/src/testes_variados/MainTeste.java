@@ -4,6 +4,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3GyroSensor;
+import plano_B.Const;
 
 
 public class MainTeste {
@@ -24,10 +25,8 @@ public class MainTeste {
 		threadPID.start();
 
 
-		while(true){
-			Teste_raio_roda.testaRaio(0.5f);
+			Teste_raio_roda.testaRaio(Const.LADO_MODULO_CENTRAL);
 
-			Teste_largura_robo.testa_largura(-90f);
-		}
+			//Teste_largura_robo.testa_largura(-90f);
 	}
 }

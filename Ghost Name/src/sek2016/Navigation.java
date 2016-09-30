@@ -248,6 +248,7 @@ public class Navigation {
 		if(garraFechada == false){
 			garraFechada = true;
 			motorG.rotate(60);
+			Delay.msDelay(500);
 		}
 		else{
 			LCD.clear();

@@ -106,13 +106,23 @@ public class Const {
 	
 	
 	/**
-	 * @LADO_ARENA_CENTRAL comprimento da lateral do modulo central
+	 * @LADO_MODULO_CENTRAL comprimento da lateral do modulo central
 	 * o modulo central é um quadrado, esta no edital, valor medio 1.85f
 	 */
-	public static final float LADO_ARENA_CENTRAL = 1.85f;
+	public static final float LADO_MODULO_CENTRAL = 1.845f;
+	/**
+	 * @LADO_MODULO_RESGATE comprimento da lateral do modulo central
+	 * o modulo central é um quadrado, esta no edital, valor medio 1.85f
+	 */
+	public static final float LADO_MODULO_RESGATE = 0.4f;
 	/**
 	 * @PROFUNDIDADE_BUNDA_ROBO distancia da traseira do robo ate o centro do robo
 	 * serve para fazer o ajuste fino da saida do robo do modulo de resgate
 	 */
-	public static final float PROFUNDIDADE_BUNDA_ROBO = 0.17f;
+	public static final float PROFUNDIDADE_BUNDA_ROBO = 0.107f;
+	/**
+	 * @DIST_EIXO_GARRA distancia da ponta da garra fechada ate o 
+	 * eixo do robo
+	 */
+	public static final float DIST_EIXO_GARRA_FECHADA = 0.12f;
 }

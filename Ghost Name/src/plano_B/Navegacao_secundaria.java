@@ -24,7 +24,7 @@ public class Navegacao_secundaria {
 	 * pilha de segmentos que o robo vai seguir no modulo parede ate trocar de
 	 * modulo
 	 */
-	public static Stack<Segmento> segmentosParede ;
+	public static Stack<Segmento> segmentosObstaculo ;
 
 	// =========================METODOS===========================
 	/**
@@ -32,8 +32,7 @@ public class Navegacao_secundaria {
 	 * @param configArena
 	 */
 	public static void inicioModuloCentral() {
-		Navigation.andar(0.5f);
-		segmentosCentral.push(new Segmento(0, 0.5f));
+		andarPilha(0, Const.LADO_MODULO_RESGATE, Const.CENTRAL);
 	}
 
 	/**
@@ -43,44 +42,31 @@ public class Navegacao_secundaria {
 	public static void inicioModuloCaverna(int configArena, int configCave) {
 		switch (configArena) {
 		case Const.ARENA_A: {
-			Navigation.andar((Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO);
-			segmentosCentral.push(new Segmento(0, (Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO));
+			andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
 			if (configCave == Const.CAV_DIR) {
-				Navigation.turn(-90);
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(-90, (Const.LADO_ARENA_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO));
+				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
 			} else {
-				Navigation.turn(90);
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(90, (Const.LADO_ARENA_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO));
+				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
 			}
 
 			break;
 		}
 		case Const.ARENA_B: {
 			if (configCave == Const.CAV_CIMA) {
-				Navigation.andar(Const.LADO_ARENA_CENTRAL + 0.5f);
-				segmentosCentral.push(new Segmento(0, Const.LADO_ARENA_CENTRAL + 0.5f));
+				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL);
 
 			} else {
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(0, (Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO));
-				Navigation.turn(-90);
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(-90, (Const.LADO_ARENA_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO));
+				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);	
 			}
 			break;
 		}
 		case Const.ARENA_C: {
 			if (configCave == Const.CAV_CIMA) {
-				Navigation.andar(Const.LADO_ARENA_CENTRAL + 0.5f);
-				segmentosCentral.push(new Segmento(0, Const.LADO_ARENA_CENTRAL + 0.5f));
+				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL);
 			} else {
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(0, (Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO));
-				Navigation.turn(90);
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(90, (Const.LADO_ARENA_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO));
+				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);	
 			}
 			break;
 		}
@@ -95,43 +81,30 @@ public class Navegacao_secundaria {
 	public static void inicioModuloObstaculo(int configArena, int configCave) {
 		switch (configArena) {
 		case Const.ARENA_A: { // anda ate metade do mod central
-			Navigation.andar((Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO);
-			segmentosCentral.push(new Segmento(0, (Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO));
+			andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
 			if (configCave == Const.CAV_DIR) { // anda ate o modulo obstaculo a esquerda
-				Navigation.turn(90);
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(90, (Const.LADO_ARENA_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO));
+				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
 			} else { // anda ate o modulo obstaculo a direita
-				Navigation.turn(-90);
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(-90, (Const.LADO_ARENA_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO));
+				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
 			}
 
 			break;
 		}
 		case Const.ARENA_B: {
 			if (configCave == Const.CAV_CIMA) {// anda ate metade do mod central depois anda ate o modulo obstaculo direita
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(0, (Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO));
-				Navigation.turn(-90);
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(-90, (Const.LADO_ARENA_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO));
+				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
 			} else {
-				Navigation.andar(Const.LADO_ARENA_CENTRAL + 0.5f);
-				segmentosCentral.push(new Segmento(0, Const.LADO_ARENA_CENTRAL + 0.5f));
+				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL);
 			}
 			break;
 		}
 		case Const.ARENA_C: {
 			if (configCave == Const.CAV_CIMA) {
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(0, (Const.LADO_ARENA_CENTRAL/2) + 0.5f-Const.PROFUNDIDADE_BUNDA_ROBO));
-				Navigation.turn(90);
-				Navigation.andar((Const.LADO_ARENA_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO);
-				segmentosCentral.push(new Segmento(90, (Const.LADO_ARENA_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO));
+				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
 			} else {
-				Navigation.andar(Const.LADO_ARENA_CENTRAL + 0.5f);
-				segmentosCentral.push(new Segmento(0, Const.LADO_ARENA_CENTRAL + 0.5f));
+				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL);
 			}
 			break;
 		}
@@ -221,13 +194,17 @@ public class Navegacao_secundaria {
 	public static void pushSegmento(int ang, float dist, int local){
 		switch(local){
 		case Const.CENTRAL: {
+			/*Plano_B.printDebug("push pilha central");
+			Delay.msDelay(1000);*/
 			segmentosCentral.push(new Segmento(ang, dist));
 			break;
 		}case Const.CAVE:{
 			segmentosCaverna.push(new Segmento(ang, dist));
 			break;
 		}case Const.OBSTACULO:{
-			segmentosParede.push(new Segmento(ang, dist));
+			/*Plano_B.printDebug("push pilha obst");
+			Delay.msDelay(1000);*/
+			segmentosObstaculo.push(new Segmento(ang, dist));
 			break;
 		}
 		}
@@ -241,14 +218,21 @@ public class Navegacao_secundaria {
 	public static Segmento pullSegmento( int local){
 		switch(local){
 		case Const.CENTRAL: {
+			/*Plano_B.printDebug("pull pilha central");
+			Delay.msDelay(1000);*/
 			if(segmentosCentral.size()>0)
 				return segmentosCentral.pop();
+			else return null;
 		}case Const.CAVE:{
 			if(segmentosCaverna.size()>0)
 				return segmentosCaverna.pop();
+			else return null;
 		}case Const.OBSTACULO:{
-			if(segmentosParede.size()>0)
-				return segmentosParede.pop();
+			/*Plano_B.printDebug("pull pilha obst");
+			Delay.msDelay(1000);*/
+			if(segmentosObstaculo.size()>0)
+				return segmentosObstaculo.pop();
+			else return null;
 		}default: return null;
 		}
 	}
@@ -276,29 +260,11 @@ public class Navegacao_secundaria {
 		// executar um esquema diferente p tirar o boneco errado do caminho
 		switch(local){
 		case Const.CENTRAL:{
-			int grau = 90;
-			if(Const.LADO_ARENA_CENTRAL - 0.125f - 0.05f*bonecosErrados<= 0.2f){
-				grau = -grau;
-			}
-			Navigation.turn(grau);
-			Navigation.andar( Const.LADO_ARENA_CENTRAL - 0.125f - 0.05f*bonecosErrados );
-			Navigation.openGarra();
-			bonecosErrados ++;
-			Navigation.andar(-(Const.LADO_ARENA_CENTRAL - 0.125f - 0.05f*bonecosErrados));
-			Navigation.turn(-grau);
+
 			break;
 		}
 		case Const.CAVE:{
-			int grau = 90;
-			if(Const.LADO_ARENA_CENTRAL - 0.125f - 0.05f*bonecosErrados<= 0.2f){
-				grau = -grau;
-			}
-			Navigation.turn(grau);
-			Navigation.andar( Const.LADO_ARENA_CENTRAL - 0.125f - 0.05f*bonecosErrados );
-			Navigation.openGarra();
-			bonecosErrados ++;
-			Navigation.andar(-(Const.LADO_ARENA_CENTRAL - 0.125f - 0.05f*bonecosErrados));
-			Navigation.turn(-grau);
+
 			break;
 		}
 		case Const.OBSTACULO:{
@@ -317,14 +283,15 @@ public class Navegacao_secundaria {
 				break;
 			}
 			}
-			if(Const.LADO_ARENA_CENTRAL/2-0.275f-0.05f*bonecosErrados<= 0.2f){
+			if((Const.LADO_MODULO_CENTRAL/2)-(Const.PROFUNDIDADE_BUNDA_ROBO+Const.DIST_EIXO_GARRA_FECHADA+0.07f)-0.05f*bonecosErrados<= 0.2f){
 				grau = -grau;
 			}
+
 			Navigation.turn(grau);
-			Navigation.andar( Const.LADO_ARENA_CENTRAL/2-0.275f-0.05f*bonecosErrados );
+			Navigation.andar( (Const.LADO_MODULO_CENTRAL/2)-(Const.PROFUNDIDADE_BUNDA_ROBO+Const.DIST_EIXO_GARRA_FECHADA+0.07f)-0.05f*bonecosErrados );
 			Navigation.openGarra();
 			bonecosErrados ++;
-			Navigation.andar(-(Const.LADO_ARENA_CENTRAL/2-0.275f-0.05f*bonecosErrados));
+			Navigation.andar(-((Const.LADO_MODULO_CENTRAL/2)-(Const.PROFUNDIDADE_BUNDA_ROBO+Const.DIST_EIXO_GARRA_FECHADA+0.07f)-0.05f*bonecosErrados));
 			Navigation.turn(-grau);
 			break;
 		}
@@ -347,11 +314,29 @@ public class Navegacao_secundaria {
 		}
 	}
 
+	/**
+	 * Metodo que inicializa/zera todas as variaveis do
+	 * Navegacao_secundaria
+	 */
 	public static void initVariaveis(){
 		segmentosCentral = new Stack<Segmento>();
 		segmentosCaverna = new Stack<Segmento>();
-		segmentosParede = new Stack<Segmento>();
+		segmentosObstaculo = new Stack<Segmento>();
 	}
+
+	/**
+	 * metodo que faz o robo girar e/ou andar
+	 * @param graus inteiro positivo (anti-horário)
+	 * inteiro negativo (horário)
+	 * @param dist ditancia em metros que o robo vai andar
+	 * @param local onde o robo esta ( CENTRAL, CAVE OU PAREDE)
+	 */
+	public static void andarPilha(int graus, float dist, int local){
+		Navigation.turn(graus);
+		Navigation.andar(dist);
+		Navegacao_secundaria.pushSegmento(graus, dist, local);
+	}
+
 }
 
 

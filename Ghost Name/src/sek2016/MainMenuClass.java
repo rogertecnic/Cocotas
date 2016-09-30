@@ -12,7 +12,7 @@ import plano_B.Plano_B;
  *Classe que controla a Thread main (metodo main) e 
  *chama a Thread do codigo da sek da classe AlienRescue
  */
-public class EV3MainMenuClass {
+public class MainMenuClass {
 	//====================VARIAVEL DE CONTROLE THREAD AlienRescue=================
 	/**
 	 * Variavel que controla a instancia dos sensores e motores e 
@@ -39,6 +39,7 @@ public class EV3MainMenuClass {
 		while (true) {
 			Navigation.init(!jaIniciado);
 			Sensors.init(!jaIniciado,!jaIniciado,!jaIniciado,!jaIniciado);
+			//Sensors.init(false,false,false,!jaIniciado);
 			if(!jaIniciado){
 				Sensors.calibraCorDoll();
 				Sensors.calibraCorChao();
@@ -55,7 +56,6 @@ public class EV3MainMenuClass {
 			controleMenu();
 
 			Button.ENTER.waitForPressAndRelease();
-			//Button.waitForAnyPress();
 			Navigation.stop();
 			AlienRescue.alienRescueON = false;
 			threadPrograma.stop();
