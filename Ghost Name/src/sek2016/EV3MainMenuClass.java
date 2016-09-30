@@ -23,7 +23,7 @@ public class EV3MainMenuClass {
 	private static boolean jaIniciado = false;
 
 	/**
-	 *  principal do codigo, é instanciada dentro do selecionaOpcao
+	 * Thread principal do codigo, é instanciada dentro do selecionaOpcao
 	 */
 	public static Thread threadPrograma = null;
 
@@ -32,7 +32,7 @@ public class EV3MainMenuClass {
 	public static int
 	configArena = 0, // config A = 1, config B = 2, config C = 3
 	configCave = 0, // da uma lida no metodo mostraMenu2
-	modIniciaBusca = 0; // 
+	modIniciaBusca = 0; // indica o modulo que o robo vai buscar o boneco
 
 	//=====================MAIN===================================
 	public static void main(String[] args) { // foca so no metodo start, o resto eh coisa pra controlar o menu

@@ -38,9 +38,22 @@ public class Plano_B {
 		printDebug("RESGATAR: " + (cor_resgate == 3? "BRANCO":"PRETO"));
 		Delay.msDelay(500); // TIRAR DEPOIS
 		
-		Navegacao_secundaria.inicioModuloObstaculo(configArena, configCave); // testar todas as 9 possibilidades
-		trocaModulo(arenaSek);
-		sequenciaBuscaObstaculo(); // testar se esta buscando e resgatando mesmo
+		switch(EV3MainMenuClass.modIniciaBusca){
+		case Const.CENTRAL:{
+			Navegacao_secundaria.inicioModuloCentral();
+			break;
+		}case Const.CAVE:{
+			Navegacao_secundaria.inicioModuloCaverna(configArena, configCave);
+			break;
+		}case Const.OBSTACULO:{
+			Navegacao_secundaria.inicioModuloObstaculo(configArena, configCave); // testar todas as 9 possibilidades
+			trocaModulo(arenaSek);
+			sequenciaBuscaObstaculo(); // testar se esta buscando e resgatando mesmo
+			break;
+		}
+		}
+		
+		
 
 
 
