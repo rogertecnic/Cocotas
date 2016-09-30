@@ -3,6 +3,7 @@ package sek2016;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
+import plano_B.Const;
 import plano_B.Plano_B;
 import sek2016.Celula.Status;
 
@@ -202,7 +203,7 @@ public class AlienRescue implements Runnable{
 		
 		switch (cave){
 		
-		case EV3MainMenuClass.CAV_DIR:
+		case Const.CAV_DIR:
 
 			caveEntrance = new Posicao(4, 0);
 			obstacleEntrace = new Posicao(8, 4);
@@ -211,7 +212,7 @@ public class AlienRescue implements Runnable{
 			obstacleExit = new Posicao(0, 4);
 			break;
 			
-		case EV3MainMenuClass.CAV_CIMA:
+		case Const.CAV_CIMA:
 			caveEntrance = new Posicao(8, 4);
 			obstacleEntrace = new Posicao(4, 0);
 			
@@ -230,7 +231,7 @@ public class AlienRescue implements Runnable{
 		
 		switch (cave){
 		
-		case EV3MainMenuClass.CAV_CIMA:
+		case Const.CAV_CIMA:
 			caveEntrance = new Posicao(8, 4);
 			obstacleEntrace = new Posicao(4, 8);
 			
@@ -239,7 +240,7 @@ public class AlienRescue implements Runnable{
 			
 			break;
 		
-		case EV3MainMenuClass.CAV_ESQ:
+		case Const.CAV_ESQ:
 			caveEntrance = new Posicao(4, 8);
 			obstacleEntrace = new Posicao(8, 4);
 			
@@ -259,7 +260,7 @@ public class AlienRescue implements Runnable{
 		
 		switch (cave){
 		
-		case EV3MainMenuClass.CAV_ESQ:
+		case Const.CAV_ESQ:
 			caveEntrance = new Posicao(4, 8);
 			obstacleEntrace = new Posicao(4, 0);
 			
@@ -268,7 +269,7 @@ public class AlienRescue implements Runnable{
 			
 			break;
 			
-		case EV3MainMenuClass.CAV_DIR:
+		case Const.CAV_DIR:
 			caveEntrance = new Posicao(4, 0);
 			obstacleEntrace = new Posicao(4, 8);
 			

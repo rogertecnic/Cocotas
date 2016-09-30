@@ -12,24 +12,17 @@ public class Plano_B {
 	//======================VARIAVEIS DE CONDICAO INICIAL DA ARENA=================
 	public static int
 	c1 = 0, c2 = 0, c3 = 0, // contadora auxiliar usada em varios casos
-	configParede = 0,
-	cor_resgate = 0,
+	configObstaculo = 0, // posicao do obstaculo
+	cor_resgate = 0, // cor que deve ser resgatada
+	modIniciaBusca = 0, // modulo que vai iniciar o resgate
 	configArena = 0, // config A = 1, config B = 2, config C = 3
 	configCave = 0; // da uma lida no metodo mostraMenu2
+	
+	//====================VARIAVEIS QUE CONTROLAM O PLANO B============
 	public static boolean
-	planob = true,
-	arenaSek = true,
-	bonecoNoCentro = false; // autoexplicativo (alterado a cada reinicio)
+	planob = true, // true se o plano b for executado, false se nao
+	arenaSek = true; // true se a arena que vamos rodar for a nossa, false se nao
 
-
-	//========================CONSTANTES int==========================
-	public static final int
-	ARENA_A = 1,
-	ARENA_B = 2,
-	ARENA_C = 3,
-	CAV_DIR = 1,
-	CAV_ESQ = 2,
-	CAV_CIMA = 3;
 
 
 	/**
@@ -38,14 +31,16 @@ public class Plano_B {
 	public static void partiu(){
 		configArena = EV3MainMenuClass.configArena;
 		configCave = EV3MainMenuClass.configCave;
-		bonecoNoCentro = EV3MainMenuClass.bonecoNoCentro;
-		Navegacao_secundaria.initVariaveis();
+		modIniciaBusca = EV3MainMenuClass.modIniciaBusca;
 		cor_resgate = Sensors.verificaFloor();
+		Navegacao_secundaria.initVariaveis();
+		
 		printDebug("RESGATAR: " + (cor_resgate == 3? "BRANCO":"PRETO"));
-		Delay.msDelay(500);
-		Navegacao_secundaria.inicioSemBoneco(configArena, configCave); // testar todas as 9 possibilidades
+		Delay.msDelay(500); // TIRAR DEPOIS
+		
+		Navegacao_secundaria.inicioModuloObstaculo(configArena, configCave); // testar todas as 9 possibilidades
 		trocaModulo(arenaSek);
-		sequenciaBuscaParede(); // testar se esta buscando e resgatando mesmo
+		sequenciaBuscaObstaculo(); // testar se esta buscando e resgatando mesmo
 
 
 
@@ -146,7 +141,7 @@ public class Plano_B {
 				break;
 			}
 			case Button.ID_ENTER: {
-				configParede = parede;
+				configObstaculo = parede;
 				LCD.clear();
 				noMenu = false;
 				break;
@@ -154,28 +149,43 @@ public class Plano_B {
 			}
 		}
 	}
+	
+	/**
+	 * Ainda nao feito
+	 */
+	private static void sequenciaBuscaCentral(){
+		// FAZER
+	}
+	
+	/**
+	 * Ainda nao feito
+	 */
+	private static void sequenciaBuscaCave(){
+		// FAZER
+	}
+	
 	/**
 	 * Metodo que procura os bonecos na sala que tem parede
 	 * deve se preocupar com a parede tambem
 	 */
-	public static void sequenciaBuscaParede() {
+	private static void sequenciaBuscaObstaculo() {
 		c1 = 0; c2 = 0; c3 = 0;
 		boolean achou = false,
 				resgatar = false;
 		while(!resgatar ){
-			achou = Navegacao_secundaria.giroBusca(45, Navegacao_secundaria.PAREDE); // testar se esta virando e indo ate o boneco e fechando a garra
+			achou = Navegacao_secundaria.giroBusca(45, Const.OBSTACULO); // testar se esta virando e indo ate o boneco e fechando a garra
 			if(achou){
 				resgatar = Navegacao_secundaria.verificaBoneco(); // verificar se esta retornando o correto inclusive com o vermelho deve retornar false
 				if(resgatar){
 					printDebug("RESGATAR");
-					Navegacao_secundaria.voltaNaPilha(Navegacao_secundaria.PAREDE);
+					Navegacao_secundaria.voltaNaPilha(Const.OBSTACULO);
 					trocaModulo(arenaSek);
-					Navegacao_secundaria.voltaNaPilha(Navegacao_secundaria.CENTRAL);
+					Navegacao_secundaria.voltaNaPilha(Const.CENTRAL);
 					Navigation.openGarra();
 					// aqui ele volta e tem que reiniciar, objetivo concluido
 				}else{
 					printDebug("KILL HIM!!");
-					Navegacao_secundaria.tirarBonecoErrado(Navegacao_secundaria.PAREDE);
+					Navegacao_secundaria.tirarBonecoErrado(Const.OBSTACULO);
 					achou = false;
 					c1=0;
 					c2=0;
@@ -183,23 +193,23 @@ public class Plano_B {
 				
 			}else{
 				printDebug("NAO ACHOU!!!");
-				switch(configParede){
+				switch(configObstaculo){
 				case 1:{
 					if(c1<2){
 						Navigation.andar(0.15f);
-						Navegacao_secundaria.pushSegmento(0, 0.15f, Navegacao_secundaria.PAREDE);
+						Navegacao_secundaria.pushSegmento(0, 0.15f, Const.OBSTACULO);
 						c1++;
 					}else{
 						if(c2==0){
 							Navigation.turn(90);
 							Navigation.andar(0.15f);
-							Navegacao_secundaria.pushSegmento(90, 0.1f, Navegacao_secundaria.PAREDE);
+							Navegacao_secundaria.pushSegmento(90, 0.1f, Const.OBSTACULO);
 							c1=0;
 							c2=1;
 						}else{
 							Navigation.turn(-90);
 							Navigation.andar(0.15f);
-							Navegacao_secundaria.pushSegmento(-90, 0.15f, Navegacao_secundaria.PAREDE);
+							Navegacao_secundaria.pushSegmento(-90, 0.15f, Const.OBSTACULO);
 							c1=0;
 							c2=0;
 						}
@@ -212,6 +222,7 @@ public class Plano_B {
 		}
 	}
 	
+
 	
 	//==============METODOS DE DEBUG=========
 	public static void printDebug(String word){

@@ -3,6 +3,7 @@ package sek2016;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import plano_B.Const;
 import plano_B.Plano_B;
 
 /**
@@ -12,11 +13,7 @@ import plano_B.Plano_B;
  *chama a Thread do codigo da sek da classe AlienRescue
  */
 public class EV3MainMenuClass {
-	/**
-	 *  variavel que confirma se é pra dar reset no brick
-	 */
-	private static boolean exit = false;
-
+	//====================VARIAVEL DE CONTROLE THREAD AlienRescue=================
 	/**
 	 * Variavel que controla a instancia dos sensores e motores e 
 	 * configuracoes iniciais que serao feita uma vez.<br>
@@ -30,50 +27,38 @@ public class EV3MainMenuClass {
 	 */
 	public static Thread threadPrograma = null;
 
-	//========================CONSTANTES int==========================
-
-	public static final int
-	ARENA_A = 1,
-	ARENA_B = 2,
-	ARENA_C = 3,
-	CAV_DIR = 1,
-	CAV_ESQ = 2,
-	CAV_CIMA = 3;
 
 	//======================VARIAVEIS DE CONDICAO INICIAL DA ARENA=================
 	public static int
 	configArena = 0, // config A = 1, config B = 2, config C = 3
-	configCave = 0; // da uma lida no metodo mostraMenu2
-	public static boolean
-	bonecoNoCentro = true; // autoexplicativo (alterado a cada reinicio)
+	configCave = 0, // da uma lida no metodo mostraMenu2
+	modIniciaBusca = 0; // 
 
 	//=====================MAIN===================================
 	public static void main(String[] args) { // foca so no metodo start, o resto eh coisa pra controlar o menu
-		while (!exit) {
+		while (true) {
 			Navigation.init(!jaIniciado);
 			Sensors.init(!jaIniciado,!jaIniciado,!jaIniciado,!jaIniciado);
 			if(!jaIniciado){
 				Sensors.calibraCorDoll();
 				Sensors.calibraCorChao();
 			}
-			
+
 			// ===== essa parte so eh executada se for o plano b
 			if(Plano_B.planob && !jaIniciado){
 				//birl, so fazer o menu la no planob e colocar aqui
 				Plano_B.controleMenuParede();
 			}
 			// ===== essa parte so eh executada se for o plano b
-			
+
 			Plano_B.planob = false;
 			controleMenu();
 
-			if (!exit) {
-				Button.ENTER.waitForPressAndRelease();
-				//Button.waitForAnyPress();
-				Navigation.stop();
-				AlienRescue.alienRescueON = false;
-				threadPrograma.stop();
-			}
+			Button.ENTER.waitForPressAndRelease();
+			//Button.waitForAnyPress();
+			Navigation.stop();
+			AlienRescue.alienRescueON = false;
+			threadPrograma.stop();
 		}
 	}
 	//=============================================================
@@ -127,8 +112,8 @@ public class EV3MainMenuClass {
 	private static void mostraMenu2(int configCave) {
 		LCD.clear();
 		switch(configArena){
-		case ARENA_A:{
-			if(configCave == CAV_DIR){
+		case Const.ARENA_A:{
+			if(configCave == Const.CAV_DIR){
 				LCD.drawString("CAVERNA ESTA?", 0, 0);
 				LCD.drawString("<  direita  >", 0, 1);
 			}else{
@@ -137,8 +122,8 @@ public class EV3MainMenuClass {
 			}
 			break;
 		}
-		case ARENA_B:{
-			if(configCave == CAV_CIMA){
+		case Const.ARENA_B:{
+			if(configCave == Const.CAV_CIMA){
 				LCD.drawString("CAVERNA ESTA?", 0, 0);
 				LCD.drawString("<  cima  >", 0, 1);
 			}else{
@@ -147,8 +132,8 @@ public class EV3MainMenuClass {
 			}
 			break;
 		}
-		case ARENA_C:{
-			if(configCave == CAV_CIMA){
+		case Const.ARENA_C:{
+			if(configCave == Const.CAV_CIMA){
 				LCD.drawString("CAVERNA ESTA?", 0, 0);
 				LCD.drawString("<  cima  >", 0, 1);
 			}else{
@@ -161,22 +146,27 @@ public class EV3MainMenuClass {
 	}
 
 	/**
-	 * Mostra o menu de decidir se tem ou nao boneco no modulo central
-	 * @param bonecoNoCentro inteiro que indica qual opção está realçada<br>
+	 * Mostra o menu de decidir qual o modulo que o robo ira buscar primeiro
+	 * @param modIniciaBusca indica o modulo on de o robo vai iniciar a busca
+	 * (usar Const.CAVE/OBSTACULO/CENTRAL)
 	 */
-	private static void mostraMenu3(boolean bonecoNoCentro, boolean exit ){
+	private static void mostraMenu3(int modIniciaBusca){
 		LCD.clear();
-		if(bonecoNoCentro && !exit){
-			LCD.drawString("BONECO NO CETNRO?", 0, 0);
-			LCD.drawString("<  sim  >", 0, 1);
-		}else if(!bonecoNoCentro && !exit){
-			LCD.drawString("BONECO NO CENTRO?", 0, 0);
-			LCD.drawString("<  nao  >", 0, 1);
-		}else{
-			LCD.drawString("RESET BRICK?", 0, 0);
-			LCD.drawString("<  OW YES  >", 0, 1);
+		switch(modIniciaBusca){
+		case Const.CENTRAL:{
+			LCD.drawString("PROCURAR ONDE?", 0, 0);
+			LCD.drawString("<  MODULO CENTRO  >", 0, 1);
+			break;
+		}case Const.CAVE:{
+			LCD.drawString("PROCURAR ONDE?", 0, 0);
+			LCD.drawString("<  MODULO CAVE  >", 0, 1);
+			break;
+		}case Const.OBSTACULO:{
+			LCD.drawString("PROCURAR ONDE?", 0, 0);
+			LCD.drawString("<  MODULO OBSTACULO  >", 0, 1);
+			break;
 		}
-
+		}
 	}
 
 	/**
@@ -190,33 +180,32 @@ public class EV3MainMenuClass {
 		jaIniciado = true; // seta que a config inicial ja foi feita
 		Delay.msDelay(500);
 		//-------------------------------------------------------------
-		if(configArena == ARENA_A){
-			if(configCave == CAV_DIR){ // qui eh executado na configuracao arena A cave dir
+		if(configArena == Const.ARENA_A){
+			if(configCave == Const.CAV_DIR){ // qui eh executado na configuracao arena A cave dir
 				LCD.clear(); // pode apagar
 				LCD.drawString("A DIR", 0, 3); // pode apagar
-			}else if(configCave == CAV_ESQ){// qui eh executado na configuracao arena A cave esq
+			}else if(configCave == Const.CAV_ESQ){// qui eh executado na configuracao arena A cave esq
 				LCD.clear(); // pode apagar
 				LCD.drawString("A ESQ", 0, 3); // pode apagar
 			}
 		}
-		if(configArena == ARENA_B){
-			if(configCave == CAV_CIMA){// qui eh executado na configuracao arena B cave cima
+		if(configArena == Const.ARENA_B){
+			if(configCave == Const.CAV_CIMA){// qui eh executado na configuracao arena B cave cima
 				LCD.clear(); // pode apagar
 				LCD.drawString("B CIMA", 0, 3); // pode apagar
-			}else if(configCave == CAV_DIR){// qui eh executado na configuracao arena B cave dir
+			}else if(configCave == Const.CAV_DIR){// qui eh executado na configuracao arena B cave dir
 				LCD.clear(); // pode apagar
 				LCD.drawString("B DIR", 0, 3); // pode apagar
 			}
 		}
-		if(configArena == ARENA_C){
+		if(configArena == Const.ARENA_C){
 			LCD.clear(); // pode apagar
-			if(configCave == CAV_CIMA){// qui eh executado na configuracao arena C cave cima
+			if(configCave == Const.CAV_CIMA){// qui eh executado na configuracao arena C cave cima
 				LCD.drawString("C CIMA", 0, 3); // pode apagar
-			}else if(configCave == CAV_ESQ){// qui eh executado na configuracao arena C cave esq
+			}else if(configCave == Const.CAV_ESQ){// qui eh executado na configuracao arena C cave esq
 				LCD.drawString("C ESQ", 0, 3);// pode apagar
 			}
 		}
-		LCD.drawString("boneco:" + (bonecoNoCentro?"sim":"nao"), 0, 2); // pode apagar
 
 		AlienRescue.alienRescueON = true;
 		threadPrograma.start(); // inicia a thread
@@ -228,7 +217,7 @@ public class EV3MainMenuClass {
 	 * não modificar, está funcionando perfeitamente
 	 */
 	private static void controleMenu() {
-		int arena = ARENA_A; // indica qual opcao foi selecionada no menu da arena
+		int arena = Const.ARENA_A; // indica qual opcao foi selecionada no menu da arena
 		boolean 
 		noMenu1 = !jaIniciado,
 		noMenu2 = !jaIniciado,
@@ -239,14 +228,14 @@ public class EV3MainMenuClass {
 			switch (Button.waitForAnyPress()) {
 			case Button.ID_RIGHT: {
 				switch(arena){
-				case ARENA_A:{
-					arena = ARENA_B;
+				case Const.ARENA_A:{
+					arena = Const.ARENA_B;
 					break;
-				}case ARENA_B:{
-					arena = ARENA_C;
+				}case Const.ARENA_B:{
+					arena = Const.ARENA_C;
 					break;
-				}case ARENA_C:{
-					arena = ARENA_A;
+				}case Const.ARENA_C:{
+					arena = Const.ARENA_A;
 					break;
 				}
 				}
@@ -254,14 +243,14 @@ public class EV3MainMenuClass {
 			}
 			case Button.ID_LEFT: {
 				switch(arena){
-				case ARENA_A:{
-					arena = ARENA_C;
+				case Const.ARENA_A:{
+					arena = Const.ARENA_C;
 					break;
-				}case ARENA_B:{
-					arena = ARENA_A;
+				}case Const.ARENA_B:{
+					arena = Const.ARENA_A;
 					break;
-				}case ARENA_C:{
-					arena = ARENA_B;
+				}case Const.ARENA_C:{
+					arena = Const.ARENA_B;
 					break;
 				}
 				}
@@ -278,11 +267,11 @@ public class EV3MainMenuClass {
 
 		int caverna; //indica qual opcao foi selecionada no menu da caverna
 		switch(arena){
-		case ARENA_A:{
-			caverna = CAV_DIR;
+		case Const.ARENA_A:{
+			caverna = Const.CAV_DIR;
 			break;
 		}default:{
-			caverna = CAV_CIMA;
+			caverna = Const.CAV_CIMA;
 			break;
 		}
 		}
@@ -298,21 +287,21 @@ public class EV3MainMenuClass {
 				break;
 			}default:{
 				switch(arena){
-				case ARENA_A:{
+				case Const.ARENA_A:{
 					//System.out.println("testando1");
-					if(caverna == CAV_DIR)
-						caverna = CAV_ESQ;
-					else caverna = CAV_DIR;
+					if(caverna == Const.CAV_DIR)
+						caverna = Const.CAV_ESQ;
+					else caverna = Const.CAV_DIR;
 					break;
-				}case ARENA_B:{
-					if(caverna == CAV_CIMA)
-						caverna = CAV_DIR;
-					else caverna = CAV_CIMA;
+				}case Const.ARENA_B:{
+					if(caverna == Const.CAV_CIMA)
+						caverna = Const.CAV_DIR;
+					else caverna = Const.CAV_CIMA;
 					break;
-				}case ARENA_C:{
-					if(caverna == CAV_CIMA)
-						caverna = CAV_ESQ;
-					else caverna = CAV_CIMA;
+				}case Const.ARENA_C:{
+					if(caverna == Const.CAV_CIMA)
+						caverna = Const.CAV_ESQ;
+					else caverna = Const.CAV_CIMA;
 					break;
 				}
 				}
@@ -322,40 +311,30 @@ public class EV3MainMenuClass {
 		}
 
 		//==============MENU DOS BONECOS "FINAL"=============================
-		boolean boneco = true, //indica se tem ou não boneco ou se é pra sair do codigo
-				exit = false;
-		while(noMenu3){
-			mostraMenu3(boneco, exit);
-			switch (Button.waitForAnyPress()) {
-			case Button.ID_RIGHT: {
-				if(boneco)
-					boneco = false;
-				else if(!exit)
-					exit = true;
-				else{
-					boneco = true;
-					exit = false;
+		int moduloIni = Const.CENTRAL; //indica se tem ou não boneco ou se é pra sair do codigo
+				while(noMenu3){
+					mostraMenu3(moduloIni);
+					switch (Button.waitForAnyPress()) {
+					case Button.ID_RIGHT: {
+						if(moduloIni == Const.OBSTACULO)
+							moduloIni = Const.CENTRAL;
+						else moduloIni++;
+						break;
+					}
+					case Button.ID_LEFT: {
+						if(moduloIni == Const.CENTRAL)
+							moduloIni = Const.OBSTACULO;
+						else moduloIni--;
+						break;
+					}
+					case Button.ID_ENTER: {
+						modIniciaBusca = moduloIni;
+						LCD.clear();
+						noMenu3 = false;
+						break;
+					}
+					}
 				}
-				break;
-			}
-			case Button.ID_LEFT: {
-				if(boneco){
-					boneco = false;
-					exit = true;
-				}else if(exit)
-					exit = false;
-				else boneco = true;
-				break;
-			}
-			case Button.ID_ENTER: {
-				bonecoNoCentro = boneco;
-				EV3MainMenuClass.exit = exit;
-				LCD.clear();
-				noMenu3 = false;
-				break;
-			}
-			}
-		}
-		if(!exit) start();
+		start();
 	}
 }
