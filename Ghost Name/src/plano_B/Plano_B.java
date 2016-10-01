@@ -78,7 +78,7 @@ public class Plano_B {
 		}
 		case 2:{
 			LCD.drawString("CONFIG PAREDE", 0, 0);
-			LCD.drawString("<1> ---------", 0, 1);
+			LCD.drawString("<2> ---------", 0, 1);
 			LCD.drawString("    |       |", 0, 2);
 			LCD.drawString("    |    ---|", 0, 3);
 			LCD.drawString("    |       |", 0, 4);
@@ -87,7 +87,7 @@ public class Plano_B {
 		}
 		case 3:{
 			LCD.drawString("CONFIG PAREDE", 0, 0);
-			LCD.drawString("<1> ---------", 0, 1);
+			LCD.drawString("<3> ---------", 0, 1);
 			LCD.drawString("    |      /|", 0, 2);
 			LCD.drawString("    |     / |", 0, 3);
 			LCD.drawString("    |       |", 0, 4);
@@ -96,7 +96,7 @@ public class Plano_B {
 		}
 		case 4:{
 			LCD.drawString("CONFIG PAREDE", 0, 0);
-			LCD.drawString("<1> ----|----", 0, 1);
+			LCD.drawString("<4> ----|----", 0, 1);
 			LCD.drawString("    |   |   |", 0, 2);
 			LCD.drawString("    |   |   |", 0, 3);
 			LCD.drawString("    |       |", 0, 4);
@@ -105,7 +105,7 @@ public class Plano_B {
 		}
 		case 5:{
 			LCD.drawString("CONFIG PAREDE", 0, 0);
-			LCD.drawString("<1> ---------", 0, 1);
+			LCD.drawString("<5> ---------", 0, 1);
 			LCD.drawString("    |\\      |", 0, 2);
 			LCD.drawString("    | \\     |", 0, 3);
 			LCD.drawString("    |       |", 0, 4);
@@ -114,7 +114,7 @@ public class Plano_B {
 		}
 		case 6:{
 			LCD.drawString("CONFIG PAREDE", 0, 0);
-			LCD.drawString("<1> ---------", 0, 1);
+			LCD.drawString("<6> ---------", 0, 1);
 			LCD.drawString("    |       |", 0, 2);
 			LCD.drawString("    |---    |", 0, 3);
 			LCD.drawString("    |       |", 0, 4);
@@ -123,7 +123,7 @@ public class Plano_B {
 		}
 		case 7:{
 			LCD.drawString("CONFIG PAREDE", 0, 0);
-			LCD.drawString("<1> ---------", 0, 1);
+			LCD.drawString("<7> ---------", 0, 1);
 			LCD.drawString("    |       |", 0, 2);
 			LCD.drawString("    | /     |", 0, 3);
 			LCD.drawString("    |/      |", 0, 4);
@@ -208,33 +208,90 @@ public class Plano_B {
 					achou = false;
 					c1=0;
 					c2=0;
+					c3 = 0;
 				}
 
 			}else{
-				printDebug("NAO ACHOU!!!");
+				printDebug("nao achou");
 				switch(configObstaculo){
 				case 1:{
 					switch(c1){
 					case 0:{
-						if(c2<1){
 						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
-						}else{
-							Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
-						c1=1;
-						c2=0;
-						}
+						c1++;
 						break;
 					}case 1:{
-						if(c2<4){
-							Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
-							}else{
-							c1=1;
-							c2=0;
-							}
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
 						break;
 					}case 2:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 3:{
 						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
-						c2=1;
+						c1++;
+						break;
+					}case 4:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 5:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 6:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 7:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 8:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 9:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 10:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 11:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 12:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 13:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 14:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 15:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 16:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 17:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 18:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
 					}
 					}
 					break;
@@ -242,20 +299,105 @@ public class Plano_B {
 					switch(c1){
 					case 0:{
 						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
-						c1=1;
+						c1++;
 						break;
 					}case 1:{
-						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
-						c1=2;
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
 						break;
 					}case 2:{
 						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
-						c2=1;
+						c1++;
+						break;
+					}case 3:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 4:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 5:{
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navigation.andar(-distAndaProcura*3);
+						Navigation.turn(90);
+						c1++;
+						break;
+					}case 6:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 7:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 8:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 9:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 10:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 11:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 12:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 13:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 14:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 15:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 16:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 17:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 18:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 19:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 20:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 21:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 22:{
+						Navegacao_secundaria.andarPilha(360, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
 					}
 					}
 					break;
 				}case 3:{
-
+					
 					break;
 				}case 4:{
 
@@ -264,13 +406,197 @@ public class Plano_B {
 
 					break;
 				}case 6:{
-
+					switch(c1){
+					case 0:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 1:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 2:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 3:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 4:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 5:{
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+					Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+					Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navigation.andar(-distAndaProcura*3);
+						Navigation.turn(-90);
+						c1++;
+						break;
+					}case 6:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 7:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 8:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 9:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 10:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 11:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 12:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 13:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 14:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 15:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 16:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 17:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 18:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 19:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 20:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 21:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 22:{
+						Navegacao_secundaria.andarPilha(360, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}
+					}
 					break;
 				}case 7:{
-
-				}break;
+					switch(c1){
+					case 0:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 1:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 2:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 3:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 4:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 5:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 6:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 7:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 8:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 9:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 10:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 11:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 12:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 13:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 14:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 15:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 16:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 17:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 18:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 19:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}case 20:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+						c1++;
+						break;
+					}
+					}
+					break;
 				}
-
+				}
 			}
 		}
 	}
@@ -291,6 +617,398 @@ public class Plano_B {
 	public static void trocaModulo(boolean troca){
 		if(troca){
 			Button.UP.waitForPressAndRelease();
+		}
+	}
+
+	public static void debugBusca(){
+		c1 = 0; c2=0; c3=0;
+		float distAndaProcura = 0.15f;
+		while(true){
+			printDebug("nao achou");
+			switch(configObstaculo){
+			case 1:{
+				switch(c1){
+				case 0:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 1:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 2:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 3:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 4:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 5:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 6:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 7:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 8:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 9:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 10:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 11:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 12:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 13:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 14:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 15:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 16:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 17:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 18:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}
+				}
+				break;
+			}case 2:{
+				switch(c1){
+				case 0:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 1:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 2:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 3:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 4:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 5:{
+					/*Navegacao_secundaria.pullSegmento(local);
+				Navegacao_secundaria.pullSegmento(local);
+				Navegacao_secundaria.pullSegmento(local);*/
+					Navegacao_secundaria.andarPilha(0, -distAndaProcura*3, Const.OBSTACULO);
+					Navigation.turn(90);
+					c1++;
+					break;
+				}case 6:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 7:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 8:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 9:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 10:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 11:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 12:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 13:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 14:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 15:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 16:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 17:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 18:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 19:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 20:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 21:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 22:{
+					Navegacao_secundaria.andarPilha(360, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}
+				}
+				break;
+			}case 3:{
+				
+				break;
+			}case 4:{
+
+				break;
+			}case 5:{
+
+				break;
+			}case 6:{
+				switch(c1){
+				case 0:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 1:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 2:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 3:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 4:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 5:{
+					/*Navegacao_secundaria.pullSegmento(local);
+				Navegacao_secundaria.pullSegmento(local);
+				Navegacao_secundaria.pullSegmento(local);*/
+					Navegacao_secundaria.andarPilha(0, -distAndaProcura*3, Const.OBSTACULO);
+					Navigation.turn(-90);
+					c1++;
+					break;
+				}case 6:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 7:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 8:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 9:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 10:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 11:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 12:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 13:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 14:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 15:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 16:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 17:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 18:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 19:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 20:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 21:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 22:{
+					Navegacao_secundaria.andarPilha(360, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}
+				}
+				break;
+			}case 7:{
+				switch(c1){
+				case 0:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 1:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 2:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 3:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 4:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 5:{
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 6:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 7:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 8:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 9:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 10:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 11:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 12:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 13:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 14:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 15:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 16:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 17:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 18:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 19:{
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}case 20:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO);
+					c1++;
+					break;
+				}
+				}
+				break;
+			}
+			}
 		}
 	}
 }

@@ -8,16 +8,17 @@ import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
+import plano_B.Plano_B;
 
 public class Sensors {
 
 	// ===================declaracao dos sensores ============================
-	private static EV3GyroSensor gyro; // nem preciso falar
-	private static EV3UltrasonicSensor ultrasonic; // nem esse
-	private static EV3ColorSensor dollColor; // verificar cor do boneco no modo
+	public static EV3GyroSensor gyro; // nem preciso falar
+	public static EV3UltrasonicSensor ultrasonic; // nem esse
+	public static EV3ColorSensor dollColor; // verificar cor do boneco no modo
 	// RGB
-	private static EV3ColorSensor floorColor; // verificar a cor do chao
-	private static float[] angleSample, // vetor contendo um elemento do gyro,
+	public static EV3ColorSensor floorColor; // verificar a cor do chao
+	public static float[] angleSample, // vetor contendo um elemento do gyro,
 	// angulo em graus
 	distSample, // vetor contendo um elemento do ultrassom, a dist em
 	// metros
@@ -28,7 +29,7 @@ public class Sensors {
 	// =====================constantes de processo=======================
 	private static final float DIST_MIN = 0.05f, // distancia minima do
 			// boneco
-			DIST_MAX = 0.17f; // distancia maxima do boneco (0.18 para nao dar erro)
+			DIST_MAX = 0.25f; // distancia maxima do boneco (0.18 para nao dar erro)
 	/*
 	 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que vao
 	 * corresponder a cada cor de bonecos, esses intervalos serao definidos no
@@ -36,7 +37,7 @@ public class Sensors {
 	 * os intervalos serao entre estes 2 extremos; exemplo: 0 <p< r1 < b < r2 <
 	 * v < 1; REFERENTES A COR DO BONECO v: vermelho b: branco p: preto
 	 */
-	private static float r1, // red
+	public static float r1, // red
 	g1, g1floor, // green
 	b1, b1floor; // blue
 	private static final int BRANCO = 3, VERMELHO = 4, PRETO = 5;
@@ -58,7 +59,7 @@ public class Sensors {
 			gyro = new EV3GyroSensor(SensorPort.S2);
 			angleSample = new float[1];
 		}
-		if (US == true) {
+		if (US         == true) {
 			ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
 			distSample = new float[1];
 		}
@@ -107,8 +108,8 @@ public class Sensors {
 			return 0f;
 	}
 
-	
-	
+
+
 	/**
 	 * Metodo que verifica somente a posicao do gyro;
 	 * 
@@ -191,12 +192,12 @@ public class Sensors {
 			return BRANCO;
 		}
 	}
-	
+
 	/**
 	 * Calibragem do sensor de dollColor
 	 */
 	public static void calibraCorDoll() {
-		float[] red = new float[3], blue = new float[3], green = new float[3];
+		/*float[] red = new float[3], blue = new float[3], green = new float[3];
 		float t;
 		LCD.clear();
 		LCD.drawString("CALIBRAGEM", 0, 0);
@@ -264,15 +265,27 @@ public class Sensors {
 		LCD.clear();
 		r1 = red[0] * 2;
 		g1 = blue[0] * 2;
+		b1 = green[0] * 2;*/
+		
+		r1 = 0.005882353f;
+		g1 = 0.007843138f;
+		b1 = 0.005882353f;
+		
+		/*r1 = red[0] * 2;
+		g1 = blue[0] * 2;
 		b1 = green[0] * 2;
-
+		LCD.clear();
+		LCD.drawString(Float.toString(r1), 0, 0);
+		LCD.drawString(Float.toString(g1), 0, 1);
+		LCD.drawString(Float.toString(b1), 0, 2);
+		Button.DOWN.waitForPressAndRelease();*/
 	}
 
 	/**
 	 * Calibragem do sensor de cor do chao
 	 */
 	public static void calibraCorChao() {
-		float[] red = new float[2], blue = new float[2], green = new float[2];
+		/*float[] red = new float[2], blue = new float[2], green = new float[2];
 		float t;
 		LCD.clear();
 		LCD.drawString("CALIBRAGEM ARENA", 0, 0);
@@ -318,6 +331,12 @@ public class Sensors {
 		}
 		b1floor = (blue[0] +blue[1])/2;
 		g1floor = (green[0] + green[1])/2;
-
+		LCD.clear();
+		LCD.drawString(Float.toString(g1floor), 0, 0);
+		LCD.drawString(Float.toString(b1floor), 0, 1);
+		Button.DOWN.waitForPressAndRelease();*/
+		
+		g1floor = 0.097058825f;
+		b1floor = 0.061764706f;
 	}
 }

@@ -336,7 +336,83 @@ public class Navegacao_secundaria {
 		Navigation.andar(dist);
 		Navegacao_secundaria.pushSegmento(graus, dist, local);
 	}
+	
+	/**
+	 * metodo que anda pra frente buscando, se ele achar ele para
+	 * @param graus o robo vira graus antes de andar
+	 * @param dist distancia que o robo vai andar
+	 * @param local modulo onde o robo esta
+	 * @return distancia que ele andou ate parar
+	 */
+	public static float andarBusca(int graus, float dist, int local){
+		Navigation.turn(graus);
+		float achou = 0f;
+		PID.pidRunning=false; // pausa o pid para reinicia-lo
+		while(!PID.PIDparado){ // espera o pid realmente parar
+		}
+		PID.zeraPID(); // zera o pid
+		PID.pidRunning = true; // inicia o pid
+		while(!PID.PIDparado){ // espera o pid ter a primeira iteracao para ja ter alterado a velocidade, se nao, o metodo continuaria e o robo andaria antes do pid setar as velocidades pois sao threads diferentes
+		}
 
+		float theta =(dist/Const.RAIO)*(float)(180/Math.PI); // graus que a roda deve girar para o robo andar a distancia determinada
+		float positionE = Navigation.rodaE.getTachoCount(); // posicao inicial em graus da roda e
+		float positionD = Navigation.rodaD.getTachoCount(); // posicao inicial em graus da roda d
+		float wRoda = Const.VELO_INI/Const.RAIO*(float)(180/Math.PI); // velocidade angular em graus/s das rodas de modo geral, nao eh a velocidade que o pid regula, essa velocidade seria a velocidade que o pid mantem se o erro fosse 0 e seria igual para as 2 rodas
+		float acc = Const.ACELERATION/Const.RAIO*(float)(180/Math.PI); // aceleracao angular  em graus/s^2 das rodas
+		float t = wRoda/(acc); // tempo que o robo demora a parar depois que ele chama o metodo stop devido a desaceleracao normal do lejos
+		float ang_defasado = wRoda*t-(acc/2)*t*t; // robo deve chamar o metodo stop antes do local de parar, esse ang_defasado é essa distancia em graus da roda
+
+		Delay.msDelay(100); /* tem que ter esse delay, o motivo nao sabemos ao certo o por que, verificamos a 
+		 *velocidade do pid nesse instante e ela continua certinha, 
+		 *se nao o robo exporadicamente vai girar a roda direita para traz por um curto 
+		 *periodo de tempo com velocidade maxima quando o robo for se movimentar
+		 */
+
+			Navigation.rodaE.forward();
+			Navigation.rodaD.forward();
+			while(Navigation.rodaE.getTachoCount()<(positionE+theta-ang_defasado) && 
+					Navigation.rodaD.getTachoCount()<(positionD+theta-ang_defasado)){
+					if(verificaBonecoNaGarra()){
+						achou = (Navigation.rodaE.getTachoCount() - positionE)*((float)Math.PI/180)*Const.RAIO;
+						Navegacao_secundaria.pushSegmento(graus, achou, local);
+						break;
+					}
+			}
+		Navigation.stop();
+		if(achou !=0f)Navegacao_secundaria.pushSegmento(graus, dist, local);
+		return achou;
+	}
+	
+	public static boolean verificaBonecoNaGarra(){
+		float offset = 0.06f;
+		Sensors.ultrasonic.getDistanceMode().fetchSample(Sensors.distSample, 0);
+		if ((Sensors.distSample[0] >= 0.02f) && (Sensors.distSample[0] <= offset)){
+			Navigation.stop();
+			Navigation.closeGarra();
+
+			Sensors.dollColor.getRGBMode().fetchSample(Sensors.rgbSample, 0);
+			if (Sensors.rgbSample[0] > Sensors.r1) { // vermelho
+				if (Sensors.rgbSample[1] > Sensors.g1 && Sensors.rgbSample[2] > Sensors.b1){// branco
+					return true;
+				} else return true;
+			}else{// pode ser preto ou nenhum boneco
+				Navigation.openGarra();
+				Delay.msDelay(200);
+				Navigation.andar(-offset);
+				Sensors.ultrasonic.getDistanceMode().fetchSample(Sensors.distSample, 0);
+				if ((Sensors.distSample[0] >= 0.02f) && (Sensors.distSample[0] <= offset)){
+					Navigation.andar(offset);
+					Navigation.closeGarra();
+				return true;
+				}else{
+					Navigation.andar(offset);
+					return false;
+				}
+			}
+		}
+		else return false;
+	}
 }
 
 

@@ -12,6 +12,12 @@ import sek2016.Navigation;
  *
  */
 public class Const {
+	public static final float ACELERATION = Navigation.aceleration;
+	public static final float VELO_INI = Navigation.VELO_INI;
+	public static final float RAIO = Navigation.RAIO;
+	
+	
+	
 	/**
 	 *  @ARENA_A 1; configuracao da arena<br>
 	 *  --r <br>
@@ -96,7 +102,7 @@ public class Const {
 	 * @DIST_FRENTE_PROCURA distancia que o robo vai ir par afrente
 	 * apos ter visto um boneco, o robo vai ate o boneco para pega-lo
 	 */
-	public static final float DIST_FRENTE_CAPTURA = 0.14f;
+	public static final float DIST_FRENTE_CAPTURA = 0.23f;
 	/**
 	 * @T_PARAR_APOS_VER_BONECO tempo que o robo demorara a chamar o metodo
 	 * stop depois que ver um boneco, ajuda o robo a alinhar reto com o boneco
