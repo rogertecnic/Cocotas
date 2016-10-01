@@ -78,7 +78,6 @@ public class Navigation implements Runnable {
 
 		while (AlienRescue.alienRescueON) {
 			cellExchanger();
-			Delay.msDelay(50);
 		}
 
 	}
@@ -108,24 +107,20 @@ public class Navigation implements Runnable {
 	private static void newPosition() {
 		if (Navigation.orientation == Navigation.FRONT) {
 			robotPosition.setLinha(robotPosition.x + 1);
-			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 		}
 
 		else if (Navigation.orientation == Navigation.BACK) {
 			robotPosition.setLinha(robotPosition.x - 1);
-			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 
 		}
 
 		else if (Navigation.orientation == Navigation.LEFT) {
 			robotPosition.setColuna(robotPosition.y + 1);
-			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 
 		}
 
 		else if (Navigation.orientation == Navigation.RIGTH) {
 			robotPosition.setColuna(robotPosition.y - 1);
-			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 
 		}
 

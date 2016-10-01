@@ -6,7 +6,7 @@ public class Celula {
 		unchecked, empty, occupied;
 	}
 
-	public static final float commonSize = 0.192f; // tamanho padrão das células,
+	public static final float commonSize = 0.193f; // tamanho padrão das células,
 													// m
 
 	private float size = commonSize; // tamanho da célula

@@ -68,8 +68,8 @@ public class AlienRescue implements Runnable {
 	public void run() {
 		Navigation.garraFechada = false;
 		try { // o codigo deve ficar dentro desse try gigante
-			// ======INICIO DO
-			// CODIGO=============================================================
+				// ======INICIO DO
+				// CODIGO=============================================================
 			/*
 			 * Thread da PID é iniciada aqui.
 			 */
@@ -98,7 +98,8 @@ public class AlienRescue implements Runnable {
 			e.getStackTrace();
 		} catch (Exception e) {
 
-			e.getStackTrace();
+			e.printStackTrace();
+			Sound.buzz();
 
 		}
 	}
@@ -301,18 +302,39 @@ public class AlienRescue implements Runnable {
 		for (int i = 0; i < LIN_AMT; i++) {
 			for (int j = 0; j < COL_AMT; j++) {
 
-				CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
-				OBSTACLE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+				if (i == 0 || i == (LIN_AMT - 1) || j == 0 || j == (COL_AMT - 1)) {
+					CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+					CENTRAL_MAP[i][j].g = 1;
 
-				if ((i >= 3 && i <= 5) && (j >= 3 && j <= 5)) {
+					OBSTACLE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+					OBSTACLE_MAP[i][j].g = 1;
 
-					CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.occupied);
+					if ((i >= 2 && i <= 6) && (j >= 2 && j <= 6)) {
 
+						CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.occupied);
+						CAVE_MAP[i][j].g = 1;
+
+					} else {
+
+						CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+						CAVE_MAP[i][j].g = 1;
+
+					}
 				} else {
+					CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+					OBSTACLE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
 
-					CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+					if ((i >= 2 && i <= 6) && (j >= 2 && j <= 6)) {
 
+						CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.occupied);
+
+					} else {
+
+						CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
+
+					}
 				}
+
 			}
 		}
 	}
@@ -325,7 +347,7 @@ public class AlienRescue implements Runnable {
 	 */
 	private static void goTo(Posicao posicaoAlvo) throws Exception {
 
-		aStar = new Astar(CENTRAL_MAP);
+		aStar = new Astar(CAVE_MAP);
 		List<Celula> caminho = aStar.search(Navigation.robotPosition, posicaoAlvo);
 
 		for (int i = 0; i < caminho.size(); i++) {
@@ -363,23 +385,24 @@ public class AlienRescue implements Runnable {
 					if (cellExchanged == false) {
 						if (allowedReading()) {
 
-							checkFrontRobotCell();
+							// checkFrontRobotCell();
 
 						}
 					} else {
-						
-						if(i  == (caminho.size() -1) ){
-							
+
+						if ((i + 1) < caminho.size()) {
+							Sound.beep();
+
+							cellExchanged = false;
+							break;
+
+						} else {
+
 							Navigation.stop();
+
 							cellExchanged = false;
 							break;
-							
-						}
-						else{
-							
-							cellExchanged = false;
-							break;
-							
+
 						}
 					}
 				}
@@ -420,23 +443,23 @@ public class AlienRescue implements Runnable {
 					if (cellExchanged == false) {
 						if (allowedReading()) {
 
-							checkFrontRobotCell();
+							// checkFrontRobotCell();
 
 						}
 					} else {
 
-						if(i  == (caminho.size() -1)){
-							
+						if ((i + 1) < caminho.size()) {
+							Sound.beep();
+
+							cellExchanged = false;
+							break;
+
+						} else {
 							Navigation.stop();
+
 							cellExchanged = false;
 							break;
-							
-						}
-						else{
-							
-							cellExchanged = false;
-							break;
-							
+
 						}
 					}
 				}
@@ -477,23 +500,23 @@ public class AlienRescue implements Runnable {
 					if (cellExchanged == false) {
 						if (allowedReading()) {
 
-							checkFrontRobotCell();
+							// checkFrontRobotCell();
 
 						}
 					} else {
-						
-						if(i  == (caminho.size() -1)){
-							
+
+						if ((i + 1) < caminho.size()) {
+							Sound.beep();
+
+							cellExchanged = false;
+							break;
+
+						} else {
 							Navigation.stop();
+
 							cellExchanged = false;
 							break;
-							
-						}
-						else{
-							
-							cellExchanged = false;
-							break;
-							
+
 						}
 					}
 				}
@@ -534,23 +557,23 @@ public class AlienRescue implements Runnable {
 					if (cellExchanged == false) {
 						if (allowedReading()) {
 
-							checkFrontRobotCell();
+							// checkFrontRobotCell();
 
 						}
 					} else {
-						
-						if (i == (caminho.size() - 1)) {
-							
+
+						if ((i + 1) < caminho.size()) {
+							Sound.beep();
+							cellExchanged = false;
+							break;
+
+						} else {
+
 							Navigation.stop();
+
 							cellExchanged = false;
 							break;
-							
-						} 
-						else {
-							
-							cellExchanged = false;
-							break;
-							
+
 						}
 					}
 				}
