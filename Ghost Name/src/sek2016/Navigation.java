@@ -91,6 +91,7 @@ public class Navigation implements Runnable {
 		float dist = (2 * PI * Navigation.RAIO) * tacho;
 		if (dist >= CELL_SIZE) {
 			AlienRescue.cellExchanged = true;
+			AlienRescue.cellAlreadyRead = false;
 			newPosition();
 			Navigation.resetTacho();
 

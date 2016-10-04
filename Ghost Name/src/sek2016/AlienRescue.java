@@ -1,6 +1,9 @@
 package sek2016;
 
 import java.util.List;
+
+import javax.jws.soap.SOAPBinding;
+
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
 import sek2016.Celula.Status;
@@ -42,7 +45,7 @@ public class AlienRescue implements Runnable {
 
 	private static final float distAndar = Celula.commonSize + 0.05f;
 
-	// =======================VARIAVEIS DO MAPA==============================
+	// =======================VARIAVEIS DE PROCESSO===========================
 	private final static Celula[][] CENTRAL_MAP = new Celula[LIN_AMT][COL_AMT];
 	private final static Celula[][] CAVE_MAP = new Celula[LIN_AMT][COL_AMT];
 	private final static Celula[][] OBSTACLE_MAP = new Celula[LIN_AMT][COL_AMT];
@@ -56,9 +59,19 @@ public class AlienRescue implements Runnable {
 	private static Astar aStar;
 
 	/**
-	 * Variável que informa que houve uma mudança de célula
+	 * Flag que informa que houve uma mudança de célula
 	 */
 	public static boolean cellExchanged = false;
+
+	/**
+	 * Flag que informa que a leitura pra aquela célula já foi feita
+	 */
+	public static boolean cellAlreadyRead = false;
+
+	/**
+	 * Lista ligada que contem o caminho até algo
+	 */
+	private static List<Celula> path;
 
 	// ========================================================================
 	/**
@@ -67,9 +80,9 @@ public class AlienRescue implements Runnable {
 	@Override
 	public void run() {
 		Navigation.garraFechada = false;
-		try { // o codigo deve ficar dentro desse try gigante
+		try { // o codigo deve ficar dentro desse try
 				// ======INICIO DO
-				// CODIGO=============================================================
+				// CODIGO=============================================
 			/*
 			 * Thread da PID é iniciada aqui.
 			 */
@@ -87,11 +100,8 @@ public class AlienRescue implements Runnable {
 			threadTacometria.setName("Thread Tacometria");
 			threadTacometria.start();
 
-			goTo(caveEntrance);
-			goTo(obstacleEntrace);
-
 			// ======FINAL DO
-			// CODIGO=================================================
+			// CODIGO===============================================
 			alienRescueON = false;
 		} catch (ThreadDeath e) {// quando o menu é chamado, essa thread é
 			// desligada e lança essa exception
@@ -162,10 +172,11 @@ public class AlienRescue implements Runnable {
 	private static void checkFrontRobotCell() {
 		if (Navigation.orientation == Navigation.FRONT) {
 
-			if (Sensors.verificaObstaculo()) {
+			if (Sensors.checkIfCellOcuppied()) {
 				CENTRAL_MAP[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.occupied);
-				Navigation.stop();
-				Navigation.closeGarra();
+				/*
+				 * Técnica de captura
+				 */
 
 			} else {
 				CENTRAL_MAP[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
@@ -175,10 +186,11 @@ public class AlienRescue implements Runnable {
 
 		else if (Navigation.orientation == Navigation.BACK) {
 
-			if (Sensors.verificaObstaculo()) {
+			if (Sensors.checkIfCellOcuppied()) {
 				CENTRAL_MAP[Navigation.robotPosition.x - 1][Navigation.robotPosition.y].setStatus(Status.occupied);
-				Navigation.stop();
-				Navigation.closeGarra();
+				/*
+				 * Técnica de captura
+				 */
 
 			} else {
 				CENTRAL_MAP[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
@@ -187,10 +199,12 @@ public class AlienRescue implements Runnable {
 		}
 
 		else if (Navigation.orientation == Navigation.LEFT) {
-			if (Sensors.verificaObstaculo()) {
+			if (Sensors.checkIfCellOcuppied()) {
 				CENTRAL_MAP[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].setStatus(Status.occupied);
-				Navigation.stop();
-				Navigation.closeGarra();
+				/*
+				 * Técnica de captura
+				 */
+
 			} else {
 				CENTRAL_MAP[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].setStatus(Status.empty);
 			}
@@ -198,10 +212,13 @@ public class AlienRescue implements Runnable {
 		}
 
 		else if (Navigation.orientation == Navigation.RIGTH) {
-			if (Sensors.verificaObstaculo()) {
+			if (Sensors.checkIfCellOcuppied()) {
 				CENTRAL_MAP[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].setStatus(Status.occupied);
-				Navigation.stop();
-				Navigation.closeGarra();
+
+				/*
+				 * Técnica de captura
+				 */
+
 			} else {
 				CENTRAL_MAP[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].setStatus(Status.empty);
 			}
@@ -340,244 +357,279 @@ public class AlienRescue implements Runnable {
 	}
 
 	/**
-	 * Esse método implementa o ir do robô de sua posição para uma posição alvo
+	 * Literalmente encontra o melhor caminho para passar e seta esse caminho em
+	 * <b>path</b>
 	 * 
 	 * @param posicaoAlvo
+	 *            posição ao qual se deseja chegar
 	 * @throws Exception
+	 *             Exceção gerada pelo uso do A*
 	 */
-	private static void goTo(Posicao posicaoAlvo) throws Exception {
+	private static void setPath(Posicao posicaoAlvo) throws Exception {
+		aStar = new Astar(CENTRAL_MAP);
+		path = aStar.search(Navigation.robotPosition, posicaoAlvo);
+	}
+	
+	
 
-		aStar = new Astar(CAVE_MAP);
-		List<Celula> caminho = aStar.search(Navigation.robotPosition, posicaoAlvo);
+	/**
+	 * Retorna a lista de celulas que formam o melhor caminho para uma posição
+	 * alvo, que foi definidas dentro de path
+	 * 
+	 * @return O caminho que está contido dentro do <b>path</b>
+	 */
+	private static List<Celula> getPath() {
+		return path;
+	}
+	
 
-		for (int i = 0; i < caminho.size(); i++) {
-			/*
-			 * A célula está a esquerda da posição do robounico modo de chegar
-			 * até ela é só quando a orientação for LEFT
-			 */
-			if (caminho.get(i).getPosicao().x == Navigation.robotPosition.x
-					&& caminho.get(i).getPosicao().y > Navigation.robotPosition.y) {
+	/**
+	 * Esse método implementa o ir do robô de sua posição para uma posição alvo
+	 * 
+	 * @param caminho
+	 *            É uma lista de celulas de por onde o robo deve passar para
+	 *            chegar na posição alvo
+	 */
+	private static void goTo(List<Celula> caminho) {
 
-				while (Navigation.orientation != Navigation.LEFT) {
+		if (caminho.isEmpty()) {
+			MainMenuClass.printDebug("Caminho Vazio");
+			Sound.buzz();
+		} else {
 
-					if (Navigation.orientation == Navigation.FRONT) {
+			for (int i = 0; i < caminho.size(); i++) {
+				/*
+				 * A célula está a esquerda da posição do robounico modo de
+				 * chegar até ela é só quando a orientação for LEFT
+				 */
+				if (caminho.get(i).getPosicao().x == Navigation.robotPosition.x
+						&& caminho.get(i).getPosicao().y > Navigation.robotPosition.y) {
 
-						Navigation.stop();
-						Navigation.turn(90);
+					while (Navigation.orientation != Navigation.LEFT) {
 
-					} else if (Navigation.orientation == Navigation.BACK) {
+						if (Navigation.orientation == Navigation.FRONT) {
 
-						Navigation.stop();
-						Navigation.turn(-90);
+							Navigation.stop();
+							Navigation.turn(90);
 
-					} else {
+						} else if (Navigation.orientation == Navigation.BACK) {
 
-						Navigation.stop();
-						Navigation.turn(90);
-					}
-
-				}
-
-				Navigation.forward();
-
-				while (true) {
-
-					if (cellExchanged == false) {
-						if (allowedReading()) {
-
-							// checkFrontRobotCell();
-
-						}
-					} else {
-
-						if ((i + 1) < caminho.size()) {
-							Sound.beep();
-
-							cellExchanged = false;
-							break;
+							Navigation.stop();
+							Navigation.turn(-90);
 
 						} else {
 
 							Navigation.stop();
-
-							cellExchanged = false;
-							break;
-
+							Navigation.turn(90);
 						}
-					}
-				}
-
-			}
-			/*
-			 * A célula está a direita da posição do robo, unico modo de chegar
-			 * até ela é só quando a orientação for RIGHT
-			 */
-			else if (caminho.get(i).getPosicao().x == Navigation.robotPosition.x
-					&& caminho.get(i).getPosicao().y < Navigation.robotPosition.y) {
-
-				while (Navigation.orientation != Navigation.RIGTH) {
-
-					if (Navigation.orientation == Navigation.FRONT) {
-
-						Navigation.stop();
-						Navigation.turn(-90);
-
-					} else if (Navigation.orientation == Navigation.BACK) {
-
-						Navigation.stop();
-						Navigation.turn(90);
-
-					} else {
-
-						Navigation.stop();
-						Navigation.turn(90);
 
 					}
 
-				}
+					Navigation.forward();
 
-				Navigation.forward();
+					while (true) {
 
-				while (true) {
+						if (cellExchanged == false) {
+							if (allowedReading() && !cellAlreadyRead) {
 
-					if (cellExchanged == false) {
-						if (allowedReading()) {
+								checkFrontRobotCell();
+								cellAlreadyRead = true;
 
-							// checkFrontRobotCell();
-
-						}
-					} else {
-
-						if ((i + 1) < caminho.size()) {
-							Sound.beep();
-
-							cellExchanged = false;
-							break;
-
+							}
 						} else {
+
+							if ((i + 1) < caminho.size()) {
+								Sound.beep();
+
+								cellExchanged = false;
+								break;
+
+							} else {
+
+								Navigation.stop();
+
+								cellExchanged = false;
+								break;
+
+							}
+						}
+					}
+
+				}
+				/*
+				 * A célula está a direita da posição do robo, unico modo de
+				 * chegar até ela é só quando a orientação for RIGHT
+				 */
+				else if (caminho.get(i).getPosicao().x == Navigation.robotPosition.x
+						&& caminho.get(i).getPosicao().y < Navigation.robotPosition.y) {
+
+					while (Navigation.orientation != Navigation.RIGTH) {
+
+						if (Navigation.orientation == Navigation.FRONT) {
+
 							Navigation.stop();
+							Navigation.turn(-90);
 
-							cellExchanged = false;
-							break;
+						} else if (Navigation.orientation == Navigation.BACK) {
 
-						}
-					}
-				}
-
-			}
-			/*
-			 * A célula está a frente da posição do robo, unico modo de chegar
-			 * até ela é só quando a orientação for FRONT
-			 */
-			else if (caminho.get(i).getPosicao().x > Navigation.robotPosition.x
-					&& caminho.get(i).getPosicao().y == Navigation.robotPosition.y) {
-
-				while (Navigation.orientation != Navigation.FRONT) {
-
-					if (Navigation.orientation == Navigation.LEFT) {
-
-						Navigation.stop();
-						Navigation.turn(-90);
-
-					} else if (Navigation.orientation == Navigation.RIGTH) {
-
-						Navigation.stop();
-						Navigation.turn(90);
-
-					} else {
-
-						Navigation.stop();
-						Navigation.turn(-90);
-
-					}
-
-				}
-
-				Navigation.forward();
-
-				while (true) {
-
-					if (cellExchanged == false) {
-						if (allowedReading()) {
-
-							// checkFrontRobotCell();
-
-						}
-					} else {
-
-						if ((i + 1) < caminho.size()) {
-							Sound.beep();
-
-							cellExchanged = false;
-							break;
-
-						} else {
 							Navigation.stop();
-
-							cellExchanged = false;
-							break;
-
-						}
-					}
-				}
-
-			}
-			/*
-			 * A célula está atrás da posição do robo, unico modo de chegar até
-			 * ela é só quando a orientação for BACK
-			 */
-			else if (caminho.get(i).getPosicao().x < Navigation.robotPosition.x
-					&& caminho.get(i).getPosicao().y == Navigation.robotPosition.y) {
-
-				while (Navigation.orientation != Navigation.BACK) {
-
-					if (Navigation.orientation == Navigation.LEFT) {
-
-						Navigation.stop();
-						Navigation.turn(90);
-
-					} else if (Navigation.orientation == Navigation.RIGTH) {
-
-						Navigation.stop();
-						Navigation.turn(-90);
-
-					} else {
-
-						Navigation.stop();
-						Navigation.turn(90);
-
-					}
-
-				}
-
-				Navigation.forward();
-
-				while (true) {
-
-					if (cellExchanged == false) {
-						if (allowedReading()) {
-
-							// checkFrontRobotCell();
-
-						}
-					} else {
-
-						if ((i + 1) < caminho.size()) {
-							Sound.beep();
-							cellExchanged = false;
-							break;
+							Navigation.turn(90);
 
 						} else {
 
 							Navigation.stop();
-
-							cellExchanged = false;
-							break;
+							Navigation.turn(90);
 
 						}
-					}
-				}
 
+					}
+
+					Navigation.forward();
+
+					while (true) {
+
+						if (cellExchanged == false) {
+							if (allowedReading() && !cellAlreadyRead) {
+
+								checkFrontRobotCell();
+								cellAlreadyRead = true;
+
+							}
+						} else {
+
+							if ((i + 1) < caminho.size()) {
+								Sound.beep();
+
+								cellExchanged = false;
+								break;
+
+							} else {
+								Navigation.stop();
+
+								cellExchanged = false;
+								break;
+
+							}
+						}
+					}
+
+				}
+				/*
+				 * A célula está a frente da posição do robo, unico modo de
+				 * chegar até ela é só quando a orientação for FRONT
+				 */
+				else if (caminho.get(i).getPosicao().x > Navigation.robotPosition.x
+						&& caminho.get(i).getPosicao().y == Navigation.robotPosition.y) {
+
+					while (Navigation.orientation != Navigation.FRONT) {
+
+						if (Navigation.orientation == Navigation.LEFT) {
+
+							Navigation.stop();
+							Navigation.turn(-90);
+
+						} else if (Navigation.orientation == Navigation.RIGTH) {
+
+							Navigation.stop();
+							Navigation.turn(90);
+
+						} else {
+
+							Navigation.stop();
+							Navigation.turn(-90);
+
+						}
+
+					}
+
+					Navigation.forward();
+
+					while (true) {
+
+						if (cellExchanged == false) {
+							if (allowedReading() && !cellAlreadyRead) {
+
+								checkFrontRobotCell();
+								cellAlreadyRead = true;
+
+							}
+						} else {
+
+							if ((i + 1) < caminho.size()) {
+								Sound.beep();
+
+								cellExchanged = false;
+								break;
+
+							} else {
+								Navigation.stop();
+
+								cellExchanged = false;
+								break;
+
+							}
+						}
+					}
+
+				}
+				/*
+				 * A célula está atrás da posição do robo, unico modo de chegar
+				 * até ela é só quando a orientação for BACK
+				 */
+				else if (caminho.get(i).getPosicao().x < Navigation.robotPosition.x
+						&& caminho.get(i).getPosicao().y == Navigation.robotPosition.y) {
+
+					while (Navigation.orientation != Navigation.BACK) {
+
+						if (Navigation.orientation == Navigation.LEFT) {
+
+							Navigation.stop();
+							Navigation.turn(90);
+
+						} else if (Navigation.orientation == Navigation.RIGTH) {
+
+							Navigation.stop();
+							Navigation.turn(-90);
+
+						} else {
+
+							Navigation.stop();
+							Navigation.turn(90);
+
+						}
+
+					}
+
+					Navigation.forward();
+
+					while (true) {
+
+						if (cellExchanged == false) {
+							if (allowedReading() && !cellAlreadyRead) {
+
+								checkFrontRobotCell();
+								cellAlreadyRead = true;
+
+							}
+						} else {
+
+							if ((i + 1) < caminho.size()) {
+								Sound.beep();
+								cellExchanged = false;
+								break;
+
+							} else {
+
+								Navigation.stop();
+
+								cellExchanged = false;
+								break;
+
+							}
+						}
+					}
+
+				}
 			}
 		}
 	}

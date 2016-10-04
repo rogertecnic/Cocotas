@@ -37,6 +37,8 @@ public class Sensors {
 	private static float r1, r2, // red
 			g1, g2, // green
 			b1, b2; // blue
+	
+	private static final float DIST_LEITURA = Celula.commonSize;
 
 	// ======================metodos======================
 	/**
@@ -78,11 +80,32 @@ public class Sensors {
 	 */
 	public static boolean verificaObstaculo() {
 		ultrasonic.getDistanceMode().fetchSample(distSample, 0);
-		if ((distSample[0] >= DIST_MIN) && (distSample[0] <= DIST_MAX))
+		if ((distSample[0] >= DIST_MIN) && (distSample[0] <= DIST_MAX)){
+			
 			return true;
-		else
+
+		}
+		else{
+			
 			return false;
+
+		}
 	}
+	
+	public static boolean checkIfCellOcuppied(){
+		ultrasonic.getDistanceMode().fetchSample(distSample, 0);
+		if (distSample[0] <= DIST_LEITURA){
+			
+			return true;
+
+		}
+		else{
+			
+			return false;
+
+		}
+	}
+	
 
 	/**
 	 * Metodo que verifica somente a posicao do gyro;
