@@ -178,7 +178,8 @@ public class AlienRescue implements Runnable {
 
 	/**
 	 * Método Motherfucker que siplemesmente faz o resgate
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public static void toRescue() throws Exception {
 		/*
@@ -186,35 +187,38 @@ public class AlienRescue implements Runnable {
 		 */
 
 		enterModule(Module.Central);
-		
-		switch (bestPlaceToSearch()){
-		
+
+		switch (bestPlaceToSearch()) {
+
 		case Central:
-			
+
 			centralMapStrategy();
 			break;
-			
+
 		case Cave:
-			
+
 			setPath(caveEntrance);
 			goTo(getPath());
 			enterModule(Module.Cave);
-			
+
 			caveMapStrategy();
 			break;
-			
+
 		case Obstacle:
-			
+
 			setPath(obstacleEntrace);
 			goTo(getPath());
 			enterModule(Module.Obstacle);
-			
+
 			obstacleMapStrategy();
+			break;
+
+		default:
 			break;
 		}
 
 	}
-	
+
 	/**
 	 * 
 	 * @return O melhor lugar para se fazer aquela busca marota
@@ -228,85 +232,84 @@ public class AlienRescue implements Runnable {
 			for (int j = 0; j < LIN_AMT; j++) {
 
 				if (CENTRAL_MAP[i][j].getStatus() == Status.unchecked && MainMenuClass.bonecoNoCentro) {
-					
+
 					centralAmount++;
-					
+
 				}
-				
-				if (CAVE_MAP[i][j].getStatus() == Status.unchecked ){
-					
+
+				if (CAVE_MAP[i][j].getStatus() == Status.unchecked) {
+
 					caveAmount++;
-					
+
 				}
-				
-				if (OBSTACLE_MAP[i][j].getStatus() == Status.unchecked){
-					
+
+				if (OBSTACLE_MAP[i][j].getStatus() == Status.unchecked) {
+
 					obstacleAmount++;
-					
+
 				}
 
 			}
 		}
-		
-		
-		if (centralAmount >= obstacleAmount || centralAmount >=caveAmount){
-			
+
+		if (centralAmount >= obstacleAmount || centralAmount >= caveAmount) {
+
 			return Module.Central;
-			
-		}else if (caveAmount >= obstacleAmount){
-			
+
+		} else if (caveAmount >= obstacleAmount) {
+
 			return Module.Cave;
-			
-		}else{
+
+		} else {
 			return Module.Obstacle;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Estratégia de varredura do mudulo central
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
-	private static void centralMapStrategy() throws Exception{
-		
+	private static void centralMapStrategy() throws Exception {
+
 		setPath(point1CentralMap);
 		goTo(getPath());
-		
+
 		setPath(point2CentralMap);
 		goTo(getPath());
-		
+
 		setPath(point3CentralMap);
 		goTo(getPath());
-		
+
 		setPath(point4CentralMap);
 		goTo(getPath());
 	}
-	
+
 	/**
 	 * Estratégia de varredura do modulo da caverna
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
-	private static void caveMapStrategy() throws Exception{
-		
+	private static void caveMapStrategy() throws Exception {
+
 		setPath(point1Cavemap);
 		goTo(getPath());
-		
+
 		setPath(point2Cavemap);
 		goTo(getPath());
-		
+
 		setPath(point3Cavemap);
 		goTo(getPath());
-		
+
 	}
-	
+
 	/**
 	 * Estratégia de varredura do modulo do obstaculo
 	 */
-	private static void obstacleMapStrategy(){
-		
+	private static void obstacleMapStrategy() {
+
 	}
-	
-	
 
 	/**
 	 * Reproduz o alegre som de sambar na cara das inimigas
@@ -355,6 +358,105 @@ public class AlienRescue implements Runnable {
 		}
 	}
 
+	private static void makeMyWayBack() throws Exception {
+		switch (getModule()) {
+		case Central:
+
+			setReversePath(inputCell);
+			goTo(getPath());
+			enterModule(Module.OutOfModule);
+			break;
+
+		case Cave:
+
+			setReversePath(caveExit);
+			goTo(getPath());
+			enterModule(Module.Central);
+
+			setReversePath(inputCell);
+			goTo(getPath());
+			enterModule(Module.OutOfModule);
+			break;
+
+		case Obstacle:
+
+			setReversePath(obstacleExit);
+			goTo(getPath());
+			enterModule(Module.Central);
+
+			setReversePath(inputCell);
+			goTo(getPath());
+			enterModule(Module.OutOfModule);
+			break;
+
+		}
+	}
+
+	/**
+	 * Método de captura do alien<br>
+	 * Leitoado, selem as caudas
+	 * 
+	 * @return Boolean se de fato houve a captura ou não
+	 */
+	private static boolean captureDoll() {
+		Navigation.stop();
+		Navigation.setTachometer(false);
+
+		Navigation.andar(0.10f);
+
+		if (Sensors.verificaObstaculo()) {
+			Navigation.andar(0.10f);
+			Navigation.closeGarra();
+			/*
+			 * código de checagem do rogério
+			 */
+			Navigation.andar(-0.20f);
+			Navigation.resetTacho();
+			Navigation.setTachometer(true);
+
+			return true;
+		}
+
+		Navigation.turn(45);
+
+		if (Sensors.verificaObstaculo()) {
+			Navigation.andar(0.1f);
+			Navigation.closeGarra();
+			/*
+			 * código de checagem do rogério
+			 */
+			Navigation.andar(-0.20f);
+			Navigation.turn(-45);
+			Navigation.resetTacho();
+			Navigation.setTachometer(true);
+
+			return true;
+		}
+
+		Navigation.turn(-90);
+
+		if (Sensors.verificaObstaculo()) {
+			Navigation.andar(0.1f);
+			Navigation.closeGarra();
+			/*
+			 * código de checagem do rogério
+			 */
+			Navigation.andar(-0.20f);
+			Navigation.turn(45);
+			Navigation.resetTacho();
+			Navigation.setTachometer(true);
+
+			return true;
+		}
+
+		Navigation.andar(-0.10f);
+		Navigation.resetTacho();
+		Navigation.setTachometer(true);
+
+		return false;
+
+	}
+
 	/**
 	 * Faz a checagem da celula que está em frente ao robo, usando o sensor de
 	 * presença e distancia<br>
@@ -362,19 +464,24 @@ public class AlienRescue implements Runnable {
 	 * como vazia<br>
 	 * Sò deve ser acionado depois que a leitura for permitida (allowedReading),
 	 * para evitar inconsistencias nas leituras
+	 * 
+	 * @throws Exception
 	 */
-	private static void checkFrontRobotCell(Celula[][] mapaAtual) {
+	private static void checkFrontRobotCell(Celula[][] mapaAtual) throws Exception {
 
 		if (Navigation.orientation == Navigation.FRONT) {
 
 			if (Sensors.checkIfCellOcuppied()) {
-				
-				
-				
-				mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.occupied);
-				/*
-				 * Técnica de captura
-				 */
+				if (captureDoll()) {
+
+					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
+					makeMyWayBack();
+
+				} else {
+
+					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.occupied);
+
+				}
 
 			} else {
 				mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
@@ -385,11 +492,16 @@ public class AlienRescue implements Runnable {
 		else if (Navigation.orientation == Navigation.BACK) {
 
 			if (Sensors.checkIfCellOcuppied()) {
-				mapaAtual[Navigation.robotPosition.x - 1][Navigation.robotPosition.y].setStatus(Status.occupied);
-				/*
-				 * Técnica de captura
-				 */
+				if (captureDoll()) {
 
+					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
+					makeMyWayBack();
+
+				} else {
+
+					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.occupied);
+
+				}
 			} else {
 				mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
 			}
@@ -398,25 +510,37 @@ public class AlienRescue implements Runnable {
 
 		else if (Navigation.orientation == Navigation.LEFT) {
 			if (Sensors.checkIfCellOcuppied()) {
-				mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].setStatus(Status.occupied);
-				/*
-				 * Técnica de captura
-				 */
+				if (captureDoll()) {
+
+					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
+					makeMyWayBack();
+
+				} else {
+
+					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.occupied);
+
+				}
 
 			} else {
+
 				mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].setStatus(Status.empty);
+
 			}
 
 		}
 
 		else if (Navigation.orientation == Navigation.RIGTH) {
 			if (Sensors.checkIfCellOcuppied()) {
-				mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].setStatus(Status.occupied);
+				if (captureDoll()) {
 
-				/*
-				 * Técnica de captura
-				 */
+					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
+					makeMyWayBack();
 
+				} else {
+
+					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.occupied);
+
+				}
 			} else {
 				mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].setStatus(Status.empty);
 			}
@@ -555,6 +679,90 @@ public class AlienRescue implements Runnable {
 	}
 
 	/**
+	 * Garante que a orientação do robo está correta para mudar de um modulo ao
+	 * outro<br>
+	 * Só usar dentro do método de troca de modulo <b>enterModule</b>
+	 */
+	private static void makeSureOrientationSRight() {
+		if (Navigation.robotPosition.x == 0) {
+
+			while(Navigation.orientation != Navigation.BACK){
+				if (Navigation.orientation == Navigation.LEFT) {
+
+					Navigation.turn(90);
+
+				} else if (Navigation.orientation == Navigation.RIGTH) {
+
+					Navigation.turn(-90);
+
+				} else {
+
+					Navigation.turn(90);
+
+				}
+			}
+			
+		} else if (Navigation.robotPosition.x == (COL_AMT - 1)) {
+
+			while (Navigation.orientation != Navigation.FRONT){
+				
+				if (Navigation.orientation == Navigation.LEFT) {
+
+					Navigation.turn(-90);
+
+				} else if (Navigation.orientation == Navigation.RIGTH) {
+
+					Navigation.turn(90);
+
+				} else {
+
+					Navigation.turn(-90);
+
+				}
+			}
+			
+		} else if (Navigation.robotPosition.y == 0) {
+
+			while(Navigation.orientation != Navigation.RIGTH){
+				
+				if (Navigation.orientation == Navigation.FRONT) {
+
+					Navigation.turn(-90);
+
+				} else if (Navigation.orientation == Navigation.BACK) {
+
+					Navigation.turn(90);
+
+				} else {
+
+					Navigation.turn(90);
+
+				}
+			}
+			
+		} else if (Navigation.robotPosition.y == (LIN_AMT - 1)) {
+
+			while(Navigation.orientation != Navigation.LEFT){
+				
+				if (Navigation.orientation == Navigation.FRONT) {
+
+					Navigation.turn(90);
+
+				} else if (Navigation.orientation == Navigation.BACK) {
+
+					Navigation.turn(-90);
+
+				} else {
+
+					Navigation.turn(90);
+				}
+
+			}
+			
+		}
+	}
+
+	/**
 	 * Realiza a troca de modulo, bem como a atualização de direção e
 	 * posicionamento nas celulas
 	 * 
@@ -571,6 +779,11 @@ public class AlienRescue implements Runnable {
 			Navigation.andar(DIST_TRAVESSIA);
 
 			setModule(moduloAlvo);
+			
+			Navigation.resetTacho();
+			
+			Navigation.setDistancia(0);
+
 
 			Navigation.setTachometer(true);
 
@@ -601,10 +814,16 @@ public class AlienRescue implements Runnable {
 			}
 
 			Navigation.setTachometer(false);
+			
+			makeSureOrientationSRight();
 
 			Navigation.andar(DIST_TRAVESSIA);
 
 			setModule(moduloAlvo);
+			
+			Navigation.resetTacho();
+			
+			Navigation.setDistancia(0);
 
 			Navigation.orientation = Navigation.FRONT;
 
@@ -636,10 +855,16 @@ public class AlienRescue implements Runnable {
 			}
 
 			Navigation.setTachometer(false);
+			
+			makeSureOrientationSRight();
 
 			Navigation.andar(DIST_TRAVESSIA);
 
 			setModule(moduloAlvo);
+			
+			Navigation.resetTacho();
+			
+			Navigation.setDistancia(0);
 
 			Navigation.orientation = Navigation.FRONT;
 
@@ -654,10 +879,16 @@ public class AlienRescue implements Runnable {
 		else if (modulo == Module.Cave && moduloAlvo == Module.Central) {
 
 			Navigation.setTachometer(false);
+			
+			makeSureOrientationSRight();
 
 			Navigation.andar(DIST_TRAVESSIA);
 
 			setModule(moduloAlvo);
+			
+			Navigation.resetTacho();
+			
+			Navigation.setDistancia(0);
 
 			Navigation.orientation = orientacaoArmazenada;
 
@@ -673,10 +904,16 @@ public class AlienRescue implements Runnable {
 
 			Navigation.setTachometer(false);
 
+			makeSureOrientationSRight();
+
 			Navigation.andar(DIST_TRAVESSIA);
 
 			setModule(moduloAlvo);
-
+			
+			Navigation.resetTacho();
+			
+			Navigation.setDistancia(0);
+			
 			Navigation.orientation = orientacaoArmazenada;
 
 			Navigation.robotPosition = obstacleEntrace;
@@ -690,10 +927,16 @@ public class AlienRescue implements Runnable {
 		else if (modulo == Module.Central && moduloAlvo == Module.OutOfModule) {
 
 			Navigation.setTachometer(false);
+			
+			makeSureOrientationSRight();
 
 			Navigation.andar(DIST_TRAVESSIA);
 
 			setModule(moduloAlvo);
+			
+			Navigation.resetTacho();
+			
+			Navigation.setDistancia(0);
 		}
 	}
 
@@ -739,6 +982,16 @@ public class AlienRescue implements Runnable {
 	}
 
 	/**
+	 * 
+	 * @param posicaoAlvo
+	 * @throws Exception
+	 */
+	private static void setReversePath(Posicao posicaoAlvo) throws Exception {
+		aStar = new Astar(CENTRAL_MAP);
+		path = aStar.searchReversePath(Navigation.robotPosition, posicaoAlvo);
+	}
+
+	/**
 	 * Literalmente encontra o melhor caminho para passar e seta esse caminho em
 	 * <b>path</b>
 	 * 
@@ -747,7 +1000,7 @@ public class AlienRescue implements Runnable {
 	 * @throws Exception
 	 *             Exceção gerada pelo uso do A*
 	 */
-	private static void setPath(/*Posicao posicaoinicial,*/ Posicao posicaoAlvo) throws Exception {
+	private static void setPath(/* Posicao posicaoinicial, */ Posicao posicaoAlvo) throws Exception {
 		aStar = new Astar(CENTRAL_MAP);
 		path = aStar.search(Navigation.robotPosition, posicaoAlvo);
 	}
@@ -770,8 +1023,9 @@ public class AlienRescue implements Runnable {
 	 * @param caminho
 	 *            É uma lista de celulas de por onde o robo deve passar para
 	 *            chegar na posição alvo
+	 * @throws Exception
 	 */
-	private static void goTo(List<Celula> caminho) {
+	private static void goTo(List<Celula> caminho) throws Exception {
 
 		if (caminho.isEmpty()) {
 			MainMenuClass.printDebug("Caminho Vazio");

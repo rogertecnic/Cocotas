@@ -127,6 +127,16 @@ public class Navigation implements Runnable {
 		}
 
 	}
+	
+	public static void setDistancia(float dist){
+		
+		Navigation.distancia = dist;
+		
+	}
+	
+	public static float getDistancia(){
+		return Navigation.distancia;
+	}
 
 	/**
 	 * Gira o robo no proprio eixo, não usa o giroscopio, usa o tacometro das
