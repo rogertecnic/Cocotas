@@ -75,7 +75,7 @@ public class AlienRescue implements Runnable{
 			//Navigation.andar(Const.LADO_ARENA_CENTRAL+0.4f);
 			//Navigation.turn(360*2);
 			Plano_B.partiu();
-			//Plano_B.debugBusca();
+			//Plano_B.debugBuscaObstaculo();
 			
 /*			while(Button.ENTER.isUp()){
 				Sensors.verificaDistObstaculo();

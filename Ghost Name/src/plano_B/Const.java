@@ -125,10 +125,10 @@ public class Const {
 	 * @PROFUNDIDADE_BUNDA_ROBO distancia da traseira do robo ate o centro do robo
 	 * serve para fazer o ajuste fino da saida do robo do modulo de resgate
 	 */
-	public static final float PROFUNDIDADE_BUNDA_ROBO = 0.107f;
+	public static final float PROFUNDIDADE_BUNDA_ROBO = 0.109f;
 	/**
 	 * @DIST_EIXO_GARRA distancia da ponta da garra fechada ate o 
 	 * eixo do robo
 	 */
-	public static final float DIST_EIXO_GARRA_FECHADA = 0.12f;
+	public static final float DIST_EIXO_GARRA_FECHADA = 0.139f;
 }

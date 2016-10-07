@@ -192,7 +192,22 @@ public class Sensors {
 			return BRANCO;
 		}
 	}
-
+	
+	public static boolean verificaLinhaChao(){
+		floorColor.getRGBMode().fetchSample(floorSample, 0);
+		if(floorSample[0] <=0.05 || floorSample[1] <= 0.05 || floorSample[3] <=0.05 ){
+			
+			LCD.clear();
+			LCD.drawString("testar linha", 0, 0);
+			return true;
+		}else {
+			LCD.clear();
+			LCD.drawString("testar linha", 0, 0);
+			return false;
+		}
+			
+	}
+	
 	/**
 	 * Calibragem do sensor de dollColor
 	 */
