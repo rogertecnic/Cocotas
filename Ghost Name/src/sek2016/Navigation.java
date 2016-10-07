@@ -57,6 +57,8 @@ public class Navigation implements Runnable {
 								// no metodo calculaPID se caso ele for andar de
 								// re
 
+	private static boolean tachometer = false;
+
 	public static Posicao robotPosition; // posição de
 											// entrada
 
@@ -76,7 +78,7 @@ public class Navigation implements Runnable {
 
 		robotPosition = AlienRescue.inputCell;
 
-		while (AlienRescue.alienRescueON) {
+		while (tachometer) {
 			cellExchanger();
 		}
 
@@ -244,6 +246,27 @@ public class Navigation implements Runnable {
 	}
 
 	/**
+	 * Flag de controle de tacometria
+	 * 
+	 * @param tachometer
+	 *            Boolean para mudar a flag de tacometria
+	 */
+	public static void setTachometer(boolean tachometer) {
+
+		Navigation.tachometer = tachometer;
+
+	}
+
+	/**
+	 * Retorna o estado atual da flag de controle da tacometria
+	 * 
+	 * @return Flag de controle da tacometria
+	 */
+	public static boolean getTachometer() {
+		return Navigation.tachometer;
+	}
+
+	/**
 	 * robo anda pra frente(positivo) ou para traz (negativo) em uma determinada
 	 * distancia.<br>
 	 * velocidade definida pelo PID, metodo segura a thread dentro dele ate o
@@ -404,7 +427,7 @@ public class Navigation implements Runnable {
 		avoidedError = false;
 	}
 
-	/** 
+	/**
 	 * fechar garra
 	 */
 	public static void closeGarra() {
