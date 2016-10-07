@@ -1,10 +1,6 @@
 package sek2016;
 
 import java.util.List;
-
-import javax.jws.soap.SOAPBinding;
-import javax.print.attribute.standard.MediaSize.NA;
-
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
 import sek2016.Celula.Status;
@@ -104,35 +100,35 @@ public class AlienRescue implements Runnable {
 	// =====================Pontos de controle dos 3 mapas=================
 	// --------------------Mapa central-------------------------
 
-	Posicao point1CentralMap = new Posicao(4, 4);
-	Posicao point2CentralMap = new Posicao(4, 7);
-	Posicao point3CentralMap = new Posicao(7, 4);
-	Posicao point4CentralMap = new Posicao(2, 1);
+	private static Posicao point1CentralMap = new Posicao(4, 4);
+	private static Posicao point2CentralMap = new Posicao(4, 7);
+	private static Posicao point3CentralMap = new Posicao(7, 4);
+	private static Posicao point4CentralMap = new Posicao(2, 1);
 
 	// --------------------Mapa da caverna----------------------
 
-	Posicao point1Cavemap = new Posicao(4, 7);
-	Posicao point2Cavemap = new Posicao(7, 4);
-	Posicao point3Cavemap = new Posicao(4, 1);
+	private static Posicao point1Cavemap = new Posicao(4, 7);
+	private static Posicao point2Cavemap = new Posicao(7, 4);
+	private static Posicao point3Cavemap = new Posicao(4, 1);
 
 	// -----------------Mapa do obstáculo----------------------
 	// ----------------Seção 1----------------------
 
-	Posicao point1ObstacleMapS1 = new Posicao(1, 6);
-	Posicao point2ObstacleMapS1 = new Posicao(1, 2);
+	private static Posicao point1ObstacleMapS1 = new Posicao(1, 6);
+	private static Posicao point2ObstacleMapS1 = new Posicao(1, 2);
 
 	// --------Seção 2-----------------------------
 
-	Posicao point3ObstacleMapS2 = new Posicao(3, 1);
-	Posicao point4ObstacleMapS2 = new Posicao(3, 2);
-	Posicao point5ObstacleMapS2 = new Posicao(3, 6);
-	Posicao point6ObstacleMapS2 = new Posicao(3, 7);
+	private static Posicao point3ObstacleMapS2 = new Posicao(3, 1);
+	private static Posicao point4ObstacleMapS2 = new Posicao(3, 2);
+	private static Posicao point5ObstacleMapS2 = new Posicao(3, 6);
+	private static Posicao point6ObstacleMapS2 = new Posicao(3, 7);
 
 	// -----------Seção 3------------------------
-	Posicao point7ObstacleMapS3 = new Posicao(6, 7);
-	Posicao point8ObstacleMapS3 = new Posicao(7, 5);
-	Posicao point9ObstacleMapS3 = new Posicao(6, 5);
-	Posicao point10ObstacleMapS3 = new Posicao(7, 2);
+	private static Posicao point7ObstacleMapS3 = new Posicao(6, 7);
+	private static Posicao point8ObstacleMapS3 = new Posicao(7, 5);
+	private static Posicao point9ObstacleMapS3 = new Posicao(6, 5);
+	private static Posicao point10ObstacleMapS3 = new Posicao(7, 2);
 
 	// ========================Métodos de Implementação====================
 	/**
@@ -182,13 +178,40 @@ public class AlienRescue implements Runnable {
 
 	/**
 	 * Método Motherfucker que siplemesmente faz o resgate
+	 * @throws Exception 
 	 */
-	public static void toRescue() {
+	public static void toRescue() throws Exception {
 		/*
 		 * Leitura do chão e definição do que resgatar
 		 */
 
 		enterModule(Module.Central);
+		
+		switch (bestPlaceToSearch()){
+		
+		case Central:
+			
+			centralMapStrategy();
+			break;
+			
+		case Cave:
+			
+			setPath(caveEntrance);
+			goTo(getPath());
+			enterModule(Module.Cave);
+			
+			caveMapStrategy();
+			break;
+			
+		case Obstacle:
+			
+			setPath(obstacleEntrace);
+			goTo(getPath());
+			enterModule(Module.Obstacle);
+			
+			obstacleMapStrategy();
+			break;
+		}
 
 	}
 	
@@ -240,7 +263,46 @@ public class AlienRescue implements Runnable {
 		
 	}
 	
-	private static void centralMapStrategy(){
+	/**
+	 * Estratégia de varredura do mudulo central
+	 * @throws Exception 
+	 */
+	private static void centralMapStrategy() throws Exception{
+		
+		setPath(point1CentralMap);
+		goTo(getPath());
+		
+		setPath(point2CentralMap);
+		goTo(getPath());
+		
+		setPath(point3CentralMap);
+		goTo(getPath());
+		
+		setPath(point4CentralMap);
+		goTo(getPath());
+	}
+	
+	/**
+	 * Estratégia de varredura do modulo da caverna
+	 * @throws Exception 
+	 */
+	private static void caveMapStrategy() throws Exception{
+		
+		setPath(point1Cavemap);
+		goTo(getPath());
+		
+		setPath(point2Cavemap);
+		goTo(getPath());
+		
+		setPath(point3Cavemap);
+		goTo(getPath());
+		
+	}
+	
+	/**
+	 * Estratégia de varredura do modulo do obstaculo
+	 */
+	private static void obstacleMapStrategy(){
 		
 	}
 	
@@ -306,6 +368,9 @@ public class AlienRescue implements Runnable {
 		if (Navigation.orientation == Navigation.FRONT) {
 
 			if (Sensors.checkIfCellOcuppied()) {
+				
+				
+				
 				mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.occupied);
 				/*
 				 * Técnica de captura
@@ -682,7 +747,7 @@ public class AlienRescue implements Runnable {
 	 * @throws Exception
 	 *             Exceção gerada pelo uso do A*
 	 */
-	private static void setPath(Posicao posicaoAlvo) throws Exception {
+	private static void setPath(/*Posicao posicaoinicial,*/ Posicao posicaoAlvo) throws Exception {
 		aStar = new Astar(CENTRAL_MAP);
 		path = aStar.search(Navigation.robotPosition, posicaoAlvo);
 	}
