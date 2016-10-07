@@ -37,9 +37,7 @@ public class Navigation implements Runnable {
 
 	// ------------------- CONSTANTES DE ORIENTACAO------------------------
 	/*
-	 * Constantes de orientação do robo <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<EM
-	 * RELACAO A QUE? <<<<<<<<<<<<<<<< Em relação a entrada do modulo, zé
-	 * roela...
+	 * Constantes de orientação do robo
 	 */
 	final static int BACK = 0, LEFT = 1, FRONT = 2, RIGTH = 3;
 
@@ -61,7 +59,7 @@ public class Navigation implements Runnable {
 
 	public static Posicao robotPosition; // posição de
 											// entrada
-
+	private static float distancia = 0;
 	// ========================Constantes de processo=====================
 
 	private static final float PI = (float) Math.PI;
@@ -90,11 +88,12 @@ public class Navigation implements Runnable {
 	 */
 	private static void cellExchanger() {
 		float tacho = (Navigation.getTacho("B") / 360);
-		float dist = (2 * PI * Navigation.RAIO) * tacho;
-		if (dist >= CELL_SIZE) {
+		distancia = (2 * PI * Navigation.RAIO) * tacho;
+		if (distancia >= CELL_SIZE) {
 			AlienRescue.cellExchanged = true;
 			AlienRescue.cellAlreadyRead = false;
 			newPosition();
+			distancia = 0;
 			Navigation.resetTacho();
 
 		}

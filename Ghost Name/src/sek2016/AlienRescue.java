@@ -101,6 +101,39 @@ public class AlienRescue implements Runnable {
 	 */
 	private static List<Celula> path;
 
+	// =====================Pontos de controle dos 3 mapas=================
+	// --------------------Mapa central-------------------------
+
+	Posicao point1CentralMap = new Posicao(4, 4);
+	Posicao point2CentralMap = new Posicao(4, 7);
+	Posicao point3CentralMap = new Posicao(7, 4);
+	Posicao point4CentralMap = new Posicao(2, 1);
+
+	// --------------------Mapa da caverna----------------------
+
+	Posicao point1Cavemap = new Posicao(4, 7);
+	Posicao point2Cavemap = new Posicao(7, 4);
+	Posicao point3Cavemap = new Posicao(4, 1);
+
+	// -----------------Mapa do obstáculo----------------------
+	// ----------------Seção 1----------------------
+
+	Posicao point1ObstacleMapS1 = new Posicao(1, 6);
+	Posicao point2ObstacleMapS1 = new Posicao(1, 2);
+
+	// --------Seção 2-----------------------------
+
+	Posicao point3ObstacleMapS2 = new Posicao(3, 1);
+	Posicao point4ObstacleMapS2 = new Posicao(3, 2);
+	Posicao point5ObstacleMapS2 = new Posicao(3, 6);
+	Posicao point6ObstacleMapS2 = new Posicao(3, 7);
+
+	// -----------Seção 3------------------------
+	Posicao point7ObstacleMapS3 = new Posicao(6, 7);
+	Posicao point8ObstacleMapS3 = new Posicao(7, 5);
+	Posicao point9ObstacleMapS3 = new Posicao(6, 5);
+	Posicao point10ObstacleMapS3 = new Posicao(7, 2);
+
 	// ========================Métodos de Implementação====================
 	/**
 	 * Metodo que rege todo o codigo do robo
@@ -146,6 +179,72 @@ public class AlienRescue implements Runnable {
 
 		}
 	}
+
+	/**
+	 * Método Motherfucker que siplemesmente faz o resgate
+	 */
+	public static void toRescue() {
+		/*
+		 * Leitura do chão e definição do que resgatar
+		 */
+
+		enterModule(Module.Central);
+
+	}
+	
+	/**
+	 * 
+	 * @return O melhor lugar para se fazer aquela busca marota
+	 */
+	private static Module bestPlaceToSearch() {
+		int centralAmount = 0;
+		int caveAmount = 0;
+		int obstacleAmount = -4;
+
+		for (int i = 0; i < COL_AMT; i++) {
+			for (int j = 0; j < LIN_AMT; j++) {
+
+				if (CENTRAL_MAP[i][j].getStatus() == Status.unchecked && MainMenuClass.bonecoNoCentro) {
+					
+					centralAmount++;
+					
+				}
+				
+				if (CAVE_MAP[i][j].getStatus() == Status.unchecked ){
+					
+					caveAmount++;
+					
+				}
+				
+				if (OBSTACLE_MAP[i][j].getStatus() == Status.unchecked){
+					
+					obstacleAmount++;
+					
+				}
+
+			}
+		}
+		
+		
+		if (centralAmount >= obstacleAmount || centralAmount >=caveAmount){
+			
+			return Module.Central;
+			
+		}else if (caveAmount >= obstacleAmount){
+			
+			return Module.Cave;
+			
+		}else{
+			return Module.Obstacle;
+		}
+		
+	}
+	
+	private static void centralMapStrategy(){
+		
+	}
+	
+	
 
 	/**
 	 * Reproduz o alegre som de sambar na cara das inimigas
@@ -398,9 +497,11 @@ public class AlienRescue implements Runnable {
 	 *            Modulo ao qual se deseja alcançar
 	 */
 	public static void enterModule(Module moduloAlvo) {
-		
+		/*
+		 * Quando se deseja entrar no módulo central, vindo da area de resgate
+		 * chamada OutOfModule
+		 */
 		if (modulo == Module.OutOfModule && moduloAlvo == Module.Central) {
-			
 
 			Navigation.andar(DIST_TRAVESSIA);
 
@@ -409,10 +510,13 @@ public class AlienRescue implements Runnable {
 			Navigation.setTachometer(true);
 
 			Navigation.orientation = Navigation.FRONT;
-			
 
-		} else if (modulo == Module.Central && moduloAlvo == Module.Cave) {
-			
+		}
+		/*
+		 * Quando se quer entrar no modulo da caverna
+		 */
+		else if (modulo == Module.Central && moduloAlvo == Module.Cave) {
+
 			if (Navigation.orientation == Navigation.FRONT) {
 
 				orientacaoArmazenada = Navigation.BACK;
@@ -430,7 +534,6 @@ public class AlienRescue implements Runnable {
 				orientacaoArmazenada = Navigation.LEFT;
 
 			}
-			
 
 			Navigation.setTachometer(false);
 
@@ -439,13 +542,16 @@ public class AlienRescue implements Runnable {
 			setModule(moduloAlvo);
 
 			Navigation.orientation = Navigation.FRONT;
-			
+
 			Navigation.robotPosition = caveExit;
-			
+
 			Navigation.setTachometer(true);
 
-
-		} else if (modulo == Module.Central && moduloAlvo == Module.Obstacle) {
+		}
+		/*
+		 * Quando se quer entrar no modulo do obstáculo
+		 */
+		else if (modulo == Module.Central && moduloAlvo == Module.Obstacle) {
 			if (Navigation.orientation == Navigation.FRONT) {
 
 				orientacaoArmazenada = Navigation.BACK;
@@ -473,19 +579,56 @@ public class AlienRescue implements Runnable {
 			Navigation.orientation = Navigation.FRONT;
 
 			Navigation.robotPosition = obstacleExit;
-			
+
 			Navigation.setTachometer(true);
-			
-			
-		}else if (modulo == Module.Cave && moduloAlvo == Module.Central){
-			
+
+		}
+		/*
+		 * Quando se quer entrar no modulo central vindo do modulo cave
+		 */
+		else if (modulo == Module.Cave && moduloAlvo == Module.Central) {
+
 			Navigation.setTachometer(false);
 
 			Navigation.andar(DIST_TRAVESSIA);
 
 			setModule(moduloAlvo);
-			
+
 			Navigation.orientation = orientacaoArmazenada;
+
+			Navigation.robotPosition = caveEntrance;
+
+			Navigation.setTachometer(true);
+
+		}
+		/*
+		 * Quando se quer entrar no mudulo central vindo do modulo Obstacle
+		 */
+		else if (modulo == Module.Obstacle && moduloAlvo == Module.Central) {
+
+			Navigation.setTachometer(false);
+
+			Navigation.andar(DIST_TRAVESSIA);
+
+			setModule(moduloAlvo);
+
+			Navigation.orientation = orientacaoArmazenada;
+
+			Navigation.robotPosition = obstacleEntrace;
+
+			Navigation.setTachometer(true);
+
+		}
+		/*
+		 * Quando se deseja entrar na area de resgate chamado OutOfModule
+		 */
+		else if (modulo == Module.Central && moduloAlvo == Module.OutOfModule) {
+
+			Navigation.setTachometer(false);
+
+			Navigation.andar(DIST_TRAVESSIA);
+
+			setModule(moduloAlvo);
 		}
 	}
 
