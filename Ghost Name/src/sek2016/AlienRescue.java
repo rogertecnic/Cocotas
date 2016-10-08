@@ -40,7 +40,6 @@ public class AlienRescue implements Runnable {
 	 */
 	private static final int LIN_AMT = 9;
 
-	private static final float distAndar = Celula.commonSize + 0.05f;
 
 	// =======================VARIAVEIS DE MAPA===========================
 	private final static Celula[][] CENTRAL_MAP = new Celula[LIN_AMT][COL_AMT];
@@ -96,7 +95,9 @@ public class AlienRescue implements Runnable {
 	 * Lista ligada que contem o caminho até algo
 	 */
 	private static List<Celula> path;
-
+	
+	private static List<Celula> reversePath;
+	
 	// =====================Pontos de controle dos 3 mapas=================
 	// --------------------Mapa central-------------------------
 
@@ -155,6 +156,8 @@ public class AlienRescue implements Runnable {
 			threadTacometria.setDaemon(true);
 			threadTacometria.setName("Thread Tacometria");
 			threadTacometria.start();
+			
+			toRescue();
 
 			// ======FINAL DO CODIGO=========================================
 
@@ -363,30 +366,34 @@ public class AlienRescue implements Runnable {
 		case Central:
 
 			setReversePath(inputCell);
-			goTo(getPath());
+			goTo(getReversePath());
 			enterModule(Module.OutOfModule);
 			break;
 
 		case Cave:
 
 			setReversePath(caveExit);
-			goTo(getPath());
+			goTo(getReversePath());
 			enterModule(Module.Central);
 
 			setReversePath(inputCell);
-			goTo(getPath());
+			goTo(getReversePath());
 			enterModule(Module.OutOfModule);
 			break;
 
 		case Obstacle:
 
 			setReversePath(obstacleExit);
-			goTo(getPath());
+			goTo(getReversePath());
 			enterModule(Module.Central);
 
 			setReversePath(inputCell);
-			goTo(getPath());
+			goTo(getReversePath());
 			enterModule(Module.OutOfModule);
+			break;
+			
+		default:
+			
 			break;
 
 		}
@@ -425,8 +432,9 @@ public class AlienRescue implements Runnable {
 			/*
 			 * código de checagem do rogério
 			 */
-			Navigation.andar(-0.20f);
+			Navigation.andar(-0.10f);
 			Navigation.turn(-45);
+			Navigation.andar(-0.10f);
 			Navigation.resetTacho();
 			Navigation.setTachometer(true);
 
@@ -441,8 +449,9 @@ public class AlienRescue implements Runnable {
 			/*
 			 * código de checagem do rogério
 			 */
-			Navigation.andar(-0.20f);
-			Navigation.turn(45);
+			Navigation.andar(-0.10f);
+			Navigation.turn(45);			
+			Navigation.andar(-0.10f);
 			Navigation.resetTacho();
 			Navigation.setTachometer(true);
 
@@ -769,7 +778,7 @@ public class AlienRescue implements Runnable {
 	 * @param moduloAlvo
 	 *            Modulo ao qual se deseja alcançar
 	 */
-	public static void enterModule(Module moduloAlvo) {
+	private static void enterModule(Module moduloAlvo) {
 		/*
 		 * Quando se deseja entrar no módulo central, vindo da area de resgate
 		 * chamada OutOfModule
@@ -781,12 +790,9 @@ public class AlienRescue implements Runnable {
 			setModule(moduloAlvo);
 			
 			Navigation.resetTacho();
-			
-			Navigation.setDistancia(0);
-
 
 			Navigation.setTachometer(true);
-
+			
 			Navigation.orientation = Navigation.FRONT;
 
 		}
@@ -822,8 +828,6 @@ public class AlienRescue implements Runnable {
 			setModule(moduloAlvo);
 			
 			Navigation.resetTacho();
-			
-			Navigation.setDistancia(0);
 
 			Navigation.orientation = Navigation.FRONT;
 
@@ -864,8 +868,6 @@ public class AlienRescue implements Runnable {
 			
 			Navigation.resetTacho();
 			
-			Navigation.setDistancia(0);
-
 			Navigation.orientation = Navigation.FRONT;
 
 			Navigation.robotPosition = obstacleExit;
@@ -888,8 +890,6 @@ public class AlienRescue implements Runnable {
 			
 			Navigation.resetTacho();
 			
-			Navigation.setDistancia(0);
-
 			Navigation.orientation = orientacaoArmazenada;
 
 			Navigation.robotPosition = caveEntrance;
@@ -911,9 +911,7 @@ public class AlienRescue implements Runnable {
 			setModule(moduloAlvo);
 			
 			Navigation.resetTacho();
-			
-			Navigation.setDistancia(0);
-			
+						
 			Navigation.orientation = orientacaoArmazenada;
 
 			Navigation.robotPosition = obstacleEntrace;
@@ -936,7 +934,6 @@ public class AlienRescue implements Runnable {
 			
 			Navigation.resetTacho();
 			
-			Navigation.setDistancia(0);
 		}
 	}
 
@@ -987,8 +984,12 @@ public class AlienRescue implements Runnable {
 	 * @throws Exception
 	 */
 	private static void setReversePath(Posicao posicaoAlvo) throws Exception {
-		aStar = new Astar(CENTRAL_MAP);
-		path = aStar.searchReversePath(Navigation.robotPosition, posicaoAlvo);
+		aStar = new Astar(currentMap());
+		AlienRescue.path.clear();
+		AlienRescue.reversePath = aStar.search(Navigation.robotPosition, posicaoAlvo);
+	}
+	private static List<Celula> getReversePath(){
+		return AlienRescue.reversePath;
 	}
 
 	/**
@@ -1001,8 +1002,8 @@ public class AlienRescue implements Runnable {
 	 *             Exceção gerada pelo uso do A*
 	 */
 	private static void setPath(/* Posicao posicaoinicial, */ Posicao posicaoAlvo) throws Exception {
-		aStar = new Astar(CENTRAL_MAP);
-		path = aStar.search(Navigation.robotPosition, posicaoAlvo);
+		aStar = new Astar(currentMap());
+		AlienRescue.path = aStar.search(Navigation.robotPosition, posicaoAlvo);
 	}
 
 	/**
@@ -1013,7 +1014,7 @@ public class AlienRescue implements Runnable {
 	 */
 	private static List<Celula> getPath() {
 
-		return path;
+		return AlienRescue.path;
 
 	}
 
@@ -1029,7 +1030,7 @@ public class AlienRescue implements Runnable {
 
 		if (caminho.isEmpty()) {
 			MainMenuClass.printDebug("Caminho Vazio");
-			Sound.buzz();
+			//Sound.buzz();
 		} else {
 
 			for (int i = 0; i < caminho.size(); i++) {

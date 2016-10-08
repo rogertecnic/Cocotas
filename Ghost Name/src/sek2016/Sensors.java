@@ -38,7 +38,7 @@ public class Sensors {
 			g1, g2, // green
 			b1, b2; // blue
 	
-	private static final float DIST_LEITURA = Celula.commonSize;
+	private static final float DIST_LEITURA = 0.25f;
 
 	// ======================metodos======================
 	/**

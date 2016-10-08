@@ -59,7 +59,6 @@ public class Navigation implements Runnable {
 
 	public static Posicao robotPosition; // posição de
 											// entrada
-	private static float distancia = 0;
 	// ========================Constantes de processo=====================
 
 	private static final float PI = (float) Math.PI;
@@ -76,8 +75,13 @@ public class Navigation implements Runnable {
 
 		robotPosition = AlienRescue.inputCell;
 
-		while (tachometer) {
-			cellExchanger();
+		while (AlienRescue.alienRescueON) {
+			
+			if(tachometer){
+				
+				cellExchanger();
+			
+			}
 		}
 
 	}
@@ -88,13 +92,13 @@ public class Navigation implements Runnable {
 	 */
 	private static void cellExchanger() {
 		float tacho = (Navigation.getTacho("B") / 360);
-		distancia = (2 * PI * Navigation.RAIO) * tacho;
+		float distancia = (2 * PI * Navigation.RAIO) * tacho;
 		if (distancia >= CELL_SIZE) {
 			AlienRescue.cellExchanged = true;
 			AlienRescue.cellAlreadyRead = false;
 			newPosition();
-			distancia = 0;
 			Navigation.resetTacho();
+			MainMenuClass.printDebug(Navigation.robotPosition.x+"\t"+Navigation.robotPosition.y);
 
 		}
 
@@ -109,34 +113,29 @@ public class Navigation implements Runnable {
 	private static void newPosition() {
 		if (Navigation.orientation == Navigation.FRONT) {
 			robotPosition.setLinha(robotPosition.x + 1);
+			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 		}
 
 		else if (Navigation.orientation == Navigation.BACK) {
 			robotPosition.setLinha(robotPosition.x - 1);
+			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 
 		}
 
 		else if (Navigation.orientation == Navigation.LEFT) {
 			robotPosition.setColuna(robotPosition.y + 1);
+			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 
 		}
 
 		else if (Navigation.orientation == Navigation.RIGTH) {
 			robotPosition.setColuna(robotPosition.y - 1);
+			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 
 		}
 
 	}
 	
-	public static void setDistancia(float dist){
-		
-		Navigation.distancia = dist;
-		
-	}
-	
-	public static float getDistancia(){
-		return Navigation.distancia;
-	}
 
 	/**
 	 * Gira o robo no proprio eixo, não usa o giroscopio, usa o tacometro das
