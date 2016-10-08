@@ -24,9 +24,9 @@ public class Sensors {
 						// de 0 a 1 do doll color
 
 	// =====================constantes de processo=======================
-	private static final float DIST_MIN = 0.07320f, // distancia minima do
+	private static final float DIST_MIN =/* 0.07320f*/0f, // distancia minima do
 													// boneco
-			DIST_MAX = 0.18f; // distancia maxima do boneco (0.18 para nao dar erro)
+			DIST_MAX = /*0.18f*/ 0.30f; // distancia maxima do boneco (0.18 para nao dar erro)
 	/*
 	 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que vao
 	 * corresponder a cada cor de bonecos, esses intervalos serao definidos no

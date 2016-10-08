@@ -62,7 +62,7 @@ public class Astar {
 					ret.push(atual);
 					atual = atual.parent;
 				}
-				MainMenuClass.printDebug("FIM");
+				System.out.println("FIM");
 				return reverse(ret);
 			}
 
@@ -143,7 +143,7 @@ public class Astar {
 					ret.push(atual);
 					atual = atual.parent;
 				}
-				MainMenuClass.printDebug("FIM");
+				System.out.println("FIM");
 				return reverse(ret);
 			}
 
