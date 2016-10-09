@@ -29,7 +29,7 @@ public class Sensors {
 	// =====================constantes de processo=======================
 	private static final float DIST_MIN = 0.05f, // distancia minima do
 			// boneco
-			DIST_MAX = 0.23f; // distancia maxima do boneco (0.18 para nao dar erro)
+			DIST_MAX = 0.20f; // distancia maxima do boneco (0.18 para nao dar erro)
 	/*
 	 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que vao
 	 * corresponder a cada cor de bonecos, esses intervalos serao definidos no
@@ -280,13 +280,11 @@ public class Sensors {
 		LCD.clear();
 		r1 = red[0] * 2;
 		g1 = blue[0] * 2;
-		b1 = green[0] * 2;*/
+		b1 = green[0] * 2;
 		
-		r1 = 0.005882353f;
-		g1 = 0.007843138f;
-		b1 = 0.005882353f;
 		
-		/*r1 = red[0] * 2;
+		
+		r1 = red[0] * 2;
 		g1 = blue[0] * 2;
 		b1 = green[0] * 2;
 		LCD.clear();
@@ -294,6 +292,22 @@ public class Sensors {
 		LCD.drawString(Float.toString(g1), 0, 1);
 		LCD.drawString(Float.toString(b1), 0, 2);
 		Button.DOWN.waitForPressAndRelease();*/
+		
+		
+		// constantes de resgate de bonecos da sek grandes
+		/*r1 = 0.005882353f;
+		g1 = 0.007843138f;
+		b1 = 0.005882353f;*/
+		
+		// constantes de resgate de bonecos da sek pequenos calibrados na mesa de treino
+		/*r1 = 0.029411765f;
+		g1 = 0.005882353f;
+		b1 = 0.02745098f;*/
+		
+		// constantes de resgate de bonecos da sek pequenos calibrados na pista de treino
+		r1 = 0.03529412f;
+		g1 = 0.01372549f;
+		b1 = 0.04509804f;
 	}
 
 	/**
@@ -351,7 +365,12 @@ public class Sensors {
 		LCD.drawString(Float.toString(b1floor), 0, 1);
 		Button.DOWN.waitForPressAndRelease();*/
 		
-		g1floor = 0.097058825f;
-		b1floor = 0.061764706f;
+		// constantes calibradas na arena da sek
+		/*g1floor = 0.097058825f;
+		b1floor = 0.061764706f;*/
+		
+		// constantes calibradas na arena de teste da larc
+		g1floor = 0.071078435f;
+		b1floor = 0.04019608f;
 	}
 }

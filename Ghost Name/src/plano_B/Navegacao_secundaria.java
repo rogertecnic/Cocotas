@@ -219,10 +219,12 @@ public class Navegacao_secundaria {
 			}else{
 				Plano_B.printDebug("KILL HIM!!");
 				if(corBonecoNaGarra == Const.VERMELHO){
+					Plano_B.printDebug("KILL VERMELHO");
 					Navigation.openGarra();
 					Navigation.andar(-Const.DIST_FRENTE_CAPTURA);
 					Navigation.turn(-graus);
 				}else
+					Plano_B.printDebug("KILL ERRADO");
 				Navegacao_secundaria.tirarBonecoErrado(graus);
 			return false;
 			}
@@ -312,9 +314,9 @@ public class Navegacao_secundaria {
 			Navigation.andar(-Const.DIST_FRENTE_CAPTURA);
 			Navigation.turn(-ang);
 			Navigation.turn(90);
-			Navigation.andar(0.1f);
+			Navigation.andar(0.15f);
 			Navigation.openGarra();
-			Navigation.andar(-0.1f);
+			Navigation.andar(-0.15f);
 			Navigation.turn(-90);
 		}
 		/*voltaNaPilha(local);

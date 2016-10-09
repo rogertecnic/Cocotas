@@ -19,15 +19,15 @@ public class Navigation {
 
 
 	//---------------------CONSTANTES DE DESCRICAO--------------------------
-	public final static float VELO_INI = 0.2f; // em m/s, velocidade linear do robo andar
+	public final static float VELO_INI = 0.25f; // em m/s, velocidade linear do robo andar (0.2f ta bom)
 	public final static float VELO_CURVA = 0.08f; // em m/s, velocidade linear do robo fazer o turn
-	public final static float aceleration = 0.3f; // m/s^2 PARA A RODA  (0.26f <=> 548 graus/s^2), (0.37978f <=> 800 graus/s^2), default: 2.84837 m/s^2 <=> 6000 m/s^2) 
+	public final static float aceleration = 0.36f; // m/s^2 PARA A RODA  (0.26f <=> 548 graus/s^2), (0.37978f <=> 800 graus/s^2), default: 2.84837 m/s^2 <=> 6000 m/s^2) 
 	public final static float DISTANCIA_ENTRE_RODAS = 0.1378f;//metros, ja conferido (0.14f)
 	public final static float RAIO = 0.0272f; //metros, ja conferido (se alterar tem que alterar o de cima)
 
 	// ------------------- CONSTANTES DE ORIENTACAO------------------------
 	/*
-	 * Constantes de orientação do robo    <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<EM RELACAO A QUE?
+	 * Constantes de orientação do robo
 	 */
 	final static int BACK = 0,
 			LEFT = 1,

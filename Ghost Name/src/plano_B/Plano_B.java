@@ -207,8 +207,14 @@ public class Plano_B {
 					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CENTRAL,0); // (0,4)
 					c1++;
 					break;
-				}case 4:{ // ATE AQUI ELE DEVE EXECUTAR EM TODAS AS 4 DIAGONAIS
+				}case 4:{ // DAQUI PRA FRENTE ELE DEVE EXECUTAR EM TODAS AS 4 DIAGONAIS
 					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CENTRAL,0); // (0,5)
+					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
+					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
+					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
+					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
+					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
+					Navegacao_secundaria.pushSegmento(0, 7*distAndaProcura, Const.CENTRAL, 0);
 					switch(MainMenuClass.diagonalModuloCentral){
 					case 0:{
 						c1++;
@@ -225,7 +231,7 @@ public class Plano_B {
 					}
 					}
 					break;
-				}case 5:{
+				}case 5:{ //DIAGONAL 1, neste momento: orientacao NORTE posicao (0,5)
 					Navegacao_secundaria.andarPilha(-(90+36), distAndaProcura, Const.CENTRAL, 0); // Diag1 1 SUDESTE
 					c1++;
 					break;
@@ -253,17 +259,17 @@ public class Plano_B {
 					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
 					Navegacao_secundaria.pullSegmento(Const.CENTRAL); // desempilha ate (0,5)
 					Navigation.turn(90+36); // NORTE, +36 parece q ta bom, nao eh 45 devido ao erro do pid, o robo para torto no centro
-					Navigation.andar(-0.4f); // valores que precisam ser testados inssessantemente, parece q ta bom
+					Navigation.andar(-0.5f); // valores que precisam ser testados inssessantemente, parece q ta bom
 					Navigation.andar(0.3f);
 					Navigation.turn(90); // OESTE
-					Navigation.andar(-0.4f); // valores que precisam ser testados inssessantemente, parece q ta bom
+					Navigation.andar(-0.5f); // valores que precisam ser testados inssessantemente, parece q ta bom
 					Navigation.andar(0.3f);
 					Navigation.turn(-45);// NOROESTE
-					Navigation.andar(5*distAndaProcura);
+					Navigation.andar(0.7f); // volta ao centro, valor calculado com pitagoras, cat.op = cat.adj = 1,82/2-(0,3+0.115)
 					Navigation.turn(-45); //NORTE
 					Navegacao_secundaria.orientacao = Const.NORTE;
 					Navegacao_secundaria.x = 0;
-					Navegacao_secundaria.y = Const.LADO_MODULO_CENTRAL/2-0.1f; // -0.1f eh necessario para ele voltar direito
+					Navegacao_secundaria.y = Const.LADO_MODULO_CENTRAL/2;
 					c1++;
 					break;
 				}case 11:{//DIAGONAL 2, neste momento: orientacao NORTE posicao (0,5)
@@ -294,13 +300,13 @@ public class Plano_B {
 					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
 					Navegacao_secundaria.pullSegmento(Const.CENTRAL); // desempilha ate (0,5)
 					Navigation.turn(90+45); // OESTE, , verificar esse +45
-					Navigation.andar(-0.4f); // valores que precisam ser testados inssessantemente, parece q ta bom
+					Navigation.andar(-0.5f); // valores que precisam ser testados inssessantemente, parece q ta bom
 					Navigation.andar(0.3f);
 					Navigation.turn(90); // SUL
-					Navigation.andar(-0.4f); // valores que precisam ser testados inssessantemente, parece q ta bom
+					Navigation.andar(-0.5f); // valores que precisam ser testados inssessantemente, parece q ta bom
 					Navigation.andar(0.3f);
 					Navigation.turn(-45); // SUDOESTE
-					Navigation.andar(5*distAndaProcura);
+					Navigation.andar(0.7f); // volta ao centro, valor calculado com pitagoras, cat.op = cat.adj = 1,82/2-(0,3+0.115)
 					Navigation.turn(-(45+90)); // NORTE
 					Navegacao_secundaria.orientacao = Const.NORTE;
 					Navegacao_secundaria.x = 0;
@@ -336,13 +342,13 @@ public class Plano_B {
 					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
 					Navegacao_secundaria.pullSegmento(Const.CENTRAL); // desempilha ate (0,5)
 					Navigation.turn(-(90+45)); // LESTE, , verificar esse +45
-					Navigation.andar(-0.4f); // valores que precisam ser testados inssessantemente, parece q ta bom
+					Navigation.andar(-0.5f); // valores que precisam ser testados inssessantemente, parece q ta bom
 					Navigation.andar(0.3f);
 					Navigation.turn(-90); // SUL
-					Navigation.andar(-0.4f); // valores que precisam ser testados inssessantemente, parece q ta bom
+					Navigation.andar(-0.5f); // valores que precisam ser testados inssessantemente, parece q ta bom
 					Navigation.andar(0.3f);
 					Navigation.turn(45); // SUDESTE
-					Navigation.andar(5*distAndaProcura);
+					Navigation.andar(0.7f); // volta ao centro, valor calculado com pitagoras, cat.op = cat.adj = 1,82/2-(0,3+0.115)
 					Navigation.turn((45+90)); // NORTE
 					Navegacao_secundaria.orientacao = Const.NORTE;
 					Navegacao_secundaria.x = 0;
@@ -421,83 +427,95 @@ public class Plano_B {
 					c1++;
 					break;
 				}case 5:{
-					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.CAVE,1); // (3,3)
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,2) NA VOLTA PARA AQUI
 					c1++;
 					break;
 				}case 6:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (3,4)
+					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.CAVE,1); // (4,3)
 					c1++;
 					break;
 				}case 7:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (3,5)
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,4)
 					c1++;
 					break;
 				}case 8:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (3,6)
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,5)
 					c1++;
 					break;
 				}case 9:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (3,7)
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,6)
 					c1++;
 					break;
 				}case 10:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (3,8)
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,7)
 					c1++;
 					break;
-				}case 11:{ // alinhar e voltar para o inicio, desfazer a pilha ate esse ponto
+				}case 11:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,8)
+					c1++;
+					break;
+				}case 12:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,9)
+					c1++;
+					break;
+				}case 13:{ // alinhar e voltar para o inicio, desfazer a pilha ate esse ponto
 					Navigation.turn(90); // OESTE
 					Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2-Navegacao_secundaria.x+0.1f));
 					Navigation.andar(Const.LADO_MODULO_CENTRAL/2-Navegacao_secundaria.x-Const.PROFUNDIDADE_BUNDA_ROBO);
-					Navigation.turn(90); // NORTE
+					Navigation.turn(90); // SUL
 					Navigation.andar(-(Const.LADO_MODULO_CENTRAL-Navegacao_secundaria.y+0.1f));
 					Navigation.andar(Const.LADO_MODULO_CENTRAL-Navegacao_secundaria.y
-							-Const.PROFUNDIDADE_BUNDA_ROBO+distAndaProcura*6); // (3,2)
+							-Const.PROFUNDIDADE_BUNDA_ROBO+distAndaProcura*7); // (4,2)
 					Navigation.turn(-90); // OESTE
-					Navigation.andar(distAndaProcura*3); // (0,2)
+					Navigation.andar(distAndaProcura*4); // (0,2)
 					Navegacao_secundaria.x = 0;
-					Navegacao_secundaria.y = 0.3f;
+					Navegacao_secundaria.y = 0.3f+Const.PROFUNDIDADE_BUNDA_ROBO;
 					Navegacao_secundaria.orientacao = Const.OESTE;
-					for(int i=1; i<=9;i++){
+					for(int i=1; i<=11;i++){
 						Navegacao_secundaria.pullSegmento(Const.CAVE); // volta a pilha para a posicao atual
 					}
 					Navegacao_secundaria.pushSegmento(90, 0, Const.CAVE, 0);// vira o robo para a orientacao atual OESTE
 
 					c1++;
 					break;
-				}case 12:{
+				}case 14:{
 					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-1,2)
 					c1++;
 					break;
-				}case 13:{
+				}case 15:{
 					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-2,2)
 					c1++;
 					break;
-				}case 14:{
+				}case 16:{
 					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-3,2)
 					c1++;
 					break;
-				}case 15:{
-					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.CAVE,4); // (-3,3)
-					c1++;
-					break;
-				}case 16:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-3,4)
-					c1++;
-					break;
 				}case 17:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-3,5)
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,2)
 					c1++;
 					break;
 				}case 18:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-3,6)
+					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.CAVE,4); // (-4,3)
 					c1++;
 					break;
 				}case 19:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-3,7)
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,4)
 					c1++;
 					break;
 				}case 20:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-3,8)
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,5)
+					c1++;
+					break;
+				}case 21:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,6)
+					c1++;
+					break;
+				}case 22:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,7)
+					c1++;
+					break;
+				}case 23:{
+					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,7)
 					c1++;
 					break;
 				}
@@ -951,194 +969,10 @@ public class Plano_B {
 
 					break;
 				}case 6:{// ======================PAREDE POSICAO 6 (inverso da 2)
-					switch(c1){
-					case 0:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 1:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 2:{
-						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 3:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 4:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 5:{
-						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
-						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
-						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
-						Navigation.andar(-distAndaProcura*3);
-						Navigation.turn(-90);
-						c1++;
-						break;
-					}case 6:{
-						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 7:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 8:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 9:{
-						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 10:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 11:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 12:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 13:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 14:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 15:{
-						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 16:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 17:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 18:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 19:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 20:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 21:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 22:{
-						Navegacao_secundaria.andarPilha(360, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}
-					}
+
 					break;
 				}case 7:{// ======================PAREDE POSICAO 7 (inverso da 1)
-					switch(c1){
-					case 0:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 1:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 2:{
-						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 3:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 4:{
-						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 5:{
-						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 6:{
-						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 7:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 8:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 9:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 10:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 11:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 12:{
-						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 13:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 14:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 15:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 16:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 17:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 18:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 19:{
-						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}case 20:{
-						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);
-						c1++;
-						break;
-					}
-					}
+
 					break;
 				}
 				}
