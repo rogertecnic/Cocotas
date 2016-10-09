@@ -448,6 +448,7 @@ public class AlienRescue implements Runnable {
 	private static boolean captureDoll() {
 		Navigation.stop();
 		Navigation.setTachometer(false);
+		Navigation.globalTacho = Navigation.getTacho("B");
 
 		Navigation.andar(0.10f);
 

@@ -90,19 +90,18 @@ public class Navigation implements Runnable {
 	 * suficiente para que seja feito o calculo da uma nova posição
 	 */
 	private static void cellExchanger() {
-		float tacho = (Navigation.getTacho("B") / 360);
+		float tacho = (Navigation.getTacho("B") / 360) + (globalTacho / 360);
 		float distancia = (2 * PI * Navigation.RAIO) * tacho;
-		if (distancia >= 10 && distancia <= 11){
-			
-			
-			
-		AlienRescue.cellAlreadyRead = false;
+		if (distancia >= 10 && distancia <= 11) {
+
+			AlienRescue.cellAlreadyRead = false;
 
 		}
 		if (distancia >= CELL_SIZE) {
 			AlienRescue.cellExchanged = true;
 			AlienRescue.cellAlreadyRead = false;
 			newPosition();
+			globalTacho = 0;
 			Navigation.resetTacho();
 
 		}
@@ -118,24 +117,24 @@ public class Navigation implements Runnable {
 	private static void newPosition() {
 		if (Navigation.orientation == Navigation.FRONT) {
 			robotPosition.setLinha(robotPosition.x + 1);
-			System.out.println(robotPosition.x +"\t"+robotPosition.y);
+			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 		}
 
 		else if (Navigation.orientation == Navigation.BACK) {
 			robotPosition.setLinha(robotPosition.x - 1);
-			System.out.println(robotPosition.x +"\t"+robotPosition.y);
+			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 
 		}
 
 		else if (Navigation.orientation == Navigation.LEFT) {
 			robotPosition.setColuna(robotPosition.y + 1);
-			System.out.println(robotPosition.x +"\t"+robotPosition.y);
+			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 
 		}
 
 		else if (Navigation.orientation == Navigation.RIGTH) {
 			robotPosition.setColuna(robotPosition.y - 1);
-			System.out.println(robotPosition.x +"\t"+robotPosition.y);
+			System.out.println(robotPosition.x + "\t" + robotPosition.y);
 
 		}
 
