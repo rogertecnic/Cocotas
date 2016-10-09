@@ -73,14 +73,12 @@ public class Navigation implements Runnable {
 	@Override
 	public void run() {
 
-		robotPosition = AlienRescue.inputCell;
-
 		while (AlienRescue.alienRescueON) {
-			
-			if(tachometer){
-				
+
+			if (tachometer) {
+
 				cellExchanger();
-			
+
 			}
 		}
 
@@ -112,25 +110,28 @@ public class Navigation implements Runnable {
 	private static void newPosition() {
 		if (Navigation.orientation == Navigation.FRONT) {
 			robotPosition.setLinha(robotPosition.x + 1);
+			System.out.println(robotPosition.x +"\t"+robotPosition.y);
 		}
 
 		else if (Navigation.orientation == Navigation.BACK) {
 			robotPosition.setLinha(robotPosition.x - 1);
+			System.out.println(robotPosition.x +"\t"+robotPosition.y);
 
 		}
 
 		else if (Navigation.orientation == Navigation.LEFT) {
 			robotPosition.setColuna(robotPosition.y + 1);
+			System.out.println(robotPosition.x +"\t"+robotPosition.y);
 
 		}
 
 		else if (Navigation.orientation == Navigation.RIGTH) {
 			robotPosition.setColuna(robotPosition.y - 1);
+			System.out.println(robotPosition.x +"\t"+robotPosition.y);
 
 		}
 
 	}
-	
 
 	/**
 	 * Gira o robo no proprio eixo, não usa o giroscopio, usa o tacometro das

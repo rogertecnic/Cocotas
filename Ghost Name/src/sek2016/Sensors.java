@@ -39,7 +39,6 @@ public class Sensors {
 			b1, b2; // blue
 	
 	private static final float DIST_LEITURA = 0.25f;
-
 	// ======================metodos======================
 	/**
 	 * Metodo que instancia todos os sensores.
