@@ -8,6 +8,29 @@ import sek2016.*;
 public class Navegacao_secundaria {
 	// =================VARIAVEIS DE PROCESSO==================
 	public static int bonecosErrados = 0;
+
+	// variaveis de posicao do robo para o alinhamento nos modulos que
+	// nao sao o central
+	/**
+	 * posicao x do robo, o (0,0) mo meio do modulo em questao e na linha da entrada
+	 * desse modulo, por exemplo, essa é a entrada e o x seria o (0,0):
+	 * <br>
+	 * |||||||||____x____|||||||||
+	 * inicio padrao 0m
+	 */
+	public static float x = 0;
+	/**
+	 * posicao y do robo, o (0,0) no meio do modulo em questao e na linha da entrada
+	 * desse modulo, por exemplo, essa é a entrada e o x seria o (0,0):
+	 * <br>
+	 * 
+	 * |||||||||____x____|||||||||<br>
+	 * por padrao devido a distancia da bunda do robo ao centro dele
+	 * o y inicia com 0.17m
+	 */
+	public static float y = Const.PROFUNDIDADE_BUNDA_ROBO;
+	public static int orientacao = Const.NORTE;
+
 	// ======================PILHAS DE SEGMENTOS=========================
 	/**
 	 * pilha de segmentos que o robo vai seguir no modulo central voltando ate
@@ -32,7 +55,9 @@ public class Navegacao_secundaria {
 	 * @param configArena
 	 */
 	public static void inicioModuloCentral() {
-		andarPilha(0, Const.LADO_MODULO_RESGATE, Const.CENTRAL);
+		x = 0;
+		y = Const.PROFUNDIDADE_BUNDA_ROBO;
+		andarPilha(0, Const.LADO_MODULO_RESGATE, Const.CENTRAL,0);
 	}
 
 	/**
@@ -40,33 +65,35 @@ public class Navegacao_secundaria {
 	 * @param configArena
 	 */
 	public static void inicioModuloCaverna(int configArena, int configCave) {
+		x = 0;
+		y = Const.PROFUNDIDADE_BUNDA_ROBO;
 		switch (configArena) {
 		case Const.ARENA_A: {
-			andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+			andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
 			if (configCave == Const.CAV_DIR) {
-				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
 			} else {
-				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
 			}
 
 			break;
 		}
 		case Const.ARENA_B: {
 			if (configCave == Const.CAV_CIMA) {
-				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL);
+				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL,0);
 
 			} else {
-				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
-				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);	
+				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
+				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);	
 			}
 			break;
 		}
 		case Const.ARENA_C: {
 			if (configCave == Const.CAV_CIMA) {
-				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL);
+				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL,0);
 			} else {
-				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
-				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);	
+				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
+				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);	
 			}
 			break;
 		}
@@ -79,32 +106,34 @@ public class Navegacao_secundaria {
 	 * @param configArena
 	 */
 	public static void inicioModuloObstaculo(int configArena, int configCave) {
+		x = 0;
+		y = Const.PROFUNDIDADE_BUNDA_ROBO;
 		switch (configArena) {
 		case Const.ARENA_A: { // anda ate metade do mod central
-			andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+			andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
 			if (configCave == Const.CAV_DIR) { // anda ate o modulo obstaculo a esquerda
-				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
 			} else { // anda ate o modulo obstaculo a direita
-				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2)+Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
 			}
 
 			break;
 		}
 		case Const.ARENA_B: {
 			if (configCave == Const.CAV_CIMA) {// anda ate metade do mod central depois anda ate o modulo obstaculo direita
-				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
-				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
+				andarPilha(-90, (Const.LADO_MODULO_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
 			} else {
-				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL);
+				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL,0);
 			}
 			break;
 		}
 		case Const.ARENA_C: {
 			if (configCave == Const.CAV_CIMA) {
-				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
-				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL);
+				andarPilha(0, (Const.LADO_MODULO_CENTRAL/2) + Const.LADO_MODULO_RESGATE-Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
+				andarPilha(90, (Const.LADO_MODULO_CENTRAL/2) +Const.PROFUNDIDADE_BUNDA_ROBO, Const.CENTRAL,0);
 			} else {
-				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL);
+				andarPilha(0, Const.LADO_MODULO_CENTRAL + Const.LADO_MODULO_RESGATE, Const.CENTRAL,0);
 			}
 			break;
 		}
@@ -114,11 +143,10 @@ public class Navegacao_secundaria {
 	/**
 	 * o robo gira ate encontrar um boneco
 	 * @param graus abertura do giro de busca
-	 * @param local local onde o robo esta: ( central, cave ou parede)
-	 * 
-	 * @return boolean o boneco foi encontrado ou nao
+	 * @param local local onde o robo esta: (central, cave ou parede)
+	 * @return boolean o boneco foi resgatado  ou nao
 	 */
-	public static boolean giroBusca(float graus, int local){
+	public static boolean giroBuscaResgata(float graus, int local){
 		PID.pidRunning=false; // pausa o pid para o pid nao recalcular a velocidade durante o turn
 		while(!PID.PIDparado){ // aguarda o pid realmente parar
 		}
@@ -174,9 +202,25 @@ public class Navegacao_secundaria {
 		if(achouBoneco){// vai buscar o boneco
 			dist = Sensors.verificaDistObstaculo();
 			Navigation.andar(Const.DIST_FRENTE_CAPTURA);
-			pushSegmento((int)graus, Const.DIST_FRENTE_CAPTURA, local);
 			Navigation.closeGarra();
-			return true;
+			Delay.msDelay(200);
+			boolean resgatar;
+			resgatar = Navegacao_secundaria.verificaBoneco(); // verificar se esta retornando o boneco correto inclusive com o vermelho deve retornar false
+			if(resgatar){
+				Plano_B.printDebug("RESGATAR");
+				Navigation.andar(-Const.DIST_FRENTE_CAPTURA);
+				Navigation.turn(-graus);
+				Navegacao_secundaria.voltaNaPilha(local);
+				Plano_B.trocaModulo(Plano_B.arenaSek);
+				Navegacao_secundaria.voltaNaPilha(Const.CENTRAL);
+				Navigation.openGarra();
+				return true;
+				// aqui ele volta e tem que reiniciar, objetivo concluido
+			}else{
+				Plano_B.printDebug("KILL HIM!!");
+				Navegacao_secundaria.tirarBonecoErrado(graus);
+			return false;
+			}
 		}else{// volta pro angulo inicial antes de iniciar a busca
 			Navigation.setVelocidade(Navigation.VELO_CURVA, Navigation.VELO_CURVA);
 			Navigation.turn(graus);
@@ -191,20 +235,20 @@ public class Navegacao_secundaria {
 	 * @param dist distancia que o robo andou
 	 * @param local onde o robo esta ( CENTRAL, CAVE OU PAREDE)
 	 */
-	public static void pushSegmento(int ang, float dist, int local){
+	public static void pushSegmento(int ang, float dist, int local, int alinhar){
 		switch(local){
 		case Const.CENTRAL: {
 			/*Plano_B.printDebug("push pilha central");
 			Delay.msDelay(1000);*/
-			segmentosCentral.push(new Segmento(ang, dist));
+			segmentosCentral.push(new Segmento(ang, dist, alinhar));
 			break;
 		}case Const.CAVE:{
-			segmentosCaverna.push(new Segmento(ang, dist));
+			segmentosCaverna.push(new Segmento(ang, dist, alinhar));
 			break;
 		}case Const.OBSTACULO:{
 			/*Plano_B.printDebug("push pilha obst");
 			Delay.msDelay(1000);*/
-			segmentosObstaculo.push(new Segmento(ang, dist));
+			segmentosObstaculo.push(new Segmento(ang, dist, alinhar));
 			break;
 		}
 		}
@@ -253,8 +297,21 @@ public class Navegacao_secundaria {
 		}
 	}
 
-	public static void tirarBonecoErrado(int local){
-		voltaNaPilha(local);
+	public static void tirarBonecoErrado(float ang){
+		if(Math.abs(ang)>=39){
+			Navigation.openGarra();
+			Navigation.andar(-Const.DIST_FRENTE_CAPTURA);
+			Navigation.turn(-ang);
+		}else{
+			Navigation.andar(-Const.DIST_FRENTE_CAPTURA);
+			Navigation.turn(-ang);
+			Navigation.turn(90);
+			Navigation.andar(0.1f);
+			Navigation.openGarra();
+			Navigation.andar(-0.1f);
+			Navigation.turn(-90);
+		}
+		/*voltaNaPilha(local);
 		// nesse ponto o robo voltou ao inicio do modulo que esta e
 		// agora dependendo do local (modulo) que o robo estiver ele vai
 		// executar um esquema diferente p tirar o boneco errado do caminho
@@ -268,11 +325,11 @@ public class Navegacao_secundaria {
 			break;
 		}
 		case Const.OBSTACULO:{
-			/*a ideia aqui eh fazer o robo colocar o boneco no canto que tem
+			a ideia aqui eh fazer o robo colocar o boneco no canto que tem
 			 o obstaculo (parede) se a parede estiver num dos cantos do lado que tem
 			 a entrada do modulo, se a parede estiver em qualquer outro lugar o robo
 			 so vai largar o boneco no canto direito e depois no cando esquerdo
-			 */
+			 
 			int grau = 0; // angulo que o robo vai virar para largar o boneco
 			switch(Plano_B.configObstaculo){
 			case 1:{
@@ -295,7 +352,7 @@ public class Navegacao_secundaria {
 			Navigation.turn(-grau);
 			break;
 		}
-		}
+		}*/
 	}
 
 	/**
@@ -309,9 +366,164 @@ public class Navegacao_secundaria {
 				break;
 			}else{
 				Navigation.andar(-seg.dist);
+				switch(orientacao){
+				case Const.LESTE:{
+					x-=seg.dist;
+					break;
+				}case Const.NORTE:{
+					y -= seg.dist;
+					break;
+				}case Const.OESTE:{
+					x+=seg.dist;
+					break;
+				}case Const.SUL:{
+					y+=seg.dist;
+					break;
+				}
+				}
+
+				switch(seg.alinhar){
+				case 0:{
+					break;
+				}case 1:{
+					Navigation.turn(90);
+					Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2-x+0.1f));
+					Navigation.andar(Const.LADO_MODULO_CENTRAL/2-x-Const.PROFUNDIDADE_BUNDA_ROBO);
+					Navigation.turn(-90);
+					Navigation.andar(-(y+0.1f));
+					Navigation.andar(y-Const.PROFUNDIDADE_BUNDA_ROBO);
+					break;
+				}case 2:{
+					Navigation.turn(90);
+					Navigation.andar(-(Const.LADO_MODULO_CENTRAL-y+0.1f));
+					Navigation.andar(Const.LADO_MODULO_CENTRAL-y-Const.PROFUNDIDADE_BUNDA_ROBO);
+					Navigation.turn(-90);
+					Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2-x+0.1f));
+					Navigation.andar(Const.LADO_MODULO_CENTRAL/2-x-Const.PROFUNDIDADE_BUNDA_ROBO);
+					break;
+				}case 3:{ // acho q deu bom
+					Navigation.turn(-90);
+					Navigation.andar(-(Const.LADO_MODULO_CENTRAL-y+0.1f));
+					Navigation.andar(Const.LADO_MODULO_CENTRAL-y-Const.PROFUNDIDADE_BUNDA_ROBO);
+					Navigation.turn(90);
+					Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2+x+0.1f));
+					Navigation.andar(Const.LADO_MODULO_CENTRAL/2+x-Const.PROFUNDIDADE_BUNDA_ROBO);
+					break;
+				}case 4:{ // deu bom
+					Navigation.turn(-90);
+					Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2+x+0.1f));
+					Navigation.andar(Const.LADO_MODULO_CENTRAL/2+x-Const.PROFUNDIDADE_BUNDA_ROBO);
+					Navigation.turn(90);
+					Navigation.andar(-(y+0.1f));
+					Navigation.andar(y-Const.PROFUNDIDADE_BUNDA_ROBO);
+					break;
+				}
+				}
 				Navigation.turn(-seg.ang);
+				switch(-seg.ang){
+				case 90:{
+					if(orientacao == Const.LESTE)
+						orientacao = Const.NORTE;
+					else
+					if(orientacao == Const.NORTE)
+						orientacao = Const.OESTE;
+					break;
+				}case -90:{
+					if(orientacao == Const.OESTE)
+						orientacao = Const.NORTE;
+					else
+					if(orientacao == Const.NORTE)
+						orientacao = Const.LESTE;
+					break;
+				}
+				}
 			}
 		}
+	}
+
+	/**
+	 * metodo que faz o robo girar e/ou andar
+	 * @param graus inteiro positivo (anti-horário)
+	 * inteiro negativo (horário)
+	 * @param dist ditancia em metros que o robo vai andar
+	 * @param local onde o robo esta ( CENTRAL, CAVE OU PAREDE)
+	 */
+	public static void andarPilha(int graus, float dist, int local, int alinhar){
+		Navigation.turn(graus);
+		switch(graus){
+		case 90:{
+			if(orientacao == Const.LESTE)
+				orientacao = Const.NORTE;
+			else
+				if(orientacao == Const.NORTE)
+					orientacao = Const.OESTE;
+			break;
+		}case -90:{
+			if(orientacao == Const.OESTE)
+				orientacao = Const.NORTE;
+			else
+				if(orientacao == Const.NORTE)
+					orientacao = Const.LESTE;
+			break;
+		}
+		}
+
+		switch(alinhar){
+		case 0:{
+			break;
+		}case 1:{
+			Navigation.turn(90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2-x+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL/2-x-Const.PROFUNDIDADE_BUNDA_ROBO);
+			Navigation.turn(-90);
+			Navigation.andar(-(y+0.1f));
+			Navigation.andar(y-Const.PROFUNDIDADE_BUNDA_ROBO);
+			break;
+		}case 2:{
+			Navigation.turn(90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL-y+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL-y-Const.PROFUNDIDADE_BUNDA_ROBO);
+			Navigation.turn(-90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2-x+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL/2-x-Const.PROFUNDIDADE_BUNDA_ROBO);
+			break;
+		}case 3:{ // acho q deu bom
+			Navigation.turn(-90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL-y+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL-y-Const.PROFUNDIDADE_BUNDA_ROBO);
+			Navigation.turn(90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2+x+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL/2+x-Const.PROFUNDIDADE_BUNDA_ROBO);
+			break;
+		}case 4:{ // deu bom
+			Navigation.turn(-90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2+x+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL/2+x-Const.PROFUNDIDADE_BUNDA_ROBO);
+			Navigation.turn(90);
+			Navigation.andar(-(y+0.1f));
+			Navigation.andar(y-Const.PROFUNDIDADE_BUNDA_ROBO);
+			break;
+		}
+		}
+
+		Navigation.andar(dist);
+		switch(orientacao){
+		case Const.LESTE:{
+			x+=dist;
+			break;
+		}case Const.NORTE:{
+			y += dist;
+			break;
+		}case Const.OESTE:{
+			x-=dist;
+			break;
+		}case Const.SUL:{
+			y-=dist;
+			break;
+		}
+		}
+
+		Navegacao_secundaria.pushSegmento(graus, dist, local, alinhar);
 	}
 
 	/**
@@ -324,66 +536,6 @@ public class Navegacao_secundaria {
 		segmentosObstaculo = new Stack<Segmento>();
 	}
 
-	/**
-	 * metodo que faz o robo girar e/ou andar
-	 * @param graus inteiro positivo (anti-horário)
-	 * inteiro negativo (horário)
-	 * @param dist ditancia em metros que o robo vai andar
-	 * @param local onde o robo esta ( CENTRAL, CAVE OU PAREDE)
-	 */
-	public static void andarPilha(int graus, float dist, int local){
-		Navigation.turn(graus);
-		Navigation.andar(dist);
-		Navegacao_secundaria.pushSegmento(graus, dist, local);
-	}
-	
-	/**
-	 * metodo que anda pra frente buscando, se ele achar ele para
-	 * @param graus o robo vira graus antes de andar
-	 * @param dist distancia que o robo vai andar
-	 * @param local modulo onde o robo esta
-	 * @return distancia que ele andou ate parar
-	 */
-	public static float andarBusca(int graus, float dist, int local){
-		Navigation.turn(graus);
-		float achou = 0f;
-		PID.pidRunning=false; // pausa o pid para reinicia-lo
-		while(!PID.PIDparado){ // espera o pid realmente parar
-		}
-		PID.zeraPID(); // zera o pid
-		PID.pidRunning = true; // inicia o pid
-		while(!PID.PIDparado){ // espera o pid ter a primeira iteracao para ja ter alterado a velocidade, se nao, o metodo continuaria e o robo andaria antes do pid setar as velocidades pois sao threads diferentes
-		}
-
-		float theta =(dist/Const.RAIO)*(float)(180/Math.PI); // graus que a roda deve girar para o robo andar a distancia determinada
-		float positionE = Navigation.rodaE.getTachoCount(); // posicao inicial em graus da roda e
-		float positionD = Navigation.rodaD.getTachoCount(); // posicao inicial em graus da roda d
-		float wRoda = Const.VELO_INI/Const.RAIO*(float)(180/Math.PI); // velocidade angular em graus/s das rodas de modo geral, nao eh a velocidade que o pid regula, essa velocidade seria a velocidade que o pid mantem se o erro fosse 0 e seria igual para as 2 rodas
-		float acc = Const.ACELERATION/Const.RAIO*(float)(180/Math.PI); // aceleracao angular  em graus/s^2 das rodas
-		float t = wRoda/(acc); // tempo que o robo demora a parar depois que ele chama o metodo stop devido a desaceleracao normal do lejos
-		float ang_defasado = wRoda*t-(acc/2)*t*t; // robo deve chamar o metodo stop antes do local de parar, esse ang_defasado é essa distancia em graus da roda
-
-		Delay.msDelay(100); /* tem que ter esse delay, o motivo nao sabemos ao certo o por que, verificamos a 
-		 *velocidade do pid nesse instante e ela continua certinha, 
-		 *se nao o robo exporadicamente vai girar a roda direita para traz por um curto 
-		 *periodo de tempo com velocidade maxima quando o robo for se movimentar
-		 */
-
-			Navigation.rodaE.forward();
-			Navigation.rodaD.forward();
-			while(Navigation.rodaE.getTachoCount()<(positionE+theta-ang_defasado) && 
-					Navigation.rodaD.getTachoCount()<(positionD+theta-ang_defasado)){
-					if(verificaBonecoNaGarra()){
-						achou = (Navigation.rodaE.getTachoCount() - positionE)*((float)Math.PI/180)*Const.RAIO;
-						Navegacao_secundaria.pushSegmento(graus, achou, local);
-						break;
-					}
-			}
-		Navigation.stop();
-		if(achou !=0f)Navegacao_secundaria.pushSegmento(graus, dist, local);
-		return achou;
-	}
-	
 	public static boolean verificaBonecoNaGarra(){
 		float offset = 0.06f;
 		Sensors.ultrasonic.getDistanceMode().fetchSample(Sensors.distSample, 0);
@@ -404,7 +556,7 @@ public class Navegacao_secundaria {
 				if ((Sensors.distSample[0] >= 0.02f) && (Sensors.distSample[0] <= offset)){
 					Navigation.andar(offset);
 					Navigation.closeGarra();
-				return true;
+					return true;
 				}else{
 					Navigation.andar(offset);
 					return false;

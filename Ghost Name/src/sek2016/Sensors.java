@@ -29,7 +29,7 @@ public class Sensors {
 	// =====================constantes de processo=======================
 	private static final float DIST_MIN = 0.05f, // distancia minima do
 			// boneco
-			DIST_MAX = 0.25f; // distancia maxima do boneco (0.18 para nao dar erro)
+			DIST_MAX = 0.23f; // distancia maxima do boneco (0.18 para nao dar erro)
 	/*
 	 * cada cor do sensor RGB DollColor foi dividida em 3 intervalos que vao
 	 * corresponder a cada cor de bonecos, esses intervalos serao definidos no
@@ -195,7 +195,7 @@ public class Sensors {
 	
 	public static boolean verificaLinhaChao(){
 		floorColor.getRGBMode().fetchSample(floorSample, 0);
-		if(floorSample[0] <=0.05 || floorSample[1] <= 0.05 || floorSample[3] <=0.05 ){
+		if(floorSample[0] <=0.05 || floorSample[1] <= 0.05 || floorSample[2] <=0.05 ){
 			
 			LCD.clear();
 			LCD.drawString("testar linha", 0, 0);

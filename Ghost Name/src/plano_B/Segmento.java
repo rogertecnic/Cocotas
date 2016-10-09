@@ -13,8 +13,10 @@ public class Segmento {
 	 */
 	public  int ang;
 	public  float dist;
-	public Segmento(int ang, float dist){
+	public int alinhar;
+	public Segmento(int ang, float dist, int alinhar){
 		this.ang = ang;
 		this.dist = dist;
+		this.alinhar = alinhar;
 	}
 }

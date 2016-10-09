@@ -26,6 +26,13 @@ public class MainMenuClass {
 	 * Thread principal do codigo, é instanciada dentro do selecionaOpcao
 	 */
 	public static Thread threadPrograma = null;
+	
+	/**
+	 * @diagonalModuloCentral indica quais diagonais no modulo central ele ja andou
+	 * comeca contando da diagonal direita baixo sendo igual a 1 e vai contando no
+	 * anti-horario ate a diagonal esquerda baixo que eh a 4
+	 */
+	public static int diagonalModuloCentral = 0;
 
 
 	//======================VARIAVEIS DE CONDICAO INICIAL DA ARENA=================

@@ -235,8 +235,8 @@ public class Navigation {
 	 * Parar o robo (trava o codigo dentro enquanto o robo nao parar)
 	 */
 	public static void stop(){
-		rodaD.stop(true);
-		rodaE.stop(true); // evita aquela jogadinha pro lado quando robo termina um movimento
+		rodaE.stop(true);
+		rodaD.stop(true); // evita aquela jogadinha pro lado quando robo termina um movimento
 		while(rodaE.isMoving() || rodaD.isMoving()){
 		}
 	}
@@ -247,7 +247,7 @@ public class Navigation {
 	public static void closeGarra(){
 		if(garraFechada == false){
 			garraFechada = true;
-			motorG.rotate(60);
+			motorG.rotate(65);
 			Delay.msDelay(500);
 		}
 		else{
@@ -262,7 +262,7 @@ public class Navigation {
 	public static void openGarra(){
 		if(garraFechada == true){
 			garraFechada = false;
-			motorG.rotate(-60);
+			motorG.rotate(-65);
 		}
 		else{
 			LCD.clear();

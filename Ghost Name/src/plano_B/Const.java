@@ -15,9 +15,26 @@ public class Const {
 	public static final float ACELERATION = Navigation.aceleration;
 	public static final float VELO_INI = Navigation.VELO_INI;
 	public static final float RAIO = Navigation.RAIO;
-	
-	
-	
+
+
+	/**
+	 * Alinhamento do robo de acordo com o modulo que ele esta resgatando
+	 */
+	public static final int NORTE = 0;
+	/**
+	 * Alinhamento do robo de acordo com o modulo que ele esta resgatando
+	 */
+	public static final int SUL = 1;
+	/**
+	 * Alinhamento do robo de acordo com o modulo que ele esta resgatando
+	 */
+	public static final int LESTE = 2;
+	/**
+	 * Alinhamento do robo de acordo com o modulo que ele esta resgatando
+	 */
+	public static final int OESTE = 3;
+
+
 	/**
 	 *  @ARENA_A 1; configuracao da arena<br>
 	 *  --r <br>
@@ -39,9 +56,9 @@ public class Const {
 	 *	--r <br>
 	 */
 	public static final int ARENA_C = 3;
-	
-	
-	
+
+
+
 	/**
 	 *  @CAV_DIR 1; config da caverna
 	 */
@@ -54,9 +71,9 @@ public class Const {
 	 *  @CAV_CIMA 3; config da caverna
 	 */
 	public static final int CAV_CIMA = 3;
-	
-	
-	
+
+
+
 	/**
 	 * @CENTRAL 0; Indica qual modulo o robo esta/vai procurar
 	 */
@@ -69,9 +86,9 @@ public class Const {
 	 * @PAREDE 2; Indica qual modulo o robo esta/vai procurar
 	 */
 	public static final int OBSTACULO = 2;
-	
-	
-	
+
+
+
 	/**
 	 * @BRANCO 3; indica a cor do boneco que ele deve/esta ou nao a resgatar
 	 */
@@ -84,9 +101,9 @@ public class Const {
 	 * @PRETO 5; indica a cor do boneco que ele deve/esta ou nao a resgatar
 	 */
 	public static final int PRETO = 5;
-	
-	
-	
+
+
+
 	/**
 	 * @VELO_PROCURA eh a velocidade que o robo usara para procurar o boneco
 	 * essa velocidade eh 3/4 da velocidade de curva estabelecida na classe
@@ -102,20 +119,20 @@ public class Const {
 	 * @DIST_FRENTE_PROCURA distancia que o robo vai ir par afrente
 	 * apos ter visto um boneco, o robo vai ate o boneco para pega-lo
 	 */
-	public static final float DIST_FRENTE_CAPTURA = 0.23f;
+	public static final float DIST_FRENTE_CAPTURA = 0.26f;
 	/**
 	 * @T_PARAR_APOS_VER_BONECO tempo que o robo demorara a chamar o metodo
 	 * stop depois que ver um boneco, ajuda o robo a alinhar reto com o boneco
 	 * valor padrao 200;
 	 */
-	public static final int T_PARAR_APOS_VER_BONECO = 200;
-	
-	
+	public static final int T_PARAR_APOS_VER_BONECO = 10;
+
+
 	/**
 	 * @LADO_MODULO_CENTRAL comprimento da lateral do modulo central
 	 * o modulo central é um quadrado, esta no edital, valor medio 1.85f
 	 */
-	public static final float LADO_MODULO_CENTRAL = 1.845f;
+	public static final float LADO_MODULO_CENTRAL = 1.82f;
 	/**
 	 * @LADO_MODULO_RESGATE comprimento da lateral do modulo central
 	 * o modulo central é um quadrado, esta no edital, valor medio 1.85f
@@ -125,7 +142,7 @@ public class Const {
 	 * @PROFUNDIDADE_BUNDA_ROBO distancia da traseira do robo ate o centro do robo
 	 * serve para fazer o ajuste fino da saida do robo do modulo de resgate
 	 */
-	public static final float PROFUNDIDADE_BUNDA_ROBO = 0.109f;
+	public static final float PROFUNDIDADE_BUNDA_ROBO = 0.115f;
 	/**
 	 * @DIST_EIXO_GARRA distancia da ponta da garra fechada ate o 
 	 * eixo do robo
