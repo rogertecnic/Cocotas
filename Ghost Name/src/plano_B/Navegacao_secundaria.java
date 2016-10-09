@@ -204,9 +204,9 @@ public class Navegacao_secundaria {
 			Navigation.andar(Const.DIST_FRENTE_CAPTURA);
 			Navigation.closeGarra();
 			Delay.msDelay(200);
-			boolean resgatar;
-			resgatar = Navegacao_secundaria.verificaBoneco(); // verificar se esta retornando o boneco correto inclusive com o vermelho deve retornar false
-			if(resgatar){
+			int corBonecoNaGarra;
+			corBonecoNaGarra = Navegacao_secundaria.verificaBoneco(); // verificar se esta retornando o boneco correto inclusive com o vermelho deve retornar false
+			if(corBonecoNaGarra == Plano_B.cor_resgate){
 				Plano_B.printDebug("RESGATAR");
 				Navigation.andar(-Const.DIST_FRENTE_CAPTURA);
 				Navigation.turn(-graus);
@@ -218,6 +218,11 @@ public class Navegacao_secundaria {
 				// aqui ele volta e tem que reiniciar, objetivo concluido
 			}else{
 				Plano_B.printDebug("KILL HIM!!");
+				if(corBonecoNaGarra == Const.VERMELHO){
+					Navigation.openGarra();
+					Navigation.andar(-Const.DIST_FRENTE_CAPTURA);
+					Navigation.turn(-graus);
+				}else
 				Navegacao_secundaria.tirarBonecoErrado(graus);
 			return false;
 			}
@@ -286,15 +291,16 @@ public class Navegacao_secundaria {
 	 * Metodo que verifica se o boneco que pegamo eh nosso ou nao
 	 * @return true se for nosso e false se nao for nosso
 	 */
-	public static boolean verificaBoneco(){
+	public static int verificaBoneco(){
 		int boneco = Sensors.verificaCorDoll();
-		if(boneco == Plano_B.cor_resgate){
+		return boneco;
+		/*if(boneco == Plano_B.cor_resgate){
 			//retornar pela(S) pilha(s) referente ao local que o robo esta
 			return true;
 		}else{
 			// dar um jeito de tirar o boneco do caminho
 			return false;
-		}
+		}*/
 	}
 
 	public static void tirarBonecoErrado(float ang){
