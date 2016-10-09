@@ -45,12 +45,6 @@ public class AlienRescue implements Runnable {
 	public final static Celula[][] CAVE_MAP = new Celula[LIN_AMT][COL_AMT];
 	public final static Celula[][] OBSTACLE_MAP = new Celula[LIN_AMT][COL_AMT];
 
-	/*
-	 * public final static Celula[][] REVERSE_CENTRAL_MAP = new
-	 * Celula[LIN_AMT][COL_AMT]; public final static Celula[][] REVERSE_CAVE_MAP
-	 * = new Celula[LIN_AMT][COL_AMT]; public final static Celula[][]
-	 * REVERSE_OBSTACLE_MAP = new Celula[LIN_AMT][COL_AMT];
-	 */
 	private static Posicao inputCell = new Posicao(0, 4);
 	private static Posicao caveEntrance;
 	private static Posicao caveExit;
@@ -162,7 +156,8 @@ public class AlienRescue implements Runnable {
 			threadTacometria.setName("Thread Tacometria");
 			threadTacometria.start();
 
-			toRescue();
+				toRescue();
+			
 
 			// ======FINAL DO CODIGO=========================================
 
@@ -178,7 +173,7 @@ public class AlienRescue implements Runnable {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			e.getStackTrace();
 			// Sound.buzz();
 
 		}
@@ -195,9 +190,12 @@ public class AlienRescue implements Runnable {
 		 */
 
 		CENTRAL_MAP[inputCell.x][inputCell.y].setStatus(Status.empty);
-		enterModule(Module.Central);
-
-		switch (bestPlaceToSearch()) {
+		if (modulo == Module.OutOfModule) {
+			
+			enterModule(Module.Central);
+			
+		}
+		switch (bestPlaceToSearch()/* Module.Obstacle */) {
 
 		case Central:
 
@@ -207,7 +205,9 @@ public class AlienRescue implements Runnable {
 		case Cave:
 
 			setPath(caveEntrance);
-			goTo(getPath());
+			if (goTo(getPath())) {
+				makeMyWayBack();
+			}
 			enterModule(Module.Cave);
 
 			caveMapStrategy();
@@ -216,7 +216,9 @@ public class AlienRescue implements Runnable {
 		case Obstacle:
 
 			setPath(obstacleEntrace);
-			goTo(getPath());
+			if (goTo(getPath())) {
+				makeMyWayBack();
+			}
 			enterModule(Module.Obstacle);
 
 			obstacleMapStrategy();
@@ -283,22 +285,22 @@ public class AlienRescue implements Runnable {
 	private static void centralMapStrategy() throws Exception {
 
 		setPath(point1CentralMap);
-		if(goTo(getPath())){
+		if (goTo(getPath())) {
 			makeMyWayBack();
 		}
 
 		setPath(point2CentralMap);
-		if(goTo(getPath())){
+		if (goTo(getPath())) {
 			makeMyWayBack();
 		}
 
 		setPath(point3CentralMap);
-		if (goTo(getPath())){
+		if (goTo(getPath())) {
 			makeMyWayBack();
 		}
 
 		setPath(point4CentralMap);
-		if (goTo(getPath())){
+		if (goTo(getPath())) {
 			makeMyWayBack();
 		}
 
@@ -312,13 +314,19 @@ public class AlienRescue implements Runnable {
 	private static void caveMapStrategy() throws Exception {
 
 		setPath(point1Cavemap);
-		goTo(getPath());
+		if (goTo(getPath())) {
+			makeMyWayBack();
+		}
 
 		setPath(point2Cavemap);
-		goTo(getPath());
+		if (goTo(getPath())) {
+			makeMyWayBack();
+		}
 
 		setPath(point3Cavemap);
-		goTo(getPath());
+		if (goTo(getPath())) {
+			makeMyWayBack();
+		}
 
 	}
 
@@ -357,7 +365,7 @@ public class AlienRescue implements Runnable {
 
 			return false;
 
-		} else if (Navigation.robotPosition.y == (COL_AMT - 1) && (Navigation.orientation == Navigation.LEFT
+		} else if ((Navigation.robotPosition.y == (COL_AMT - 1)) && (Navigation.orientation == Navigation.LEFT
 				|| Navigation.orientation == Navigation.BACK || Navigation.orientation == Navigation.FRONT)) {
 
 			return false;
@@ -380,39 +388,48 @@ public class AlienRescue implements Runnable {
 		switch (getModule()) {
 		case Central:
 			path.clear();
-			
-			System.out.println("central");
+
 			setPath(new Posicao(0, 4));
-			System.out.println("posição");
 			reverseGoTo(getPath());
 			System.out.println("reverse GoTo");
 			enterModule(Module.OutOfModule);
+			Navigation.openGarra();
+			captured = false;
+
 			break;
 
 		case Cave:
-			
+
 			path.clear();
 
-			setPath(caveExit);
-			goTo(getPath());
+			setPath(new Posicao(0, 4));
+			reverseGoTo(getPath());
 			enterModule(Module.Central);
 
-			setPath(inputCell);
-			goTo(getPath());
+			setPath(new Posicao(0, 4));
+			reverseGoTo(getPath());
 			enterModule(Module.OutOfModule);
+			Navigation.openGarra();
+			captured = false;
+
+
 			break;
 
 		case Obstacle:
-			
+
 			path.clear();
 
-			setPath(obstacleExit);
-			goTo(getPath());
+			setPath(new Posicao(0, 4));
+			reverseGoTo(getPath());
 			enterModule(Module.Central);
 
-			setPath(inputCell);
-			goTo(getPath());
+			setPath(new Posicao(0, 4));
+			reverseGoTo(getPath());
 			enterModule(Module.OutOfModule);
+			Navigation.openGarra();
+			captured = false;
+
+
 			break;
 
 		default:
@@ -429,7 +446,6 @@ public class AlienRescue implements Runnable {
 	 * @return Boolean se de fato houve a captura ou não
 	 */
 	private static boolean captureDoll() {
-		System.out.println("Captura");
 		Navigation.stop();
 		Navigation.setTachometer(false);
 
@@ -503,63 +519,26 @@ public class AlienRescue implements Runnable {
 	private static void checkFrontRobotCell(Celula[][] mapaAtual) throws Exception {
 
 		if (Navigation.orientation == Navigation.FRONT) {
-
 			if (Sensors.checkIfCellOcuppied()) {
 				if (captureDoll()) {
 
 					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
 					System.out
 							.println(mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].getStatus());
-					/*
-					 * if (mapaAtual == CENTRAL_MAP) {
-					 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x +
-					 * 1][Navigation.robotPosition.y] .setStatus(Status.empty);
-					 * } else if (mapaAtual == CAVE_MAP) {
-					 * REVERSE_CAVE_MAP[Navigation.robotPosition.x +
-					 * 1][Navigation.robotPosition.y] .setStatus(Status.empty);
-					 * } else if (mapaAtual == OBSTACLE_MAP) {
-					 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x +
-					 * 1][Navigation.robotPosition.y] .setStatus(Status.empty);
-					 * }
-					 */
 
-					//makeMyWayBack();
 					captured = true;
 
 				} else {
 
 					mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.occupied);
 
-					/*
-					 * if (mapaAtual == CENTRAL_MAP) {
-					 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x +
-					 * 1][Navigation.robotPosition.y]
-					 * .setStatus(Status.occupied); } else if (mapaAtual ==
-					 * CAVE_MAP) { REVERSE_CAVE_MAP[Navigation.robotPosition.x +
-					 * 1][Navigation.robotPosition.y]
-					 * .setStatus(Status.occupied); } else if (mapaAtual ==
-					 * OBSTACLE_MAP) {
-					 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x +
-					 * 1][Navigation.robotPosition.y]
-					 * .setStatus(Status.occupied); }
-					 */
 				}
 
 			} else {
+
 				mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].setStatus(Status.empty);
 				System.out.println(mapaAtual[Navigation.robotPosition.x + 1][Navigation.robotPosition.y].getStatus());
 
-				/*
-				 * if (mapaAtual == CENTRAL_MAP) {
-				 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x +
-				 * 1][Navigation.robotPosition.y] .setStatus(Status.empty); }
-				 * else if (mapaAtual == CAVE_MAP) {
-				 * REVERSE_CAVE_MAP[Navigation.robotPosition.x +
-				 * 1][Navigation.robotPosition.y] .setStatus(Status.empty); }
-				 * else if (mapaAtual == OBSTACLE_MAP) {
-				 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x +
-				 * 1][Navigation.robotPosition.y] .setStatus(Status.empty); }
-				 */
 			}
 
 		}
@@ -574,55 +553,18 @@ public class AlienRescue implements Runnable {
 					System.out
 							.println(mapaAtual[Navigation.robotPosition.x - 1][Navigation.robotPosition.y].getStatus());
 
-					/*
-					 * if (mapaAtual == CENTRAL_MAP) {
-					 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x -
-					 * 1][Navigation.robotPosition.y] .setStatus(Status.empty);
-					 * } else if (mapaAtual == CAVE_MAP) {
-					 * REVERSE_CAVE_MAP[Navigation.robotPosition.x -
-					 * 1][Navigation.robotPosition.y] .setStatus(Status.empty);
-					 * } else if (mapaAtual == OBSTACLE_MAP) {
-					 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x -
-					 * 1][Navigation.robotPosition.y] .setStatus(Status.empty);
-					 * }
-					 */
-
-					//makeMyWayBack();
 					captured = true;
 
 				} else {
 
 					mapaAtual[Navigation.robotPosition.x - 1][Navigation.robotPosition.y].setStatus(Status.occupied);
 
-					/*
-					 * if (mapaAtual == CENTRAL_MAP) {
-					 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x -
-					 * 1][Navigation.robotPosition.y]
-					 * .setStatus(Status.occupied); } else if (mapaAtual ==
-					 * CAVE_MAP) { REVERSE_CAVE_MAP[Navigation.robotPosition.x -
-					 * 1][Navigation.robotPosition.y]
-					 * .setStatus(Status.occupied); } else if (mapaAtual ==
-					 * OBSTACLE_MAP) {
-					 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x -
-					 * 1][Navigation.robotPosition.y]
-					 * .setStatus(Status.occupied); }
-					 */
 				}
 			} else {
+
 				mapaAtual[Navigation.robotPosition.x - 1][Navigation.robotPosition.y].setStatus(Status.empty);
 				System.out.println(mapaAtual[Navigation.robotPosition.x - 1][Navigation.robotPosition.y].getStatus());
 
-				/*
-				 * if (mapaAtual == CENTRAL_MAP) {
-				 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x -
-				 * 1][Navigation.robotPosition.y] .setStatus(Status.empty); }
-				 * else if (mapaAtual == CAVE_MAP) {
-				 * REVERSE_CAVE_MAP[Navigation.robotPosition.x -
-				 * 1][Navigation.robotPosition.y] .setStatus(Status.empty); }
-				 * else if (mapaAtual == OBSTACLE_MAP) {
-				 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x -
-				 * 1][Navigation.robotPosition.y] .setStatus(Status.empty); }
-				 */
 			}
 
 		}
@@ -634,39 +576,12 @@ public class AlienRescue implements Runnable {
 					mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].setStatus(Status.empty);
 					System.out
 							.println(mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].getStatus());
-					/*
-					 * if (mapaAtual == CENTRAL_MAP) {
-					 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x][
-					 * Navigation.robotPosition.y + 1] .setStatus(Status.empty);
-					 * } else if (mapaAtual == CAVE_MAP) {
-					 * REVERSE_CAVE_MAP[Navigation.robotPosition.x][Navigation.
-					 * robotPosition.y + 1] .setStatus(Status.empty); } else if
-					 * (mapaAtual == OBSTACLE_MAP) {
-					 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x][
-					 * Navigation.robotPosition.y + 1] .setStatus(Status.empty);
-					 * }
-					 */
 
-					//makeMyWayBack();
 					captured = true;
 
 				} else {
 
 					mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].setStatus(Status.occupied);
-
-					/*
-					 * if (mapaAtual == CENTRAL_MAP) {
-					 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x][
-					 * Navigation.robotPosition.y + 1]
-					 * .setStatus(Status.occupied); } else if (mapaAtual ==
-					 * CAVE_MAP) {
-					 * REVERSE_CAVE_MAP[Navigation.robotPosition.x][Navigation.
-					 * robotPosition.y + 1] .setStatus(Status.occupied); } else
-					 * if (mapaAtual == OBSTACLE_MAP) {
-					 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x][
-					 * Navigation.robotPosition.y + 1]
-					 * .setStatus(Status.occupied); }
-					 */
 
 				}
 
@@ -675,17 +590,6 @@ public class AlienRescue implements Runnable {
 				mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].setStatus(Status.empty);
 				System.out.println(mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y + 1].getStatus());
 
-				/*
-				 * if (mapaAtual == CENTRAL_MAP) {
-				 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x][Navigation.
-				 * robotPosition.y + 1] .setStatus(Status.empty); } else if
-				 * (mapaAtual == CAVE_MAP) {
-				 * REVERSE_CAVE_MAP[Navigation.robotPosition.x][Navigation.
-				 * robotPosition.y + 1] .setStatus(Status.empty); } else if
-				 * (mapaAtual == OBSTACLE_MAP) {
-				 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x][Navigation.
-				 * robotPosition.y + 1] .setStatus(Status.empty); }
-				 */
 			}
 
 		}
@@ -698,56 +602,17 @@ public class AlienRescue implements Runnable {
 					System.out
 							.println(mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].getStatus());
 
-					/*
-					 * if (mapaAtual == CENTRAL_MAP) {
-					 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x][
-					 * Navigation.robotPosition.y - 1] .setStatus(Status.empty);
-					 * } else if (mapaAtual == CAVE_MAP) {
-					 * REVERSE_CAVE_MAP[Navigation.robotPosition.x][Navigation.
-					 * robotPosition.y - 1] .setStatus(Status.empty); } else if
-					 * (mapaAtual == OBSTACLE_MAP) {
-					 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x][
-					 * Navigation.robotPosition.y - 1] .setStatus(Status.empty);
-					 * }
-					 */
-
-					//makeMyWayBack();
 					captured = true;
 
 				} else {
 
 					mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].setStatus(Status.occupied);
 
-					/*
-					 * if (mapaAtual == CENTRAL_MAP) {
-					 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x][
-					 * Navigation.robotPosition.y - 1]
-					 * .setStatus(Status.occupied); } else if (mapaAtual ==
-					 * CAVE_MAP) {
-					 * REVERSE_CAVE_MAP[Navigation.robotPosition.x][Navigation.
-					 * robotPosition.y - 1] .setStatus(Status.occupied); } else
-					 * if (mapaAtual == OBSTACLE_MAP) {
-					 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x][
-					 * Navigation.robotPosition.y - 1]
-					 * .setStatus(Status.occupied); }
-					 */
-
 				}
 			} else {
 				mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].setStatus(Status.empty);
 				System.out.println(mapaAtual[Navigation.robotPosition.x][Navigation.robotPosition.y - 1].getStatus());
 
-				/*
-				 * if (mapaAtual == CENTRAL_MAP) {
-				 * REVERSE_CENTRAL_MAP[Navigation.robotPosition.x][Navigation.
-				 * robotPosition.y - 1] .setStatus(Status.empty); } else if
-				 * (mapaAtual == CAVE_MAP) {
-				 * REVERSE_CAVE_MAP[Navigation.robotPosition.x][Navigation.
-				 * robotPosition.y - 1] .setStatus(Status.empty); } else if
-				 * (mapaAtual == OBSTACLE_MAP) {
-				 * REVERSE_OBSTACLE_MAP[Navigation.robotPosition.x][Navigation.
-				 * robotPosition.y - 1] .setStatus(Status.empty); }
-				 */
 			}
 
 		}
@@ -763,16 +628,20 @@ public class AlienRescue implements Runnable {
 
 		case MainMenuClass.CAV_DIR:
 
-			caveEntrance = new Posicao(4, 0);
-			obstacleEntrace = new Posicao(8, 4);
+			Posicao temp1 = new Posicao(4, 0);
+			caveEntrance = temp1;
+			Posicao temp2 = new Posicao(8, 4);
+			obstacleEntrace = temp2;
 
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
 			break;
 
 		case MainMenuClass.CAV_CIMA:
-			caveEntrance = new Posicao(8, 4);
-			obstacleEntrace = new Posicao(4, 0);
+			Posicao temp3 = new Posicao(8, 4);
+			caveEntrance = temp3;
+			Posicao temp4 = new Posicao(4, 0);
+			obstacleEntrace =  temp4;
 
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
@@ -790,17 +659,21 @@ public class AlienRescue implements Runnable {
 		switch (cave) {
 
 		case MainMenuClass.CAV_CIMA:
-			caveEntrance = new Posicao(8, 4);
-			obstacleEntrace = new Posicao(4, 8);
-
+			Posicao temp1 = new Posicao(8, 4);
+			caveEntrance = temp1;
+			Posicao temp2 = new Posicao(4, 8);
+			obstacleEntrace = temp2;
+			
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
 
 			break;
 
 		case MainMenuClass.CAV_ESQ:
-			caveEntrance = new Posicao(4, 8);
-			obstacleEntrace = new Posicao(8, 4);
+			Posicao temp3 = new Posicao(4, 8);
+			caveEntrance = temp3;
+			Posicao temp4 = new Posicao(8, 4);
+			obstacleEntrace = temp4;
 
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
@@ -819,8 +692,10 @@ public class AlienRescue implements Runnable {
 		switch (cave) {
 
 		case MainMenuClass.CAV_ESQ:
-			caveEntrance = new Posicao(4, 8);
-			obstacleEntrace = new Posicao(4, 0);
+			Posicao temp1= new Posicao(4, 8);
+			caveEntrance = temp1;
+			Posicao temp2 = new Posicao(4, 0);
+			obstacleEntrace = temp2;
 
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
@@ -828,8 +703,10 @@ public class AlienRescue implements Runnable {
 			break;
 
 		case MainMenuClass.CAV_DIR:
-			caveEntrance = new Posicao(4, 0);
-			obstacleEntrace = new Posicao(4, 8);
+			Posicao temp3 = new Posicao(4, 0);
+			caveEntrance = temp3;
+			Posicao temp4 = new Posicao(4, 8);
+			obstacleEntrace = temp4;
 
 			caveExit = new Posicao(0, 4);
 			obstacleExit = new Posicao(0, 4);
@@ -850,67 +727,32 @@ public class AlienRescue implements Runnable {
 					CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
 					CENTRAL_MAP[i][j].g = 1;
 
-					/*
-					 * REVERSE_CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j),
-					 * Status.unchecked); REVERSE_CENTRAL_MAP[i][j].g = 1;
-					 */
-
 					OBSTACLE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
 					OBSTACLE_MAP[i][j].g = 1;
 
-					/*
-					 * REVERSE_OBSTACLE_MAP[i][j] = new Celula(new Posicao(i,
-					 * j), Status.unchecked); REVERSE_OBSTACLE_MAP[i][j].g = 1;
-					 */
-
 					if ((i >= 2 && i <= 6) && (j >= 2 && j <= 6)) {
 
 						CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.occupied);
 						CAVE_MAP[i][j].g = 1;
-
-						/*
-						 * REVERSE_CAVE_MAP[i][j] = new Celula(new Posicao(i,
-						 * j), Status.occupied); REVERSE_CAVE_MAP[i][j].g = 1;
-						 */
 
 					} else {
 
 						CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
 						CAVE_MAP[i][j].g = 1;
 
-						/*
-						 * REVERSE_CAVE_MAP[i][j] = new Celula(new Posicao(i,
-						 * j), Status.unchecked); REVERSE_CAVE_MAP[i][j].g = 1;
-						 */
 					}
 				} else {
 					CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
-					/*
-					 * REVERSE_CENTRAL_MAP[i][j] = new Celula(new Posicao(i, j),
-					 * Status.unchecked);
-					 */
 
 					OBSTACLE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
-					/*
-					 * REVERSE_OBSTACLE_MAP[i][j] = new Celula(new Posicao(i,
-					 * j), Status.unchecked);
-					 */
 
 					if ((i >= 2 && i <= 6) && (j >= 2 && j <= 6)) {
 
 						CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.occupied);
-						/*
-						 * REVERSE_CAVE_MAP[i][j] = new Celula(new Posicao(i,
-						 * j), Status.occupied);
-						 */
 
 					} else {
 
 						CAVE_MAP[i][j] = new Celula(new Posicao(i, j), Status.unchecked);
-						/*
-						 * REVERSE_CAVE_MAP[i][j] = new Celula(new Posicao(i,
-						 * j), Status.unchecked);
-						 */
 
 					}
 				}
@@ -1025,7 +867,7 @@ public class AlienRescue implements Runnable {
 
 			Navigation.orientation = Navigation.FRONT;
 
-			Navigation.robotPosition = inputCell;
+			Navigation.robotPosition = new Posicao(0, 4);
 
 			Navigation.setTachometer(true);
 
@@ -1065,7 +907,8 @@ public class AlienRescue implements Runnable {
 
 			Navigation.orientation = Navigation.FRONT;
 
-			Navigation.robotPosition = caveExit;
+			Navigation.robotPosition = new Posicao(0, 4);
+			;
 
 			Navigation.setTachometer(true);
 
@@ -1104,7 +947,8 @@ public class AlienRescue implements Runnable {
 
 			Navigation.orientation = Navigation.FRONT;
 
-			Navigation.robotPosition = obstacleExit;
+			Navigation.robotPosition = new Posicao(0, 4);
+			;
 
 			Navigation.setTachometer(true);
 
@@ -1215,13 +1059,6 @@ public class AlienRescue implements Runnable {
 		return null;
 	}
 
-	/*
-	 * private static int currentMapAstar() { switch (getModule()) { case
-	 * Central: return 0; case Cave: return 1; case Obstacle: return 2; default:
-	 * break; } System.out.println("Default retonrno null"); return (Integer)
-	 * null; }
-	 */
-
 	/**
 	 * Literalmente encontra o melhor caminho para passar e seta esse caminho em
 	 * <b>path</b>
@@ -1236,6 +1073,11 @@ public class AlienRescue implements Runnable {
 		AlienRescue.path = aStar.search(Navigation.robotPosition, posicaoAlvo);
 		System.out.println(path.isEmpty());
 
+	}
+
+	private static void setReversePath(Posicao posicaoAlvo) throws Exception {
+		aStar = new Astar(currentMap());
+		AlienRescue.path = aStar.searchReversePath(Navigation.robotPosition, posicaoAlvo);
 	}
 
 	/**
@@ -1555,12 +1397,12 @@ public class AlienRescue implements Runnable {
 							}
 						}
 					}
-					
-					if(captured == true){
+
+					if (captured == true) {
 						Navigation.stop();
 						captureReturn = true;
 						break;
-					}else{
+					} else {
 						continue;
 					}
 
@@ -1621,12 +1463,12 @@ public class AlienRescue implements Runnable {
 							}
 						}
 					}
-					
-					if(captured == true){
+
+					if (captured == true) {
 						Navigation.stop();
 						captureReturn = true;
 						break;
-					}else{
+					} else {
 						continue;
 					}
 
@@ -1687,11 +1529,11 @@ public class AlienRescue implements Runnable {
 							}
 						}
 					}
-					if(captured == true){
+					if (captured == true) {
 						Navigation.stop();
 						captureReturn = true;
 						break;
-					}else{
+					} else {
 						continue;
 					}
 
@@ -1752,17 +1594,17 @@ public class AlienRescue implements Runnable {
 							}
 						}
 					}
-					if(captured == true){
+					if (captured == true) {
 						Navigation.stop();
 						captureReturn = true;
 						break;
-					}else{
+					} else {
 						continue;
 					}
 				}
 			}
 		}
-		
+
 		return captureReturn;
 	}
 

@@ -43,7 +43,7 @@ public class MainMenuClass {
 	configArena = 0, // config A = 1, config B = 2, config C = 3
 	configCave = 0; // da uma lida no metodo mostraMenu2
 	public static boolean
-	bonecoNoCentro = true; // autoexplicativo (alterado a cada reinicio)
+	bonecoNoCentro; // autoexplicativo (alterado a cada reinicio)
 
 	//=====================MAIN===================================
 	public static void main(String[] args) { // foca so no metodo start, o resto eh coisa pra controlar o menu

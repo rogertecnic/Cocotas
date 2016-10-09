@@ -18,7 +18,7 @@ public class Navigation implements Runnable {
 	static EV3MediumRegulatedMotor motorG;
 
 	// ---------------------CONSTANTES DE DESCRICAO--------------------------
-	public final static float VELO_INI = 0.15f; // em m/s, velocidade linear do
+	public final static float VELO_INI = 0.19f; // em m/s, velocidade linear do
 												// robo andar
 	public final static float VELO_CURVA = 0.08f; // em m/s, velocidade linear
 													// do robo fazer o turn
@@ -59,6 +59,7 @@ public class Navigation implements Runnable {
 
 	public static Posicao robotPosition; // posição de
 											// entrada
+	public static float globalTacho = 0;
 	// ========================Constantes de processo=====================
 
 	private static final float PI = (float) Math.PI;
@@ -91,6 +92,13 @@ public class Navigation implements Runnable {
 	private static void cellExchanger() {
 		float tacho = (Navigation.getTacho("B") / 360);
 		float distancia = (2 * PI * Navigation.RAIO) * tacho;
+		if (distancia >= 10 && distancia <= 11){
+			
+			
+			
+		AlienRescue.cellAlreadyRead = false;
+
+		}
 		if (distancia >= CELL_SIZE) {
 			AlienRescue.cellExchanged = true;
 			AlienRescue.cellAlreadyRead = false;
