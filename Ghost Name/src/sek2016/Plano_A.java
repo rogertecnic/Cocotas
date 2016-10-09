@@ -10,7 +10,7 @@ import lejos.utility.Delay;
  *Classe que controla a Thread main (metodo main) e 
  *chama a Thread do codigo da sek da classe AlienRescue
  */
-public class MainMenuClass {
+public class Plano_A {
 	/**
 	 *  variavel que confirma se é pra dar reset no brick
 	 */
@@ -350,7 +350,7 @@ public class MainMenuClass {
 			}
 			case Button.ID_ENTER: {
 				bonecoNoCentro = boneco;
-				MainMenuClass.exit = exit;
+				Plano_A.exit = exit;
 				LCD.clear();
 				noMenu3 = false;
 				break;

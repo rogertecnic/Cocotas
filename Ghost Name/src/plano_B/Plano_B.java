@@ -1,6 +1,6 @@
 package plano_B;
 
-import sek2016.MainMenuClass;
+import sek2016.Plano_A;
 
 public class Plano_B {
 	//======================VARIAVEIS DE CONDICAO INICIAL DA ARENA=================
@@ -24,9 +24,9 @@ public class Plano_B {
 	 * Metodo que rege todo o plano B, seria o main do plano B
 	 */
 	public static void partiu(){
-		configArena = MainMenuClass.configArena;
-		configCave = MainMenuClass.configCave;
-		bonecoNoCentro = MainMenuClass.bonecoNoCentro;
+		configArena = Plano_A.configArena;
+		configCave = Plano_A.configCave;
+		bonecoNoCentro = Plano_A.bonecoNoCentro;
 
 		Navegacao_secundaria.setaArena(configArena, configCave);
 	}

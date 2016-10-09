@@ -242,7 +242,7 @@ public class AlienRescue implements Runnable {
 		for (int i = 0; i < COL_AMT; i++) {
 			for (int j = 0; j < LIN_AMT; j++) {
 
-				if (CENTRAL_MAP[i][j].getStatus() == Status.unchecked && MainMenuClass.bonecoNoCentro) {
+				if (CENTRAL_MAP[i][j].getStatus() == Status.unchecked && Plano_A.bonecoNoCentro) {
 
 					centralAmount++;
 
@@ -440,8 +440,8 @@ public class AlienRescue implements Runnable {
 	}
 
 	/**
-	 * Método de captura do alien<br>
-	 * Leitoado, selem as caudas
+	 * Método de captura do alien.<br>
+	 * Leitoado, selem as caudas!
 	 * 
 	 * @return Boolean se de fato houve a captura ou não
 	 */
@@ -627,7 +627,7 @@ public class AlienRescue implements Runnable {
 
 		switch (cave) {
 
-		case MainMenuClass.CAV_DIR:
+		case Plano_A.CAV_DIR:
 
 			Posicao temp1 = new Posicao(4, 0);
 			caveEntrance = temp1;
@@ -638,7 +638,7 @@ public class AlienRescue implements Runnable {
 			obstacleExit = new Posicao(0, 4);
 			break;
 
-		case MainMenuClass.CAV_CIMA:
+		case Plano_A.CAV_CIMA:
 			Posicao temp3 = new Posicao(8, 4);
 			caveEntrance = temp3;
 			Posicao temp4 = new Posicao(4, 0);
@@ -659,7 +659,7 @@ public class AlienRescue implements Runnable {
 
 		switch (cave) {
 
-		case MainMenuClass.CAV_CIMA:
+		case Plano_A.CAV_CIMA:
 			Posicao temp1 = new Posicao(8, 4);
 			caveEntrance = temp1;
 			Posicao temp2 = new Posicao(4, 8);
@@ -670,7 +670,7 @@ public class AlienRescue implements Runnable {
 
 			break;
 
-		case MainMenuClass.CAV_ESQ:
+		case Plano_A.CAV_ESQ:
 			Posicao temp3 = new Posicao(4, 8);
 			caveEntrance = temp3;
 			Posicao temp4 = new Posicao(8, 4);
@@ -692,7 +692,7 @@ public class AlienRescue implements Runnable {
 
 		switch (cave) {
 
-		case MainMenuClass.CAV_ESQ:
+		case Plano_A.CAV_ESQ:
 			Posicao temp1= new Posicao(4, 8);
 			caveEntrance = temp1;
 			Posicao temp2 = new Posicao(4, 0);
@@ -703,7 +703,7 @@ public class AlienRescue implements Runnable {
 
 			break;
 
-		case MainMenuClass.CAV_DIR:
+		case Plano_A.CAV_DIR:
 			Posicao temp3 = new Posicao(4, 0);
 			caveEntrance = temp3;
 			Posicao temp4 = new Posicao(4, 8);
