@@ -4,7 +4,7 @@ import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
 import plano_B.Const;
-import plano_B.Plano_B;
+import plano_B.PlanoB;
 import sek2016.Celula.Status;
 
 /**
@@ -74,7 +74,7 @@ public class AlienRescue implements Runnable{
 			//int ang = 45;
 			//Navigation.andar(Const.LADO_ARENA_CENTRAL+0.4f);
 			//Navigation.turn(360*2);
-			Plano_B.partiu();
+			PlanoB.partiu();
 			//Plano_B.debugBuscaObstaculo();
 			
 /*			while(Button.ENTER.isUp()){
@@ -121,7 +121,7 @@ public class AlienRescue implements Runnable{
 	/**
 	 * Reproduz o alegre som de sambar na cara das inimigas
 	 */
-	private static void victorySong(){
+	public static void victorySong(){
 		Sound.setVolume(50);
 		Sound.playTone(3000, 100);
 		Sound.playTone(4000, 100);

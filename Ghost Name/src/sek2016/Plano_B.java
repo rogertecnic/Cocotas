@@ -4,7 +4,7 @@ import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import plano_B.Const;
-import plano_B.Plano_B;
+import plano_B.PlanoB;
 
 /**
  * 
@@ -12,7 +12,7 @@ import plano_B.Plano_B;
  *Classe que controla a Thread main (metodo main) e 
  *chama a Thread do codigo da sek da classe AlienRescue
  */
-public class MainMenuClass {
+public class Plano_B {
 	//====================VARIAVEL DE CONTROLE THREAD AlienRescue=================
 	/**
 	 * Variavel que controla a instancia dos sensores e motores e 
@@ -51,17 +51,21 @@ public class MainMenuClass {
 				Sensors.calibraCorDoll();
 				Sensors.calibraCorChao();
 			}
-
+			
 			// ===== essa parte so eh executada se for o plano b
-			if(Plano_B.planob && !jaIniciado){
+			if(PlanoB.planob && !jaIniciado){
 				//birl, so fazer o menu la no planob e colocar aqui
-				Plano_B.controleMenuParede();
+				PlanoB.controleMenuParede();
 			}
 			// ===== essa parte so eh executada se for o plano b
 
-			Plano_B.planob = false;
+			PlanoB.planob = false;
 			controleMenu();
-
+			
+			if(false){
+			PlanoB.controleMenuBuscaCave();
+			}
+			
 			Button.ENTER.waitForPressAndRelease();
 			Navigation.stop();
 			AlienRescue.alienRescueON = false;

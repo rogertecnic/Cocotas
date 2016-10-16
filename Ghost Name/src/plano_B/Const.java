@@ -101,7 +101,10 @@ public class Const {
 	 * @PRETO 5; indica a cor do boneco que ele deve/esta ou nao a resgatar
 	 */
 	public static final int PRETO = 5;
-
+	/**
+	 * Retorna que o sensor de chao leu o chao branco
+	 */
+	public static final int FLOOR_BRANCO = 18;
 
 
 	/**
@@ -109,12 +112,12 @@ public class Const {
 	 * essa velocidade eh 3/4 da velocidade de curva estabelecida na classe
 	 * Navigation
 	 */
-	public static final float VELO_PROCURA = Navigation.VELO_CURVA*3/4;
+	public static final float VELO_PROCURA = Navigation.VELO_CURVA*0.7f;
 	/**
 	 * @ANG_PROCURA angulo de abertura para o robo virar de um lado para o outro procurando
 	 * valor padrao 45 graus.
 	 */
-	public static final int ANG_PROCURA = 45;
+	public static final int ANG_PROCURA = 60;
 	/**
 	 * @DIST_FRENTE_PROCURA distancia que o robo vai ir par afrente
 	 * apos ter visto um boneco, o robo vai ate o boneco para pega-lo

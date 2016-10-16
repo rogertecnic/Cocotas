@@ -201,30 +201,47 @@ public class Navegacao_secundaria {
 		//======se achou vai buscar o boneco, se nao, gira p o angulo inicial
 		if(achouBoneco){// vai buscar o boneco
 			dist = Sensors.verificaDistObstaculo();
+			Navigation.setVelocidade(Navigation.VELO_INI*0.75f, Navigation.VELO_INI*0.75f);
 			Navigation.andar(Const.DIST_FRENTE_CAPTURA);
+			Navigation.setVelocidade(Navigation.VELO_INI, Navigation.VELO_INI);
+			//Navigation.andar(-0.04f);
 			Navigation.closeGarra();
+			Navigation.andar(-0.04f);
 			Delay.msDelay(200);
 			int corBonecoNaGarra;
 			corBonecoNaGarra = Navegacao_secundaria.verificaBoneco(); // verificar se esta retornando o boneco correto inclusive com o vermelho deve retornar false
-			if(corBonecoNaGarra == Plano_B.cor_resgate){
-				Plano_B.printDebug("RESGATAR");
-				Navigation.andar(-Const.DIST_FRENTE_CAPTURA);
+			if(corBonecoNaGarra == PlanoB.cor_resgate){
+				PlanoB.printDebug("RESGATAR");
+				Navigation.setAcceleration(0.4f, 0.4f);
+				Navigation.andar(-(Const.DIST_FRENTE_CAPTURA-0.05f));
 				Navigation.turn(-graus);
 				Navegacao_secundaria.voltaNaPilha(local);
-				Plano_B.trocaModulo(Plano_B.arenaSek);
+				PlanoB.trocaModulo(PlanoB.arenaSek);
 				Navegacao_secundaria.voltaNaPilha(Const.CENTRAL);
+				
+				
+				//TESTE----- verificar se esta no modulo de resgate
+				int podeSoltarBoneco = Sensors.verificaFloor();
+				if(podeSoltarBoneco == Const.FLOOR_BRANCO){
+					Navigation.andar(0.18f);
+				}
+				//TESTE------
+				
+				
 				Navigation.openGarra();
+				Navigation.setAcceleration(Navigation.aceleration, Navigation.aceleration);
+				Navigation.andar(-0.15f);
 				return true;
 				// aqui ele volta e tem que reiniciar, objetivo concluido
 			}else{
-				Plano_B.printDebug("KILL HIM!!");
+				PlanoB.printDebug("NAO RESGATAR");
 				if(corBonecoNaGarra == Const.VERMELHO){
-					Plano_B.printDebug("KILL VERMELHO");
+					PlanoB.printDebug("BONECO VERMELHO");
 					Navigation.openGarra();
-					Navigation.andar(-Const.DIST_FRENTE_CAPTURA);
+					Navigation.andar(-(Const.DIST_FRENTE_CAPTURA-0.05f));
 					Navigation.turn(-graus);
 				}else
-					Plano_B.printDebug("KILL ERRADO");
+					PlanoB.printDebug("BONECO ERRADO");
 				Navegacao_secundaria.tirarBonecoErrado(graus);
 			return false;
 			}
@@ -475,7 +492,7 @@ public class Navegacao_secundaria {
 			break;
 		}
 		}
-
+		
 		switch(alinhar){
 		case 0:{
 			break;
@@ -513,6 +530,45 @@ public class Navegacao_secundaria {
 			break;
 		}
 		}
+		
+		
+		/*switch(alinhar){
+		case 0:{
+			break;
+		}case 1:{
+			Navigation.turn(90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2-x+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL/2-x-Const.PROFUNDIDADE_BUNDA_ROBO);
+			Navigation.turn(-90);
+			Navigation.andar(-(y+0.1f));
+			Navigation.andar(y-Const.PROFUNDIDADE_BUNDA_ROBO);
+			break;
+		}case 2:{
+			Navigation.turn(90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL-y+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL-y-Const.PROFUNDIDADE_BUNDA_ROBO);
+			Navigation.turn(-90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2-x+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL/2-x-Const.PROFUNDIDADE_BUNDA_ROBO);
+			break;
+		}case 3:{ // acho q deu bom
+			Navigation.turn(-90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL-y+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL-y-Const.PROFUNDIDADE_BUNDA_ROBO);
+			Navigation.turn(90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2+x+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL/2+x-Const.PROFUNDIDADE_BUNDA_ROBO);
+			break;
+		}case 4:{ // deu bom
+			Navigation.turn(-90);
+			Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2+x+0.1f));
+			Navigation.andar(Const.LADO_MODULO_CENTRAL/2+x-Const.PROFUNDIDADE_BUNDA_ROBO);
+			Navigation.turn(90);
+			Navigation.andar(-(y+0.1f));
+			Navigation.andar(y-Const.PROFUNDIDADE_BUNDA_ROBO);
+			break;
+		}
+		}*/
 
 		Navigation.andar(dist);
 		switch(orientacao){
@@ -572,6 +628,11 @@ public class Navegacao_secundaria {
 			}
 		}
 		else return false;
+	}
+	
+	public static void verificaModResgate(){
+		int mod = Sensors.verificaFloor();
+		
 	}
 }
 

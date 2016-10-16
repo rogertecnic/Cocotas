@@ -1,6 +1,7 @@
 package sek2016;
 
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.BaseRegulatedMotor;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
@@ -21,7 +22,7 @@ public class Navigation {
 	//---------------------CONSTANTES DE DESCRICAO--------------------------
 	public final static float VELO_INI = 0.25f; // em m/s, velocidade linear do robo andar (0.2f ta bom)
 	public final static float VELO_CURVA = 0.08f; // em m/s, velocidade linear do robo fazer o turn
-	public final static float aceleration = 0.36f; // m/s^2 PARA A RODA  (0.26f <=> 548 graus/s^2), (0.37978f <=> 800 graus/s^2), default: 2.84837 m/s^2 <=> 6000 m/s^2) 
+	public final static float aceleration = 1.0f; // m/s^2 PARA A RODA  (0.26f <=> 548 graus/s^2), (0.37978f <=> 800 graus/s^2), default: 2.84837 m/s^2 <=> 6000 m/s^2) 
 	public final static float DISTANCIA_ENTRE_RODAS = 0.1378f;//metros, ja conferido (0.14f)
 	public final static float RAIO = 0.0272f; //metros, ja conferido (se alterar tem que alterar o de cima)
 
@@ -41,7 +42,7 @@ public class Navigation {
 
 
 	//---------------------VARIAVEIS DE PROCESSO----------------------------
-	public static boolean garraFechada = false,//a garra esta fechada?
+	static boolean garraFechada = false,//a garra esta fechada?
 			andandoRe = false; // o robo esta andando de RE? para inverter o pid no metodo calculaPID se caso ele for andar de re
 
 
@@ -354,5 +355,13 @@ public class Navigation {
 			}
 			break;
 		}
+	}
+	
+	public static void re10cm(){
+		PID.pidRunning=false; // pausa o pid para o pid nao recalcular a velocidade durante o turn
+		while(!PID.PIDparado){ // aguarda o pid realmente parar
+		}
+		PID.zeraPID(); // apos o pid parado ele eh zerado
+		setVelocidade(VELO_CURVA, VELO_CURVA); // seta a velocidade da curva
 	}
 }

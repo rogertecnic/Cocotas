@@ -8,7 +8,8 @@ import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
-import plano_B.Plano_B;
+import plano_B.Const;
+import plano_B.PlanoB;
 
 public class Sensors {
 
@@ -37,7 +38,7 @@ public class Sensors {
 	 * os intervalos serao entre estes 2 extremos; exemplo: 0 <p< r1 < b < r2 <
 	 * v < 1; REFERENTES A COR DO BONECO v: vermelho b: branco p: preto
 	 */
-	public static float r1, // red
+	public static float r1, r1floor, // red
 	g1, g1floor, // green
 	b1, b1floor; // blue
 	private static final int BRANCO = 3, VERMELHO = 4, PRETO = 5;
@@ -186,17 +187,44 @@ public class Sensors {
 	public static int verificaFloor(){
 		floorColor.getRGBMode().fetchSample(floorSample, 0);
 		if(floorSample[1] >=g1floor){ // solo verde, resgata boneco preto
-			return PRETO;
+			if(floorSample[0] >= r1floor){
+				PlanoB.printDebug("chao branco");
+				//Delay.msDelay(5000);
+				return Const.FLOOR_BRANCO;
+			}else{
+				PlanoB.printDebug("chao verde");
+				//Delay.msDelay(5000);
+				return PRETO;
+			}
 		}else{
-			Delay.msDelay(1000);
+			PlanoB.printDebug("chao azul");
+			//Delay.msDelay(5000);
 			return BRANCO;
 		}
+
+
+
+
+
+
+
+		//codigo funcionando
+		/*floorColor.getRGBMode().fetchSample(floorSample, 0);
+		if(floorSample[1] >=g1floor){ // solo verde, resgata boneco preto
+			PlanoB.printDebug("chao verde");
+			//Delay.msDelay(5000);
+			return PRETO;
+		}else{
+			//Delay.msDelay(1000);
+			return BRANCO; // esse tava funcionando
+		}*/
+
 	}
-	
+
 	public static boolean verificaLinhaChao(){
 		floorColor.getRGBMode().fetchSample(floorSample, 0);
 		if(floorSample[0] <=0.05 || floorSample[1] <= 0.05 || floorSample[2] <=0.05 ){
-			
+
 			LCD.clear();
 			LCD.drawString("testar linha", 0, 0);
 			return true;
@@ -205,9 +233,9 @@ public class Sensors {
 			LCD.drawString("testar linha", 0, 0);
 			return false;
 		}
-			
+
 	}
-	
+
 	/**
 	 * Calibragem do sensor de dollColor
 	 */
@@ -281,9 +309,9 @@ public class Sensors {
 		r1 = red[0] * 2;
 		g1 = blue[0] * 2;
 		b1 = green[0] * 2;
-		
-		
-		
+
+
+
 		r1 = red[0] * 2;
 		g1 = blue[0] * 2;
 		b1 = green[0] * 2;
@@ -291,23 +319,42 @@ public class Sensors {
 		LCD.drawString(Float.toString(r1), 0, 0);
 		LCD.drawString(Float.toString(g1), 0, 1);
 		LCD.drawString(Float.toString(b1), 0, 2);
-		Button.DOWN.waitForPressAndRelease();*/
-		
-		
+		Button.DOWN.waitForPressAndRelease();
+
+
 		// constantes de resgate de bonecos da sek grandes
-		/*r1 = 0.005882353f;
+		r1 = 0.005882353f;
 		g1 = 0.007843138f;
-		b1 = 0.005882353f;*/
-		
-		// constantes de resgate de bonecos da sek pequenos calibrados na mesa de treino
-		/*r1 = 0.029411765f;
+		b1 = 0.005882353f;
+
+		// constantes de resgate de bonecos da sek pequenos calibrados na mesa
+		r1 = 0.029411765f;
 		g1 = 0.005882353f;
-		b1 = 0.02745098f;*/
-		
+		b1 = 0.02745098f;
+
 		// constantes de resgate de bonecos da sek pequenos calibrados na pista de treino
 		r1 = 0.03529412f;
 		g1 = 0.01372549f;
 		b1 = 0.04509804f;
+
+		// constantes de resgate de bonecos calibrados na arena oficial com bonecos
+		// oficiais a noite de domingo 17:35
+		r1 = 0.023529412f;
+		g1 = 0.01372549f;
+		b1 = 0.029411765f;
+
+		// constantes de resgate de bonecos calibrados na arena oficial com bonecos
+		// oficiais a tarde de terca 15:00
+		r1 = 0.01764706f;
+		g1 = 0.003921569f;
+		b1 = 0.01764706f;*/
+		
+		
+		// constantes de resgate de bonecos calibrados na arena oficial com bonecos
+		// nao oficiais a noite de terca 18:00 com o sensor para cima
+		r1 = 0.01372549f;
+		g1 = 0.005882353f;
+		b1 = 0.015686275f;
 	}
 
 	/**
@@ -358,19 +405,40 @@ public class Sensors {
 				}
 			}
 		}
+
+
+		t = 0;
+		// organizando os intervalos do blue
+		for (int i = 0; i <= 1; i++) {
+			for (int j = 1; j > i; j--) {
+				if (blue[j] <= blue[i]) {
+					t = blue[i];
+					blue[i] = blue[j];
+					blue[j] = t;
+				}
+			}
+		}
 		b1floor = (blue[0] +blue[1])/2;
 		g1floor = (green[0] + green[1])/2;
+		r1floor = (red[0] + red[1])/2;
 		LCD.clear();
-		LCD.drawString(Float.toString(g1floor), 0, 0);
-		LCD.drawString(Float.toString(b1floor), 0, 1);
+		LCD.drawString(Float.toString(r1floor), 0, 0);
+		LCD.drawString(Float.toString(g1floor), 0, 1);
+		LCD.drawString(Float.toString(b1floor), 0, 2);
 		Button.DOWN.waitForPressAndRelease();*/
-		
-		// constantes calibradas na arena da sek
-		/*g1floor = 0.097058825f;
-		b1floor = 0.061764706f;*/
-		
+
+		/*// constantes calibradas na arena da sek
+		g1floor = 0.097058825f;
+		b1floor = 0.061764706f;
+
 		// constantes calibradas na arena de teste da larc
 		g1floor = 0.071078435f;
-		b1floor = 0.04019608f;
+		b1floor = 0.04019608f;*/
+
+
+		// constantes calibradas na arena de teste da larc terca as 15:12
+		r1floor = 0.032352943f;
+		g1floor = 0.07254902f;
+		b1floor = 0.04117647f;
 	}
 }

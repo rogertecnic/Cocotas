@@ -3,11 +3,12 @@ package plano_B;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
-import sek2016.MainMenuClass;
+import sek2016.Plano_B;
+import sek2016.AlienRescue;
 import sek2016.Navigation;
 import sek2016.Sensors;
 
-public class Plano_B {
+public class PlanoB {
 	//======================VARIAVEIS DE CONDICAO INICIAL DA ARENA=================
 	public static int
 	c1 = 0, c2 = 0, c3 = 0, // contadora auxiliar usada em varios casos
@@ -20,7 +21,9 @@ public class Plano_B {
 	//====================VARIAVEIS QUE CONTROLAM O PLANO B============
 	public static boolean
 	planob = true, // true se o plano b for executado, false se nao
-	arenaSek = false; // true se a arena que vamos rodar for a nossa, false se nao
+	arenaSek = false, // true se a arena que vamos rodar for a nossa, false se nao
+	menuExtraCaverna = false; // controla se o menu de direcao de busca na caverna sera executado
+	public static int resgataCaveQualLado = 1; // define qual lado ele vai comecar a buscar
 
 
 
@@ -28,16 +31,16 @@ public class Plano_B {
 	 * Metodo que rege todo o plano B, seria o main do plano B
 	 */
 	public static void partiu(){
-		configArena = MainMenuClass.configArena;
-		configCave = MainMenuClass.configCave;
-		modIniciaBusca = MainMenuClass.modIniciaBusca;
+		configArena = Plano_B.configArena;
+		configCave = Plano_B.configCave;
+		modIniciaBusca = Plano_B.modIniciaBusca;
 		cor_resgate = Sensors.verificaFloor();
 		Navegacao_secundaria.initVariaveis();
 
 		printDebug("RESGATAR: " + (cor_resgate == 3? "BRANCO":"PRETO"));
 		Delay.msDelay(500); // TIRAR DEPOIS
 
-		switch(MainMenuClass.modIniciaBusca){
+		switch(Plano_B.modIniciaBusca){
 		case Const.CENTRAL:{
 			Navegacao_secundaria.inicioModuloCentral();
 			trocaModulo(arenaSek);
@@ -165,7 +168,53 @@ public class Plano_B {
 			}
 		}
 	}
-
+	
+	public static void controleMenuBuscaCave() {
+		int onde = 1; // indica qual opcao foi selecionada no menu 
+		boolean 
+		noMenu = true;
+		//================MENU DA BuscaCave==========
+		while (noMenu) {
+			mostraMenuBuscaCave(onde);
+			switch (Button.waitForAnyPress()) {
+			case Button.ID_RIGHT: {
+				if(onde==1)
+					onde ++;
+				else onde = 1;
+				break;
+			}
+			case Button.ID_LEFT: {
+				if(onde==1)
+					onde --;
+				else onde = 2;
+				break;
+			}
+			case Button.ID_ENTER: {
+				resgataCaveQualLado = onde;
+				LCD.clear();
+				noMenu = false;
+				break;
+			}
+			}
+		}
+	}
+	
+	public static void mostraMenuBuscaCave(int ondeBuscar){
+		LCD.clear();
+		switch(ondeBuscar){
+		case 1:{
+			LCD.drawString("BUSCAR ONDE", 0, 0);
+			LCD.drawString("<DIREITA>", 0, 1);
+			break;
+		}
+		case 2:{
+			LCD.drawString("CONFIG PAREDE", 0, 0);
+			LCD.drawString("<ESQUERDA>", 0, 1);
+			break;
+		}
+		}
+	}
+	
 	/**
 	 *Metodo que procura os bonecos no modulo central
 	 *  busca em diagonais, comeca contando da diagonal direita 
@@ -183,7 +232,7 @@ public class Plano_B {
 		boolean achou = false,
 				resgatar = false;
 		while(!resgatar ){
-			achou = Navegacao_secundaria.giroBuscaResgata(55, Const.CENTRAL); // testar se esta virando e indo ate o boneco e fechando a garra
+			achou = Navegacao_secundaria.giroBuscaResgata(Const.ANG_PROCURA, Const.CENTRAL); // testar se esta virando e indo ate o boneco e fechando a garra
 			if(achou){
 				printDebug("mais pontos");
 				resgatar = true;
@@ -214,8 +263,8 @@ public class Plano_B {
 					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
 					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
 					Navegacao_secundaria.pullSegmento(Const.CENTRAL);
-					Navegacao_secundaria.pushSegmento(0, 7*distAndaProcura, Const.CENTRAL, 0);
-					switch(MainMenuClass.diagonalModuloCentral){
+					Navegacao_secundaria.pushSegmento(0, 5*distAndaProcura, Const.CENTRAL, 0);
+					switch(Plano_B.diagonalModuloCentral){
 					case 0:{
 						c1++;
 						break;
@@ -249,7 +298,7 @@ public class Plano_B {
 					break;
 				}case 9:{
 					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CENTRAL,0); // Diag1 5
-					MainMenuClass.diagonalModuloCentral = 1; // ele ja cobriu a diagonal 1
+					Plano_B.diagonalModuloCentral = 1; // ele ja cobriu a diagonal 1
 					c1++;
 					break;
 				}case 10:{
@@ -290,7 +339,7 @@ public class Plano_B {
 					break;
 				}case 15:{
 					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CENTRAL,0); // Diag2 5
-					MainMenuClass.diagonalModuloCentral = 2; // aqui ele terminou de procurar na diagonal 2
+					Plano_B.diagonalModuloCentral = 2; // aqui ele terminou de procurar na diagonal 2
 					c1++;
 					break;
 				}case 16:{
@@ -332,7 +381,7 @@ public class Plano_B {
 				}
 				case 21:{
 					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CENTRAL,0); // Diag3 5
-					MainMenuClass.diagonalModuloCentral = 3; // aqui ele terminou de procurar na diagonal 3
+					Plano_B.diagonalModuloCentral = 3; // aqui ele terminou de procurar na diagonal 3
 					c1++;
 					break;
 				}case 22:{
@@ -374,7 +423,7 @@ public class Plano_B {
 				}
 				case 27:{
 					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CENTRAL,0); // Diag4 5
-					MainMenuClass.diagonalModuloCentral = 0; // teoricamente ele terminou o mod central
+					Plano_B.diagonalModuloCentral = 0; // teoricamente ele terminou o mod central
 					c1++;
 					break;
 				}
@@ -398,127 +447,135 @@ public class Plano_B {
 		boolean achou = false,
 				resgatar = false;
 		while(!resgatar ){
-			achou = Navegacao_secundaria.giroBuscaResgata(55, Const.CAVE); // testar se esta virando e indo ate o boneco e fechando a garra
+			achou = Navegacao_secundaria.giroBuscaResgata(Const.ANG_PROCURA, Const.CAVE); // testar se esta virando e indo ate o boneco e fechando a garra
 			if(achou){
 				printDebug("mais pontos");
 				resgatar = true;
 				Delay.msDelay(666666);
 			}else{
 				printDebug("nao achou");
-				switch(c1){ // busca pela direita da caverna depois volta e busca pela esquerda
-				case 0:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (0,1)
-					c1++;
-					break;
-				}case 1:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (0,2)
-					c1++;
-					break;
-				}case 2:{
-					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.CAVE,0); // (1,2)
-					c1++;
-					break;
-				}case 3:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (2,2)
-					c1++;
-					break;
-				}case 4:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (3,2)
-					c1++;
-					break;
-				}case 5:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,2) NA VOLTA PARA AQUI
-					c1++;
-					break;
-				}case 6:{
-					Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.CAVE,1); // (4,3)
-					c1++;
-					break;
-				}case 7:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,4)
-					c1++;
-					break;
-				}case 8:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,5)
-					c1++;
-					break;
-				}case 9:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,6)
-					c1++;
-					break;
-				}case 10:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,7)
-					c1++;
-					break;
-				}case 11:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,8)
-					c1++;
-					break;
-				}case 12:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,9)
-					c1++;
-					break;
-				}case 13:{ // alinhar e voltar para o inicio, desfazer a pilha ate esse ponto
-					Navigation.turn(90); // OESTE
-					Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2-Navegacao_secundaria.x+0.1f));
-					Navigation.andar(Const.LADO_MODULO_CENTRAL/2-Navegacao_secundaria.x-Const.PROFUNDIDADE_BUNDA_ROBO);
-					Navigation.turn(90); // SUL
-					Navigation.andar(-(Const.LADO_MODULO_CENTRAL-Navegacao_secundaria.y+0.1f));
-					Navigation.andar(Const.LADO_MODULO_CENTRAL-Navegacao_secundaria.y
-							-Const.PROFUNDIDADE_BUNDA_ROBO+distAndaProcura*7); // (4,2)
-					Navigation.turn(-90); // OESTE
-					Navigation.andar(distAndaProcura*4); // (0,2)
-					Navegacao_secundaria.x = 0;
-					Navegacao_secundaria.y = 0.3f+Const.PROFUNDIDADE_BUNDA_ROBO;
-					Navegacao_secundaria.orientacao = Const.OESTE;
-					for(int i=1; i<=11;i++){
-						Navegacao_secundaria.pullSegmento(Const.CAVE); // volta a pilha para a posicao atual
-					}
-					Navegacao_secundaria.pushSegmento(90, 0, Const.CAVE, 0);// vira o robo para a orientacao atual OESTE
 
-					c1++;
-					break;
-				}case 14:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-1,2)
-					c1++;
-					break;
-				}case 15:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-2,2)
-					c1++;
-					break;
-				}case 16:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-3,2)
-					c1++;
-					break;
-				}case 17:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,2)
-					c1++;
-					break;
-				}case 18:{
-					Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.CAVE,4); // (-4,3)
-					c1++;
-					break;
-				}case 19:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,4)
-					c1++;
-					break;
-				}case 20:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,5)
-					c1++;
-					break;
-				}case 21:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,6)
-					c1++;
-					break;
-				}case 22:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,7)
-					c1++;
-					break;
-				}case 23:{
-					Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,7)
-					c1++;
-					break;
-				}
+				if(resgataCaveQualLado == 1){
+					switch(c1){ // busca pela direita da caverna depois volta e busca pela esquerda
+					case 0:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (0,1)
+						c1++;
+						break;
+					}case 1:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (0,2)
+						c1++;
+						break;
+					}case 2:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.CAVE,0); // (1,2)
+						c1++;
+						break;
+					}case 3:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (2,2)
+						c1++;
+						break;
+					}case 4:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (3,2)
+						c1+=2;
+						break;
+					}case 5:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,2) NA VOLTA PARA AQUI
+						c1++;
+						break;
+					}case 6:{
+						Navegacao_secundaria.x = 0.6f;
+						//printDebug(Integer.toString(Navegacao_secundaria.x));
+						//Delay.msDelay(10000);
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.CAVE,1); // (4,3)
+						c1++;
+						break;
+					}case 7:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,4)
+						c1++;
+						break;
+					}case 8:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,5)
+						c1++;
+						break;
+					}case 9:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,6)
+						c1++;
+						break;
+					}case 10:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,7)
+						c1++;
+						break;
+					}case 11:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,8)
+						c1++;
+						break;
+					}case 12:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (4,9)
+						c1++;
+						break;
+					}case 13:{ // alinhar e voltar para o inicio, desfazer a pilha ate esse ponto
+						Navigation.turn(90); // OESTE
+						Navigation.andar(-(Const.LADO_MODULO_CENTRAL/2-Navegacao_secundaria.x+0.1f));
+						Navigation.andar(Const.LADO_MODULO_CENTRAL/2-Navegacao_secundaria.x-Const.PROFUNDIDADE_BUNDA_ROBO);
+						Navigation.turn(90); // SUL
+						Navigation.andar(-(Const.LADO_MODULO_CENTRAL-Navegacao_secundaria.y+0.1f));
+						Navigation.andar(Const.LADO_MODULO_CENTRAL-Navegacao_secundaria.y
+								-Const.PROFUNDIDADE_BUNDA_ROBO+distAndaProcura*7); // (4,2)
+						Navigation.turn(-90); // OESTE
+						Navigation.andar(distAndaProcura*4); // (0,2)
+						Navegacao_secundaria.x = 0;
+						Navegacao_secundaria.y = 0.3f+Const.PROFUNDIDADE_BUNDA_ROBO;
+						Navegacao_secundaria.orientacao = Const.OESTE;
+						for(int i=1; i<=11;i++){
+							Navegacao_secundaria.pullSegmento(Const.CAVE); // volta a pilha para a posicao atual
+						}
+						Navegacao_secundaria.pushSegmento(90, 0, Const.CAVE, 0);// vira o robo para a orientacao atual OESTE
+
+						c1++;
+						break;
+					}case 14:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-1,2)
+						c1++;
+						break;
+					}case 15:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-2,2)
+						c1++;
+						break;
+					}case 16:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-3,2)
+						c1++;
+						break;
+					}case 17:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,2)
+						c1++;
+						break;
+					}case 18:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.CAVE,4); // (-4,3)
+						c1++;
+						break;
+					}case 19:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,4)
+						c1++;
+						break;
+					}case 20:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,5)
+						c1++;
+						break;
+					}case 21:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,6)
+						c1++;
+						break;
+					}case 22:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,7)
+						c1++;
+						break;
+					}case 23:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.CAVE,0); // (-4,7)
+						c1++;
+						break;
+					}
+					}
+				}else{
+					
 				}
 			}
 		}
@@ -537,9 +594,9 @@ public class Plano_B {
 		boolean achou = false,
 				resgatar = false;
 		while(!resgatar ){
-			achou = Navegacao_secundaria.giroBuscaResgata(55, Const.OBSTACULO); // testar se esta virando e indo ate o boneco e fechando a garra
+			achou = Navegacao_secundaria.giroBuscaResgata(Const.ANG_PROCURA, Const.OBSTACULO); // testar se esta virando e indo ate o boneco e fechando a garra
 			if(achou){
-				printDebug("mais pontos");
+				printDebug("RESGATADO");
 				resgatar = true;
 				Delay.msDelay(999999);
 			}else{
@@ -566,8 +623,7 @@ public class Plano_B {
 						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-2,1)
 						c1++;
 						break;
-					}
-					case 4:{
+					}case 4:{
 						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,0); // (-2,2)
 						c1++;
 						break;
@@ -576,7 +632,7 @@ public class Plano_B {
 						c1++;
 						break;
 					}case 6:{
-						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,4); // (-3,3)
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,4); // (-3,3) ALINHAR
 						c1++;
 						break;
 					}case 7:{
@@ -595,13 +651,12 @@ public class Plano_B {
 						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-3,7)
 						c1++;
 						break;
-					}
-					case 11:{
+					}case 11:{
 						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-3,8)
 						c1++;
 						break;
 					}case 12:{
-						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,3); // (-2,8)
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,3); // (-2,8) ALINHAR
 						c1++;
 						break;
 					}case 13:{
@@ -766,6 +821,7 @@ public class Plano_B {
 						c1++;
 						break;
 					}case 6:{
+						Navegacao_secundaria.x = 0.6f;
 						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,1); // (3,4) ALINHARRRR
 						c1++;
 						break;
@@ -871,6 +927,7 @@ public class Plano_B {
 						c1++;
 						break;
 					}case 5:{
+						Navegacao_secundaria.x = 0.6f;
 						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,1); // (3,3) ALINHARR
 						c1++;
 						break;
@@ -966,13 +1023,306 @@ public class Plano_B {
 					}
 					break;
 				}case 5:{// ======================PAREDE POSICAO 5 (inverso da 3)
-
+					switch(c1){
+					case 0:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (0,1)
+						c1++;
+						break;
+					}case 1:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (0,2)
+						c1++;
+						break;
+					}
+					case 2:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0); // (-1,2)
+						c1++;
+						break;
+					}case 3:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-2,2)
+						c1++;
+						break;
+					}case 4:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,0); // (-2,3)
+						c1++;
+						break;
+					}case 5:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0); // (-3,3)
+						c1++;
+						break;
+					}case 6:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,4); // (-3,4) ALINHARRRR
+						c1++;
+						break;
+					}case 7:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-3,5)
+						c1++;
+						break;
+					}case 8:{
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navigation.andar(-3*distAndaProcura); // (3,2) NORTE
+						Navigation.turn(-90); // (3,2) LESTE
+						Navigation.andar(3*distAndaProcura); // ( 0,2) LESTE
+						Navegacao_secundaria.orientacao = Const.LESTE;
+						Navegacao_secundaria.x = 0;
+						Navegacao_secundaria.y = 2*distAndaProcura+Const.PROFUNDIDADE_BUNDA_ROBO;
+						Navegacao_secundaria.pushSegmento(90, 0, Const.OBSTACULO, 0);
+						c1++;
+						break;
+					}case 9:{
+						Navegacao_secundaria.andarPilha(0,distAndaProcura, Const.OBSTACULO,0); // (1,2)
+						c1++;
+						break;
+					}case 10:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (2,2)
+						c1++;
+						break;
+					}case 11:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,4);// (2,3) ALINHARRR
+						c1++;
+						break;
+					}case 12:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (2,4) 
+						c1++;
+						break;
+					}case 13:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (2,5)
+						c1++;
+						break;
+					}case 14:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (2,6)
+						c1++;
+						break;
+					}case 15:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (2,7)
+						c1++;
+						break;
+					}case 16:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (2,8)
+						c1++;
+						break;
+					}case 17:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,2); // (1,8)
+						c1++;
+						break;
+					}case 18:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (0,8)
+						c1++;
+						break;
+					}case 19:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-1,8)
+						c1++;
+						break;
+					}case 20:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (-2,8)
+						c1++;
+						break;
+					}case 21:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-3,8)
+						c1++;
+						break;
+					}case 22:{
+						Navegacao_secundaria.andarPilha(360, 0, Const.OBSTACULO,0);
+						c1++;
+						break;
+					}
+					}
 					break;
 				}case 6:{// ======================PAREDE POSICAO 6 (inverso da 2)
-
+					switch(c1){
+					case 0:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (0,1)
+						c1++;
+						break;
+					}case 1:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (0,2)
+						c1++;
+						break;
+					}case 2:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0);// (-1,2)
+						c1++;
+						break;
+					}case 3:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (-2,2)
+						c1++;
+						break;
+					}case 4:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (-3,2)
+						c1++;
+						break;
+					}case 5:{
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navigation.andar(-distAndaProcura*3); // (0,2)
+						Navegacao_secundaria.x = 0;
+						Navigation.turn(-90); // NORTE
+						Navegacao_secundaria.orientacao = Const.NORTE;
+						c1++;
+						break;
+					}case 6:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,0);// (1,2)
+						c1++;
+						break;
+					}case 7:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (2,2)
+						c1++;
+						break;
+					}case 8:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);// (3,2)
+						c1++;
+						break;
+					}case 9:{
+						Navegacao_secundaria.x = 0.6f;
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,1); // (3,3) ALINHAR
+						c1++;
+						break;
+					}case 10:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (3,4)
+						c1++;
+						break;
+					}case 11:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);  // (4,5)
+						c1++;
+						break;
+					}case 12:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);  // (3,6)
+						c1++;
+						break;
+					}case 13:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0);  // (3,7)
+						c1++;
+						break;
+					}case 14:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (3,8)
+						c1++;
+						break;
+					}case 15:{
+						Navegacao_secundaria.andarPilha(90, 0, Const.OBSTACULO,2); // (2,8)  ALINHARRRRRR
+						c1++;
+						break;
+					}case 16:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (1,8)
+						c1++;
+						break;
+					}case 17:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (0,8)
+						c1++;
+						break;
+					}case 18:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-1,8)
+						c1++;
+						break;
+					}case 19:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-2,8)
+						c1++;
+						break;
+					}case 20:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-3,8)
+						c1++;
+						break;
+					}case 21:{
+						Navegacao_secundaria.andarPilha(90, 0, Const.OBSTACULO,0); // (3,7)
+						c1++;
+						break;
+					}case 22:{
+						AlienRescue.victorySong();
+						break;
+					}
+					}
 					break;
 				}case 7:{// ======================PAREDE POSICAO 7 (inverso da 1)
-
+					switch(c1){
+					case 0:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (0,1)
+						c1++;
+						break;
+					}case 1:{
+						Navegacao_secundaria.andarPilha(90, 0, Const.OBSTACULO,0); // (0,1)
+						c1++;
+						break;
+					}case 2:{
+						Navegacao_secundaria.pullSegmento(Const.OBSTACULO);
+						Navigation.turn(-90);
+						Navegacao_secundaria.orientacao = Const.NORTE;
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,0); // (1,1)
+						c1++;
+						break;
+					}case 3:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (2,1)
+						c1++;
+						break;
+					}case 4:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0); // (2,2)
+						c1++;
+						break;
+					}case 5:{
+						Navegacao_secundaria.andarPilha(-90, distAndaProcura, Const.OBSTACULO,0); // (3,2)
+						c1++;
+						break;
+					}case 6:{
+						Navegacao_secundaria.x = 0.6f;
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,1); // (3,3)
+						c1++;
+						break;
+					}case 7:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (3,4)
+						c1++;
+						break;
+					}case 8:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (3,5)
+						c1++;
+						break;
+					}case 9:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (3,6)
+						c1++;
+						break;
+					}case 10:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (3,7)
+						c1++;
+						break;
+					}case 11:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (3,8)
+						c1++;
+						break;
+					}case 12:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,3); // (2,8)
+						c1++;
+						break;
+					}case 13:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (1,8)
+						c1++;
+						break;
+					}case 14:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (0,8)
+						c1++;
+						break;
+					}case 15:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-1,8)
+						c1++;
+						break;
+					}case 16:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-2,8)
+						c1++;
+						break;
+					}case 17:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-3,8)
+						c1++;
+						break;
+					}case 18:{
+						Navegacao_secundaria.andarPilha(90, distAndaProcura, Const.OBSTACULO,0); // (-3,7)
+						c1++;
+						break;
+					}case 19:{
+						Navegacao_secundaria.andarPilha(0, distAndaProcura, Const.OBSTACULO,0); // (-3,6)
+						c1++;
+						break;
+					}
+					}
 					break;
 				}
 				}
