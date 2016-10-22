@@ -11,7 +11,7 @@ import sek2016.Navigation;
  * @author Rogério
  *
  */
-public class Const {
+public interface Const {
 	public static final float ACELERATION = Navigation.aceleration;
 	public static final float VELO_INI = Navigation.VELO_INI;
 	public static final float RAIO = Navigation.RAIO;
